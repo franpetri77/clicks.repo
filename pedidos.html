@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Clicks Burger — Caja</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      /* Menú — tema claro */
+      --menu-bg:      #f5f3ef;
+      --card-bg:      #ffffff;
+      --card-border:  #e4e1db;
+      --card-hover:   #f9f8f6;
+      --menu-text:    #111111;
+      --menu-muted:   #666666;
+      --menu-surface: #f0ede8;
+
+      /* Ticket — tema oscuro */
+      --ticket-bg:    #141414;
+      --ticket-surf:  #1e1e1e;
+      --ticket-surf2: #282828;
+      --ticket-surf3: #323232;
+      --ticket-text:  #f0f0f0;
+      --ticket-muted: #888888;
+      --ticket-border:#303030;
+
+      /* Comunes */
+      --yellow:  #F5A300;
+      --yellow2: #FFD066;
+      --red:     #d93025;
+      --green:   #1e8c45;
+    }
+
+    body {
+      font-family: 'Lato', sans-serif;
+      height: 100vh;
+      display: flex; flex-direction: column;
+      overflow: hidden;
+      background: var(--menu-bg);
+    }
+
+    /* ════════════════════════════════
+       HEADER
+    ════════════════════════════════ */
+    header {
+      background: #111;
+      padding: 0 20px;
+      height: 58px;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-shrink: 0;
+      border-bottom: 2px solid var(--yellow);
+      z-index: 10;
+    }
+
+    .logo { display: flex; align-items: center; gap: 10px; }
+    .logo-icon { font-size: 1.6rem; }
+    .logo-text {
+      font-family: 'Anton', sans-serif;
+      font-size: 1.35rem; letter-spacing: 2px; color: var(--yellow); line-height: 1;
+    }
+    .logo-sub { font-size: 0.68rem; color: #666; letter-spacing: 2.5px; text-transform: uppercase; margin-top: 2px; }
+
+    .pedido-badge {
+      background: var(--yellow); color: #111;
+      font-family: 'Anton', sans-serif;
+      font-size: 0.88rem; letter-spacing: 1.5px;
+      padding: 6px 14px; border-radius: 6px;
+    }
+
+    /* ════════════════════════════════
+       LAYOUT
+    ════════════════════════════════ */
+    .main { display: flex; flex: 1; overflow: hidden; }
+
+    /* ════════════════════════════════
+       MENÚ (CLARO)
+    ════════════════════════════════ */
+    .menu {
+      flex: 1; overflow-y: auto;
+      padding: 16px;
+      background: var(--menu-bg);
+      color: var(--menu-text);
+    }
+
+    /* Separador de categoría */
+    .cat-label {
+      font-family: 'Anton', sans-serif;
+      font-size: 0.75rem; letter-spacing: 3px;
+      color: #888; text-transform: uppercase;
+      margin: 22px 0 12px;
+      display: flex; align-items: center; gap: 10px;
+      padding-left: 9px;
+      border-left: 3px solid var(--yellow);
+    }
+    .cat-label:first-child { margin-top: 0; }
+    .cat-label::after { content: ''; flex: 1; height: 1px; background: #ddd; }
+
+    /* ── BURGER CARD (blanca) ── */
+    .burger-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      margin-bottom: 10px;
+      overflow: hidden;
+      display: flex;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      box-shadow: 0 1px 0 #00000008, 0 2px 8px #0000000d;
+    }
+    .burger-card:hover {
+      border-color: var(--yellow);
+      box-shadow: 0 4px 16px #F5A30022, 0 1px 0 #00000010;
+    }
+
+    .burger-photo {
+      width: 108px; flex-shrink: 0;
+      object-fit: cover; display: block;
+    }
+
+    .burger-body { flex: 1; display: flex; flex-direction: column; }
+
+    .burger-info { padding: 10px 13px 7px; flex: 1; }
+    .burger-name {
+      font-family: 'Anton', sans-serif;
+      font-size: 1.05rem; letter-spacing: 0.5px;
+      color: #111; margin-bottom: 4px;
+    }
+    .burger-desc { font-size: 0.75rem; color: #777; line-height: 1.5; }
+
+    /* Variantes */
+    .variants {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      border-top: 1px solid var(--card-border);
+    }
+    .variant-btn {
+      background: none; border: none;
+      border-right: 1px solid var(--card-border);
+      padding: 11px 5px;
+      cursor: pointer; text-align: center;
+      transition: background 0.15s; color: var(--menu-text);
+    }
+    .variant-btn:last-child { border-right: none; }
+    .variant-btn:hover  { background: #fffaf0; }
+    .variant-btn:active { background: #ffefd0; }
+    .variant-name {
+      font-size: 0.72rem; font-weight: 700;
+      letter-spacing: 1px; text-transform: uppercase;
+      color: #999; display: block;
+    }
+    .variant-price {
+      font-family: 'Anton', sans-serif;
+      font-size: 0.96rem; color: var(--yellow);
+      display: block; margin-top: 2px;
+    }
+
+    /* ── BEBIDAS + EXTRAS (grilla unificada) ── */
+    .extras-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+
+    /* Carta de bebida con foto */
+    .bebida-btn {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      cursor: pointer; overflow: hidden;
+      display: flex; flex-direction: column;
+      transition: border-color 0.2s, box-shadow 0.2s, transform 0.1s;
+      color: var(--menu-text);
+      box-shadow: 0 1px 4px #0000000a;
+    }
+    .bebida-btn:hover {
+      border-color: var(--yellow);
+      box-shadow: 0 4px 14px #F5A30022;
+      transform: translateY(-2px);
+    }
+    .bebida-btn:active { transform: scale(0.97); }
+
+    .bebida-img-wrap {
+      width: 100%; height: 94px; overflow: hidden;
+      background: #fafafa;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .bebida-img {
+      height: 100%; width: auto; max-width: 100%;
+      object-fit: contain;
+      padding: 6px 4px;
+      transition: transform 0.2s;
+    }
+    .bebida-btn:hover .bebida-img { transform: scale(1.06); }
+
+    .bebida-info {
+      padding: 6px 6px 8px; text-align: center;
+      background: var(--menu-surface);
+      border-top: 1px solid var(--card-border);
+    }
+    .bebida-name  { font-size: 0.74rem; font-weight: 700; display: block; color: #222; }
+    .bebida-price { font-family: 'Anton', sans-serif; font-size: 0.88rem; color: var(--yellow); display: block; margin-top: 2px; }
+
+    /* Carta de extra sin foto (papas / mayo) */
+    .extra-card-btn {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      cursor: pointer; overflow: hidden;
+      display: flex; flex-direction: column; align-items: center;
+      justify-content: center; gap: 5px;
+      padding: 16px 6px;
+      transition: border-color 0.2s, box-shadow 0.2s, transform 0.1s;
+      color: var(--menu-text);
+      box-shadow: 0 1px 4px #0000000a;
+      text-align: center;
+    }
+    .extra-card-btn:hover {
+      border-color: var(--yellow);
+      box-shadow: 0 4px 14px #F5A30022;
+      transform: translateY(-2px);
+    }
+    .extra-card-btn:active { transform: scale(0.97); }
+    .extra-card-icon  { font-size: 1.9rem; }
+    .extra-card-name  { font-size: 0.74rem; font-weight: 700; color: #222; }
+    .extra-card-price { font-family: 'Anton', sans-serif; font-size: 0.88rem; color: var(--yellow); }
+
+    /* ════════════════════════════════
+       TICKET (OSCURO)
+    ════════════════════════════════ */
+    .ticket {
+      width: 316px; flex-shrink: 0;
+      background: var(--ticket-bg);
+      border-left: 1px solid #252525;
+      display: flex; flex-direction: column;
+      color: var(--ticket-text);
+    }
+
+    .ticket-header {
+      padding: 11px 14px;
+      border-bottom: 1px solid var(--ticket-border);
+      display: flex; justify-content: space-between; align-items: center;
+      background: #181818;
+    }
+    .ticket-title {
+      font-family: 'Anton', sans-serif;
+      font-size: 0.82rem; letter-spacing: 2.5px; color: #ccc;
+      text-transform: uppercase;
+    }
+    .btn-limpiar {
+      background: none; border: 1px solid var(--red);
+      color: var(--red); border-radius: 5px;
+      padding: 5px 12px; font-size: 0.68rem; font-weight: 700;
+      cursor: pointer; transition: background 0.15s, color 0.15s;
+      font-family: 'Anton', sans-serif; letter-spacing: 1px;
+    }
+    .btn-limpiar:hover { background: var(--red); color: #fff; }
+
+    .ticket-items { flex: 1; overflow-y: auto; padding: 7px; }
+
+    .ticket-empty {
+      text-align: center; color: var(--ticket-muted);
+      margin-top: 50px; font-size: 0.82rem;
+    }
+    .ticket-empty .icon { font-size: 2.5rem; display: block; margin-bottom: 8px; opacity: 0.3; }
+
+    /* Fila de ítem */
+    .ticket-item-wrap {
+      border-radius: 8px; margin-bottom: 6px;
+      border: 1px solid var(--ticket-border);
+      overflow: hidden; background: var(--ticket-surf);
+      transition: border-color 0.15s;
+    }
+    .ticket-item-wrap:focus-within { border-color: #3a3a3a; }
+    .ticket-row {
+      display: flex; align-items: center; gap: 7px;
+      padding: 7px 8px;
+    }
+
+    .qty-controls { display: flex; align-items: center; gap: 3px; }
+    .qty-btn {
+      width: 22px; height: 22px;
+      background: var(--ticket-surf3);
+      border: 1px solid var(--ticket-border); border-radius: 4px;
+      color: var(--ticket-text); font-size: 1rem;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.1s; font-family: 'Lato', sans-serif;
+    }
+    .qty-btn:hover { background: var(--yellow); color: #111; }
+    .qty-num { min-width: 18px; text-align: center; font-weight: 900; font-size: 0.9rem; }
+
+    .item-info { flex: 1; min-width: 0; }
+    .item-info .name {
+      font-size: 0.75rem; font-weight: 700;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      color: var(--ticket-text);
+    }
+    .item-info .variant-tag {
+      font-size: 0.62rem; color: var(--ticket-muted);
+      background: var(--ticket-surf3); padding: 1px 5px;
+      border-radius: 3px; display: inline-block; margin-top: 1px;
+      border: 1px solid var(--ticket-border);
+    }
+    .line-total {
+      font-family: 'Anton', sans-serif; font-size: 0.88rem;
+      color: var(--yellow); flex-shrink: 0;
+    }
+
+    /* Observación por ítem */
+    .item-obs-wrap { border-top: 1px solid var(--ticket-border); padding: 0 8px 8px; }
+    .item-obs {
+      width: 100%; background: var(--ticket-surf2);
+      border: 1px solid var(--ticket-border); border-radius: 5px;
+      color: var(--ticket-text); padding: 5px 8px;
+      font-size: 0.7rem; font-family: 'Lato', sans-serif;
+      resize: none; height: 36px;
+      transition: border-color 0.15s; margin-top: 6px;
+    }
+    .item-obs::placeholder { color: #4a4a4a; }
+    .item-obs:focus { outline: none; border-color: #F5A30070; background: #2e2e2e; }
+
+    /* ── FOOTER TICKET ── */
+    .ticket-footer {
+      border-top: 1px solid var(--ticket-border);
+      padding: 12px 13px;
+      background: #141414;
+    }
+
+    .total-row {
+      display: flex; justify-content: space-between;
+      font-size: 0.8rem; color: var(--ticket-muted); margin-bottom: 3px;
+    }
+    .total-row.grand {
+      font-family: 'Anton', sans-serif; font-size: 1.15rem;
+      color: #fff; border-top: 1px solid #2a2a2a;
+      padding-top: 9px; margin-top: 7px; margin-bottom: 12px;
+    }
+    .total-row.grand span:last-child { color: var(--yellow); }
+
+    /* Tipo de pedido */
+    .tipo-wrap { display: flex; gap: 6px; margin-bottom: 10px; }
+    .tipo-btn {
+      flex: 1; padding: 9px 6px;
+      border: 1px solid var(--ticket-border);
+      border-radius: 7px; background: var(--ticket-surf2);
+      color: var(--ticket-muted);
+      font-family: 'Anton', sans-serif;
+      font-size: 0.78rem; letter-spacing: 1px;
+      cursor: pointer; transition: all 0.15s;
+      display: flex; align-items: center; justify-content: center; gap: 5px;
+    }
+    .tipo-btn:hover { border-color: #555; color: var(--ticket-text); }
+    .tipo-btn.active-delivery { background: #201800; border-color: #c87d00; color: var(--yellow); }
+    .tipo-btn.active-takeaway { background: #0e1c0e; border-color: var(--green); color: #4aba6a; }
+
+    /* Demora estimada */
+    .demora-wrap {
+      display: flex; align-items: center; gap: 8px;
+      margin-bottom: 9px;
+      background: var(--ticket-surf2);
+      border: 1px solid var(--ticket-border);
+      border-radius: 7px; padding: 7px 10px;
+    }
+    .demora-label { font-size: 0.7rem; color: var(--ticket-muted); flex: 1; font-weight: 700; }
+    .demora-stepper { display: flex; align-items: center; gap: 6px; }
+    .demora-step-btn {
+      width: 24px; height: 24px;
+      background: var(--ticket-surf3); border: 1px solid var(--ticket-border);
+      border-radius: 5px; color: var(--ticket-text);
+      font-size: 1rem; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.1s; font-family: 'Lato', sans-serif;
+    }
+    .demora-step-btn:hover { background: var(--yellow); color: #111; }
+    .demora-val {
+      font-family: 'Anton', sans-serif; font-size: 1rem;
+      color: var(--yellow); min-width: 32px; text-align: center;
+    }
+    .demora-unit { font-size: 0.7rem; color: var(--ticket-muted); }
+
+    /* Aclaración general */
+    .aclaracion-wrap { margin: 10px 0; }
+    .aclaracion-wrap textarea {
+      width: 100%; background: var(--ticket-surf2);
+      border: 1px solid var(--ticket-border);
+      border-radius: 6px; color: var(--ticket-text);
+      padding: 7px 10px; font-size: 0.73rem;
+      font-family: 'Lato', sans-serif;
+      resize: none; height: 46px;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .aclaracion-wrap textarea::placeholder { color: #4a4a4a; }
+    .aclaracion-wrap textarea:focus { outline: none; border-color: #F5A30070; background: #2e2e2e; }
+
+    /* Botón enviar */
+    .btn-enviar {
+      width: 100%; padding: 14px;
+      background: var(--yellow); color: #111;
+      border: none; border-radius: 8px;
+      font-family: 'Anton', sans-serif;
+      font-size: 1.05rem; letter-spacing: 2px;
+      cursor: pointer; transition: background 0.15s, transform 0.1s, box-shadow 0.2s;
+    }
+    .btn-enviar:hover  { background: var(--yellow2); box-shadow: 0 6px 24px #F5A30045; }
+    .btn-enviar:active { transform: scale(0.98); }
+    .btn-enviar:disabled { background: var(--ticket-surf3); color: #555; cursor: not-allowed; box-shadow: none; }
+
+    /* ── TOAST ── */
+    .toast {
+      position: fixed; bottom: 28px; left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: var(--green); color: #fff;
+      padding: 11px 28px; border-radius: 8px;
+      font-weight: 900; font-size: 0.9rem;
+      box-shadow: 0 4px 24px #0004;
+      transition: transform 0.3s; z-index: 100;
+      pointer-events: none;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+
+    /* ── FLASH AL AGREGAR ── */
+    @keyframes flashAdd {
+      0%   { border-color: var(--yellow); box-shadow: 0 0 0 3px #F5A30030; }
+      100% { border-color: var(--card-border); box-shadow: 0 1px 4px #0000000a; }
+    }
+    .burger-card.added { animation: flashAdd 0.5s ease forwards; }
+
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #c8c4bc; border-radius: 3px; }
+    .ticket ::-webkit-scrollbar-thumb { background: #3a3a3a; border-radius: 3px; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <span class="logo-icon">🍔</span>
+    <div>
+      <div class="logo-text">CLICKS BURGER</div>
+      <div class="logo-sub">Comandera · Caja</div>
+    </div>
+  </div>
+  <div class="pedido-badge" id="num-pedido">PEDIDO #001</div>
+</header>
+
+<div class="main">
+  <div class="menu" id="menu"></div>
+
+  <div class="ticket">
+    <div class="ticket-header">
+      <span class="ticket-title">PEDIDO ACTUAL</span>
+      <button class="btn-limpiar" onclick="limpiarTicket()">LIMPIAR</button>
+    </div>
+    <div class="ticket-items" id="ticket-items">
+      <div class="ticket-empty">
+        <span class="icon">🧾</span>
+        Agregá ítems del menú
+      </div>
+    </div>
+    <div class="ticket-footer">
+      <div id="totals"></div>
+
+      <div class="tipo-wrap">
+        <button class="tipo-btn active-delivery" id="btn-delivery" onclick="setTipo('delivery')">🏍 Delivery</button>
+        <button class="tipo-btn" id="btn-takeaway" onclick="setTipo('takeaway')">🥡 Takeaway</button>
+      </div>
+
+      <div class="demora-wrap">
+        <span class="demora-label">⏱ Demora estimada</span>
+        <div class="demora-stepper">
+          <button class="demora-step-btn" onclick="ajustarDemora(-5)">−</button>
+          <span class="demora-val" id="demora-val">20</span>
+          <button class="demora-step-btn" onclick="ajustarDemora(5)">+</button>
+          <span class="demora-unit">min</span>
+        </div>
+      </div>
+
+      <div class="aclaracion-wrap">
+        <textarea id="aclaracion" placeholder="Aclaración general del pedido..."></textarea>
+      </div>
+      <button class="btn-enviar" id="btn-enviar" onclick="enviarPedido()" disabled>
+        ENVIAR A COCINA
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── DATOS ──
+const BURGERS = [
+  {
+    id: 'american',
+    img: 'img/american-clicks.jpg',
+    nombre: 'AMERICAN CLICKS',
+    desc: 'Carne, doble queso, bacon, lechuga, tomate, cebolla y aderezo clicks',
+    variantes: [
+      { key: 'simple', label: 'Simple', precio: 11500 },
+      { key: 'doble',  label: 'Doble',  precio: 14500 },
+      { key: 'triple', label: 'Triple', precio: 17500 },
+    ]
+  },
+  {
+    id: 'cheeseburger',
+    img: 'img/cheeseburger.jpg',
+    nombre: 'CHEESEBURGER',
+    desc: 'Carne, doble queso, doble bacon y mayonesa',
+    variantes: [
+      { key: 'simple', label: 'Simple', precio: 11000 },
+      { key: 'doble',  label: 'Doble',  precio: 14000 },
+      { key: 'triple', label: 'Triple', precio: 17000 },
+    ]
+  },
+  {
+    id: 'cuarto',
+    img: 'img/cuarto-clicks.jpg',
+    nombre: 'CUARTO CLICKS',
+    desc: 'Carne, doble queso, bacon, ketchup, mostaza y cebolla brunoise',
+    variantes: [
+      { key: 'simple', label: 'Simple', precio: 11000 },
+      { key: 'doble',  label: 'Doble',  precio: 14000 },
+      { key: 'triple', label: 'Triple', precio: 17000 },
+    ]
+  },
+];
+
+const BEBIDAS = [
+  { id: 'coca',     img: 'img/latacoca.jpg',     nombre: 'Coca-Cola', precio: 2500 },
+  { id: 'sprite',   img: 'img/latasprite.jpg',   nombre: 'Sprite',    precio: 2500 },
+  { id: 'fanta',    img: 'img/latafanta.jpg',     nombre: 'Fanta',     precio: 2500 },
+  { id: 'cocazero', img: 'img/latacocazero.jpg', nombre: 'Coca Zero', precio: 2500 },
+];
+
+const EXTRAS = [
+  { id: 'papas', icon: '🍟', nombre: 'Porción de Papas', precio: 2500 },
+  { id: 'mayo',  icon: '🥣', nombre: 'Mayonesa',         precio: 500  },
+];
+
+// ── MAPA DE ITEMS ──
+const ITEM_MAP = {};
+
+BURGERS.forEach(b => b.variantes.forEach(v => {
+  ITEM_MAP[`${b.id}_${v.key}`] = {
+    nombre: b.nombre, variante: v.label,
+    precio: v.precio, icon: '🍔', esBurger: true,
+  };
+}));
+
+BEBIDAS.forEach(b => {
+  ITEM_MAP[b.id] = { nombre: b.nombre, variante: null, precio: b.precio, icon: '🥤', esBurger: false };
+});
+
+EXTRAS.forEach(e => {
+  ITEM_MAP[e.id] = { nombre: e.nombre, variante: null, precio: e.precio, icon: e.icon, esBurger: false };
+});
+
+// ── ESTADO ──
+let pedido    = {};
+let tipoPedido = 'delivery';
+let demoraMin  = 20;
+let numPedido  = Number(localStorage.getItem('cb_ultimo_pedido') || 0) + 1;
+const channel  = new BroadcastChannel('clicks_burger');
+
+function setTipo(tipo) {
+  tipoPedido = tipo;
+  document.getElementById('btn-delivery').className =
+    'tipo-btn' + (tipo === 'delivery' ? ' active-delivery' : '');
+  document.getElementById('btn-takeaway').className =
+    'tipo-btn' + (tipo === 'takeaway' ? ' active-takeaway' : '');
+}
+
+function ajustarDemora(delta) {
+  demoraMin = Math.max(5, Math.min(120, demoraMin + delta));
+  document.getElementById('demora-val').textContent = demoraMin;
+}
+
+// ── RENDER MENÚ ──
+function renderMenu() {
+  const el = document.getElementById('menu');
+
+  const burgersHTML = BURGERS.map(b => `
+    <div class="burger-card" id="bc-${b.id}">
+      <img class="burger-photo" src="${b.img}" alt="${b.nombre}" onerror="this.style.display='none'">
+      <div class="burger-body">
+        <div class="burger-info">
+          <div class="burger-name">${b.nombre}</div>
+          <div class="burger-desc">${b.desc}</div>
+        </div>
+        <div class="variants">
+          ${b.variantes.map(v => `
+            <button class="variant-btn" onclick="agregarItem('${b.id}_${v.key}', '${b.id}')">
+              <span class="variant-name">${v.label}</span>
+              <span class="variant-price">$${v.precio.toLocaleString('es-AR')}</span>
+            </button>
+          `).join('')}
+        </div>
+      </div>
+    </div>
+  `).join('');
+
+  const bebidasHTML = BEBIDAS.map(b => `
+    <button class="bebida-btn" onclick="agregarItem('${b.id}', null)">
+      <div class="bebida-img-wrap">
+        <img class="bebida-img" src="${b.img}" alt="${b.nombre}" onerror="this.style.display='none'">
+      </div>
+      <div class="bebida-info">
+        <span class="bebida-name">${b.nombre}</span>
+        <span class="bebida-price">$${b.precio.toLocaleString('es-AR')}</span>
+      </div>
+    </button>
+  `).join('');
+
+  const extrasHTML = EXTRAS.map(e => `
+    <button class="extra-card-btn" onclick="agregarItem('${e.id}', null)">
+      <span class="extra-card-icon">${e.icon}</span>
+      <span class="extra-card-name">${e.nombre}</span>
+      <span class="extra-card-price">$${e.precio.toLocaleString('es-AR')}</span>
+    </button>
+  `).join('');
+
+  el.innerHTML = `
+    <div class="cat-label">Hamburguesas</div>
+    ${burgersHTML}
+    <div class="cat-label">Bebidas y Extras</div>
+    <div class="extras-grid">
+      ${bebidasHTML}
+      ${extrasHTML}
+    </div>
+  `;
+}
+
+// ── TICKET ──
+function agregarItem(id, burgerCardId) {
+  if (!pedido[id]) pedido[id] = { qty: 0, obs: '' };
+  pedido[id].qty++;
+  if (burgerCardId) {
+    const card = document.getElementById(`bc-${burgerCardId}`);
+    if (card) { card.classList.remove('added'); void card.offsetWidth; card.classList.add('added'); }
+  }
+  renderTicket();
+}
+
+function cambiarCantidad(id, delta) {
+  if (!pedido[id]) return;
+  pedido[id].qty += delta;
+  if (pedido[id].qty <= 0) delete pedido[id];
+  renderTicket();
+}
+
+function setObs(id, val) {
+  if (pedido[id]) pedido[id].obs = val;
+}
+
+function limpiarTicket() {
+  pedido = {};
+  renderTicket();
+}
+
+function renderTicket() {
+  const container = document.getElementById('ticket-items');
+  const totalsEl  = document.getElementById('totals');
+  const btnEnviar = document.getElementById('btn-enviar');
+  const ids = Object.keys(pedido);
+
+  if (ids.length === 0) {
+    container.innerHTML = `<div class="ticket-empty"><span class="icon">🧾</span>Agregá ítems del menú</div>`;
+    totalsEl.innerHTML = '';
+    btnEnviar.disabled = true;
+    return;
+  }
+
+  let subtotal = 0;
+  container.innerHTML = ids.map(id => {
+    const it   = ITEM_MAP[id];
+    const item = pedido[id];
+    const line = it.precio * item.qty;
+    subtotal  += line;
+    return `
+      <div class="ticket-item-wrap">
+        <div class="ticket-row">
+          <div class="qty-controls">
+            <button class="qty-btn" onclick="cambiarCantidad('${id}',-1)">−</button>
+            <span class="qty-num">${item.qty}</span>
+            <button class="qty-btn" onclick="cambiarCantidad('${id}',1)">+</button>
+          </div>
+          <div class="item-info">
+            <div class="name">${it.icon} ${it.nombre}</div>
+            ${it.variante ? `<span class="variant-tag">${it.variante}</span>` : ''}
+          </div>
+          <div class="line-total">$${line.toLocaleString('es-AR')}</div>
+        </div>
+        ${it.esBurger ? `
+        <div class="item-obs-wrap">
+          <textarea class="item-obs"
+            placeholder="Obs: sin cebolla, bien cocida..."
+            onchange="setObs('${id}', this.value)"
+          >${item.obs}</textarea>
+        </div>` : ''}
+      </div>
+    `;
+  }).join('');
+
+  const cantItems = ids.reduce((s, id) => s + pedido[id].qty, 0);
+  totalsEl.innerHTML = `
+    <div class="total-row"><span>Ítems (${cantItems})</span><span>$${subtotal.toLocaleString('es-AR')}</span></div>
+    <div class="total-row grand"><span>TOTAL</span><span>$${subtotal.toLocaleString('es-AR')}</span></div>
+  `;
+  btnEnviar.disabled = false;
+}
+
+// ── ENVIAR ──
+function enviarPedido() {
+  const ids = Object.keys(pedido);
+  if (!ids.length) return;
+
+  const aclaracion = document.getElementById('aclaracion').value.trim();
+  const data = {
+    num:    numPedido,
+    hora:   new Date().toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' }),
+    tipo:   tipoPedido,
+    demora: demoraMin,
+    items:  ids.map(id => ({
+      ...ITEM_MAP[id],
+      key:      id,
+      cantidad: pedido[id].qty,
+      obs:      pedido[id].obs || '',
+    })),
+    aclaracion,
+    estado: 'pendiente',
+  };
+
+  const cola = JSON.parse(localStorage.getItem('cb_cola') || '[]');
+  cola.push(data);
+  localStorage.setItem('cb_cola', JSON.stringify(cola));
+  channel.postMessage({ tipo: 'nuevo_pedido', pedido: data });
+
+  mostrarToast(`✓ Pedido #${String(numPedido).padStart(3,'0')} enviado a cocina!`);
+
+  numPedido++;
+  localStorage.setItem('cb_ultimo_pedido', numPedido - 1);
+  document.getElementById('num-pedido').textContent = `PEDIDO #${String(numPedido).padStart(3,'0')}`;
+  pedido = {};
+  document.getElementById('aclaracion').value = '';
+  renderTicket();
+}
+
+function mostrarToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+renderMenu();
+renderTicket();
+document.getElementById('num-pedido').textContent = `PEDIDO #${String(numPedido).padStart(3,'0')}`;
+</script>
+</body>
+</html>

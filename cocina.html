@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Clicks Burger — Cocina</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg:       #0f0f0f;
+      --surface:  #1a1a1a;
+      --surface2: #212121;
+      --surface3: #2a2a2a;
+      --yellow:   #F5A300;
+      --yellow2:  #FFD066;
+      --red:      #d93025;
+      --red2:     #ff4444;
+      --green:    #1e8c45;
+      --blue:     #4a9eff;
+      --text:     #f0f0f0;
+      --muted:    #888888;
+      --border:   #2e2e2e;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Lato', sans-serif;
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+    }
+
+    /* ── HEADER ── */
+    header {
+      background: #111;
+      border-bottom: 2px solid var(--yellow);
+      padding: 0 20px;
+      height: 58px;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-shrink: 0;
+    }
+
+    .logo { display: flex; align-items: center; gap: 10px; }
+    .logo-icon { font-size: 1.5rem; }
+    .logo-text { font-family: 'Anton', sans-serif; font-size: 1.3rem; letter-spacing: 2px; color: var(--yellow); }
+    .logo-sub  { font-size: 0.68rem; color: #666; letter-spacing: 2.5px; text-transform: uppercase; margin-top: 2px; }
+
+    .header-right { display: flex; align-items: center; gap: 20px; }
+
+    .stats { display: flex; gap: 0; }
+    .stat  {
+      text-align: center; font-size: 0.68rem; color: var(--muted);
+      letter-spacing: 1px; text-transform: uppercase;
+      padding: 0 20px;
+    }
+    .stat + .stat { border-left: 1px solid var(--border); }
+    .stat-num { font-family: 'Anton', sans-serif; font-size: 1.5rem; display: block; color: var(--yellow); line-height: 1; }
+    .stat-num.red { color: var(--red2); }
+
+    .reloj { font-family: 'Anton', sans-serif; font-size: 1.5rem; color: var(--yellow); font-variant-numeric: tabular-nums; letter-spacing: 2px; border-left: 1px solid var(--border); padding-left: 20px; margin-left: 4px; }
+
+    /* ── ALERTA DEMORADOS ── */
+    .alerta-demorados {
+      display: none;
+      background: #2a0808;
+      border-bottom: 2px solid var(--red2);
+      padding: 8px 20px;
+      flex-shrink: 0;
+      align-items: center; gap: 10px;
+      animation: pulseBg 1.5s ease-in-out infinite;
+    }
+    .alerta-demorados.visible { display: flex; }
+    .alerta-icon { font-size: 1.2rem; }
+    .alerta-text { font-family: 'Anton', sans-serif; font-size: 0.85rem; letter-spacing: 2px; color: var(--red2); }
+    @keyframes pulseBg {
+      0%, 100% { background: #2a0808; }
+      50%       { background: #3d0a0a; }
+    }
+
+    /* ── TABS ── */
+    .tabs {
+      display: flex;
+      background: #111;
+      border-bottom: 1px solid var(--border);
+      padding: 0 20px;
+      flex-shrink: 0;
+    }
+    .tab {
+      padding: 11px 22px;
+      font-size: 0.75rem; font-weight: 700; letter-spacing: 1.5px;
+      text-transform: uppercase; cursor: pointer;
+      border-bottom: 3px solid transparent; color: var(--muted);
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .tab.active { color: var(--yellow); border-color: var(--yellow); }
+    .badge     { display: inline-block; background: var(--red); color: #fff; font-size: 0.65rem; font-weight: 900; border-radius: 10px; padding: 1px 6px; margin-left: 6px; }
+    .badge.verde { background: var(--green); }
+
+    /* ── GRID ── */
+    .content { flex: 1; padding: 20px; overflow-y: auto; }
+    .grid    { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
+
+    /* ── CARD ── */
+    .card {
+      background: var(--surface);
+      border: 2px solid var(--border);
+      border-radius: 12px; overflow: hidden;
+      animation: slideIn 0.22s ease;
+      transition: border-color 0.3s;
+    }
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(-8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .card.listo     { border-color: #3a5c3a; opacity: 0.6; }
+    .card.urgente   { border-color: var(--red2); }
+    .card.demorado  { border-color: var(--red2); animation: slideIn 0.22s ease, pulseRed 1.2s ease-in-out infinite; }
+    @keyframes pulseRed {
+      0%, 100% { box-shadow: 0 0 0 0 #ff444420; }
+      50%       { box-shadow: 0 0 0 6px #ff444420; }
+    }
+
+    /* ── HEAD ── */
+    .card-head {
+      background: linear-gradient(180deg, #242424 0%, #1e1e1e 100%);
+      padding: 11px 13px;
+      display: flex; align-items: center; gap: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+    .card-num {
+      font-family: 'Anton', sans-serif;
+      font-size: 1.65rem; color: var(--yellow); letter-spacing: 1px; line-height: 1;
+    }
+
+    .card-meta { flex: 1; min-width: 0; }
+    .card-hora { font-size: 0.74rem; color: var(--muted); }
+
+    /* Badge delivery/takeaway */
+    .tipo-badge {
+      font-family: 'Anton', sans-serif;
+      font-size: 0.65rem; letter-spacing: 1px;
+      padding: 3px 8px; border-radius: 10px;
+      display: inline-flex; align-items: center; gap: 3px;
+      margin-top: 2px;
+    }
+    .tipo-badge.delivery  { background: #1a2a3a; color: var(--blue); border: 1px solid #2a4a6a; }
+    .tipo-badge.takeaway  { background: #1a2a1a; color: #5ecf7a;    border: 1px solid #2a5a2a; }
+
+    /* Zona derecha del head: timer + demora */
+    .card-head-right { display: flex; flex-direction: column; align-items: flex-end; gap: 3px; }
+
+    .card-timer {
+      font-family: 'Anton', sans-serif;
+      font-size: 0.9rem; padding: 3px 10px;
+      border-radius: 10px; background: var(--surface3);
+      color: var(--text); font-variant-numeric: tabular-nums;
+      letter-spacing: 1px; white-space: nowrap;
+    }
+    .card-timer.warn   { background: #2a2200; color: var(--yellow); }
+    .card-timer.alert  { background: #2a0808; color: var(--red2); font-size: 0.95rem; }
+
+    .card-listo-check {
+      color: var(--green); font-size: 1.4rem; line-height: 1;
+      font-weight: 900;
+    }
+
+    .card-demora {
+      font-size: 0.7rem; color: var(--muted);
+      white-space: nowrap;
+    }
+    .card-demora.demorado-label { color: var(--red2); font-weight: 900; letter-spacing: 0.5px; }
+
+    /* ── BADGE DEMORADO dentro de la card ── */
+    .demorado-strip {
+      display: none;
+      background: #2a0808;
+      border-top: 1px solid #5a1010;
+      border-bottom: 1px solid #5a1010;
+      padding: 5px 12px;
+      font-family: 'Anton', sans-serif;
+      font-size: 0.75rem; letter-spacing: 2px;
+      color: var(--red2);
+      text-align: center;
+    }
+    .card.demorado .demorado-strip { display: block; }
+
+    /* ── ITEMS ── */
+    .card-items { padding: 6px 13px 10px; }
+
+    .card-item-wrap { border-bottom: 1px solid var(--border); }
+    .card-item-wrap:last-child { border-bottom: none; }
+
+    .card-item {
+      display: flex; align-items: center; gap: 9px;
+      padding: 7px 0; font-size: 0.9rem;
+    }
+    .card-item-wrap .card-item { border-bottom: none; }
+
+    .item-qty {
+      background: var(--yellow); color: #111;
+      font-family: 'Anton', sans-serif; font-size: 0.82rem;
+      min-width: 26px; height: 26px; border-radius: 5px;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .item-icon   { font-size: 1rem; }
+    .item-nombre { flex: 1; font-weight: 700; font-size: 0.92rem; }
+    .item-var    {
+      font-size: 0.65rem; color: var(--muted);
+      background: var(--surface3); padding: 2px 5px;
+      border-radius: 4px; border: 1px solid var(--border);
+    }
+
+    /* Obs por item */
+    .item-obs-cocina {
+      font-size: 0.74rem; color: #d4a030;
+      background: #241a00;
+      border-left: 3px solid var(--yellow);
+      padding: 5px 8px 5px 10px;
+      margin-bottom: 2px;
+    }
+
+    /* ── NOTA GENERAL ── */
+    .card-nota {
+      margin: 0 12px 8px;
+      background: #241a00; border: 1px solid #5a4000;
+      border-radius: 6px; padding: 7px 10px;
+      font-size: 0.78rem; color: #d4a030;
+    }
+    .card-nota::before { content: "⚠ "; font-weight: 900; }
+
+    /* ── ACTIONS ── */
+    .card-actions {
+      padding: 10px 12px; display: flex; gap: 8px;
+      border-top: 1px solid var(--border);
+      background: #161616;
+    }
+    .btn-action {
+      flex: 1; padding: 12px;
+      border: none; border-radius: 7px;
+      font-family: 'Anton', sans-serif;
+      font-size: 0.85rem; letter-spacing: 1px;
+      cursor: pointer; transition: opacity 0.15s, transform 0.1s;
+    }
+    .btn-action:hover  { opacity: 0.85; }
+    .btn-action:active { transform: scale(0.97); }
+    .btn-listo    { background: var(--green); color: #fff; }
+    .btn-cancelar { background: transparent; color: var(--red); border: 1px solid #3a1a1a; }
+    .btn-cancelar:hover { background: #1f0808 !important; border-color: var(--red); }
+    .btn-reabrir  { background: transparent; color: var(--muted); border: 1px solid var(--border); }
+    .btn-reabrir:hover { background: var(--surface2) !important; color: var(--text); }
+
+    /* ── EMPTY ── */
+    .empty { grid-column: 1/-1; text-align: center; padding: 80px 20px; color: var(--muted); }
+    .empty .icon { font-size: 3.5rem; display: block; margin-bottom: 12px; opacity: 0.35; }
+    .empty h2 { font-family: 'Anton', sans-serif; font-size: 1.2rem; letter-spacing: 2px; color: var(--text); margin-bottom: 6px; }
+    .empty p  { font-size: 0.82rem; }
+
+    @keyframes ring {
+      0%   { box-shadow: 0 0 0 0 #F5A30066; }
+      70%  { box-shadow: 0 0 0 14px transparent; }
+      100% { box-shadow: 0 0 0 0 transparent; }
+    }
+    .card.nuevo { animation: slideIn 0.22s ease, ring 0.7s ease 0.22s 2; }
+
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #3a3a3a; border-radius: 3px; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <span class="logo-icon">🍳</span>
+    <div>
+      <div class="logo-text">CLICKS BURGER</div>
+      <div class="logo-sub">Pantalla de Cocina</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="stats">
+      <div class="stat">
+        <span class="stat-num" id="cnt-pend">0</span>
+        Pendientes
+      </div>
+      <div class="stat">
+        <span class="stat-num red" id="cnt-dem">0</span>
+        Demorados
+      </div>
+      <div class="stat">
+        <span class="stat-num" id="cnt-list">0</span>
+        Listos hoy
+      </div>
+    </div>
+    <div class="reloj" id="reloj">00:00:00</div>
+  </div>
+</header>
+
+<!-- Barra de alerta cuando hay demorados -->
+<div class="alerta-demorados" id="alerta-demorados">
+  <span class="alerta-icon">🚨</span>
+  <span class="alerta-text" id="alerta-text">HAY PEDIDOS DEMORADOS</span>
+</div>
+
+<div class="tabs">
+  <div class="tab active" id="tab-pend" onclick="setTab('pendientes')">
+    En preparación <span class="badge" id="badge-pend">0</span>
+  </div>
+  <div class="tab" id="tab-list" onclick="setTab('listos')">
+    Listos <span class="badge verde" id="badge-list">0</span>
+  </div>
+</div>
+
+<div class="content">
+  <div class="grid" id="grid"></div>
+</div>
+
+<script>
+const channel  = new BroadcastChannel('clicks_burger');
+let pedidos    = JSON.parse(localStorage.getItem('cb_cola') || '[]');
+let tabActual  = 'pendientes';
+let timers     = {};   // num -> timestamp inicio
+
+// ── RECIBIR EN TIEMPO REAL ──
+channel.onmessage = ({ data }) => {
+  if (data.tipo === 'nuevo_pedido') {
+    pedidos.push(data.pedido);
+    render(true, data.pedido.num);
+    alertarNuevo(data.pedido.num);
+  }
+};
+
+window.addEventListener('storage', e => {
+  if (e.key === 'cb_cola') {
+    pedidos = JSON.parse(e.newValue || '[]');
+    render();
+  }
+});
+
+function alertarNuevo(num) {
+  if (navigator.vibrate) navigator.vibrate([200, 80, 200]);
+  let n = 0; const orig = document.title;
+  const iv = setInterval(() => {
+    document.title = n++ % 2 === 0 ? `🔔 PEDIDO #${String(num).padStart(3,'0')}` : '🍔 COCINA';
+    if (n > 8) { clearInterval(iv); document.title = orig; }
+  }, 500);
+}
+
+// ── TABS ──
+function setTab(tab) {
+  tabActual = tab;
+  document.getElementById('tab-pend').classList.toggle('active', tab === 'pendientes');
+  document.getElementById('tab-list').classList.toggle('active', tab === 'listos');
+  render();
+}
+
+// ── ACCIONES ──
+function marcarListo(num) {
+  const p = pedidos.find(x => x.num === num);
+  if (p) { p.estado = 'listo'; p.hora_listo = hora(); }
+  guardar(); render();
+}
+
+function reabrir(num) {
+  const p = pedidos.find(x => x.num === num);
+  if (p) { p.estado = 'pendiente'; delete p.hora_listo; delete p._inicio; }
+  guardar(); render();
+}
+
+function quitar(num) {
+  pedidos = pedidos.filter(x => x.num !== num);
+  guardar(); render();
+}
+
+function guardar() { localStorage.setItem('cb_cola', JSON.stringify(pedidos)); }
+function hora()    { return new Date().toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' }); }
+
+// ── HELPERS TIMING ──
+function getSegs(p) {
+  return Math.floor((Date.now() - (timers[p.num] || Date.now())) / 1000);
+}
+
+function timerStr(secs) {
+  const m = Math.floor(secs / 60);
+  const s = secs % 60;
+  return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+}
+
+function timerClass(secs, demoraMin) {
+  const limit = (demoraMin || 15) * 60;
+  if (secs >= limit)              return 'alert';
+  if (secs >= limit * 0.75)       return 'warn';
+  return '';
+}
+
+function isDemorado(secs, demoraMin) {
+  return secs >= (demoraMin || 15) * 60;
+}
+
+// ── RENDER PRINCIPAL ──
+function render(esNuevo = false, numNuevo = null) {
+  const filtrados = pedidos.filter(p =>
+    tabActual === 'pendientes' ? p.estado === 'pendiente' : p.estado === 'listo'
+  );
+
+  const pend = pedidos.filter(p => p.estado === 'pendiente').length;
+  const list = pedidos.filter(p => p.estado === 'listo').length;
+
+  // Calcular demorados
+  const demorados = pedidos.filter(p => {
+    if (p.estado !== 'pendiente') return false;
+    const s = getSegs(p);
+    return isDemorado(s, p.demora);
+  }).length;
+
+  document.getElementById('cnt-pend').textContent = pend;
+  document.getElementById('cnt-list').textContent = list;
+  document.getElementById('cnt-dem').textContent  = demorados;
+  document.getElementById('badge-pend').textContent = pend;
+  document.getElementById('badge-list').textContent = list;
+
+  // Barra de alerta
+  const alertaEl = document.getElementById('alerta-demorados');
+  if (demorados > 0 && tabActual === 'pendientes') {
+    alertaEl.classList.add('visible');
+    document.getElementById('alerta-text').textContent =
+      `🚨  ${demorados} PEDIDO${demorados > 1 ? 'S' : ''} DEMORADO${demorados > 1 ? 'S' : ''}`;
+  } else {
+    alertaEl.classList.remove('visible');
+  }
+
+  const grid = document.getElementById('grid');
+
+  if (!filtrados.length) {
+    grid.innerHTML = `
+      <div class="empty">
+        <span class="icon">${tabActual === 'pendientes' ? '✅' : '🕐'}</span>
+        <h2>${tabActual === 'pendientes' ? 'TODO AL DÍA' : 'SIN LISTOS'}</h2>
+        <p>${tabActual === 'pendientes' ? 'No hay pedidos en preparación.' : 'Los pedidos completados aparecen aquí.'}</p>
+      </div>`;
+    return;
+  }
+
+  grid.innerHTML = filtrados.map(p => {
+    const secs     = getSegs(p);
+    const tStr     = timerStr(secs);
+    const tClass   = timerClass(secs, p.demora);
+    const demorado = isDemorado(secs, p.demora);
+    const demoMin  = p.demora || 15;
+
+    const cardClass = p.estado === 'listo'
+      ? 'listo'
+      : demorado
+        ? 'demorado urgente'
+        : '';
+
+    const isNew = esNuevo && p.num === numNuevo;
+
+    // Tipo de pedido badge
+    const tipo = p.tipo || 'takeaway';
+    const tipoBadge = tipo === 'delivery'
+      ? `<span class="tipo-badge delivery">🏍 DELIVERY</span>`
+      : `<span class="tipo-badge takeaway">🥡 TAKEAWAY</span>`;
+
+    // Demora label
+    let demoraLabel = '';
+    if (p.estado === 'pendiente') {
+      demoraLabel = demorado
+        ? `<span class="card-demora demorado-label">¡DEMORADO! +${Math.floor(secs/60 - demoMin)} min</span>`
+        : `<span class="card-demora">Est. ${demoMin} min</span>`;
+    }
+
+    return `
+      <div class="card ${cardClass} ${isNew ? 'nuevo' : ''}" id="card-${p.num}">
+        <div class="card-head">
+          <div class="card-num">#${String(p.num).padStart(3,'0')}</div>
+          <div class="card-meta">
+            <div class="card-hora">${p.hora}${p.hora_listo ? ' → ' + p.hora_listo : ''}</div>
+            ${tipoBadge}
+          </div>
+          <div class="card-head-right">
+            ${p.estado === 'pendiente'
+              ? `<div class="card-timer ${tClass}" id="timer-${p.num}">${tStr}</div>`
+              : `<div class="card-listo-check">✓</div>`
+            }
+            ${demoraLabel}
+          </div>
+        </div>
+
+        ${demorado && p.estado === 'pendiente' ? `<div class="demorado-strip">⚠ PEDIDO DEMORADO</div>` : ''}
+
+        <div class="card-items">
+          ${p.items.map(it => `
+            <div class="card-item-wrap">
+              <div class="card-item">
+                <span class="item-qty">${it.cantidad}</span>
+                <span class="item-icon">${it.icon}</span>
+                <span class="item-nombre">${it.nombre}</span>
+                ${it.variante ? `<span class="item-var">${it.variante}</span>` : ''}
+              </div>
+              ${it.obs ? `<div class="item-obs-cocina">✏ ${it.obs}</div>` : ''}
+            </div>
+          `).join('')}
+        </div>
+
+        ${p.aclaracion ? `<div class="card-nota">${p.aclaracion}</div>` : ''}
+
+        <div class="card-actions">
+          ${p.estado === 'pendiente'
+            ? `<button class="btn-action btn-listo" onclick="marcarListo(${p.num})">✓ LISTO</button>
+               <button class="btn-action btn-cancelar" onclick="quitar(${p.num})">✕</button>`
+            : `<button class="btn-action btn-reabrir" onclick="reabrir(${p.num})">↩ REABRIR</button>
+               <button class="btn-action btn-cancelar" onclick="quitar(${p.num})">✕ QUITAR</button>`
+          }
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  // Inicializar timers para nuevos pendientes
+  pedidos.filter(p => p.estado === 'pendiente').forEach(p => {
+    if (timers[p.num] === undefined) timers[p.num] = Date.now();
+  });
+}
+
+// ── TICK TIMERS (sin re-renderizar todo) ──
+function tickTimers() {
+  if (tabActual !== 'pendientes') return;
+
+  let demorados = 0;
+
+  pedidos.filter(p => p.estado === 'pendiente').forEach(p => {
+    const secs = getSegs(p);
+    const el   = document.getElementById(`timer-${p.num}`);
+    const card = document.getElementById(`card-${p.num}`);
+    const dem  = isDemorado(secs, p.demora);
+
+    if (dem) demorados++;
+
+    if (el) {
+      el.textContent = timerStr(secs);
+      el.className   = `card-timer ${timerClass(secs, p.demora)}`;
+    }
+
+    if (card) {
+      // Actualizar clases de la card
+      card.className = `card ${dem ? 'demorado urgente' : ''} ${p.num === card.dataset.nuevo ? 'nuevo' : ''}`.trim();
+
+      // Actualizar label de demora
+      const demoraEl = card.querySelector('.card-demora');
+      const demoMin  = p.demora || 15;
+      if (demoraEl) {
+        demoraEl.className = `card-demora${dem ? ' demorado-label' : ''}`;
+        demoraEl.textContent = dem
+          ? `¡DEMORADO! +${Math.floor(secs/60 - demoMin)} min`
+          : `Est. ${demoMin} min`;
+      }
+
+      // Strip demorado
+      const strip = card.querySelector('.demorado-strip');
+      if (strip) strip.style.display = dem ? 'block' : 'none';
+    }
+  });
+
+  // Actualizar contador y barra
+  document.getElementById('cnt-dem').textContent = demorados;
+  const alertaEl = document.getElementById('alerta-demorados');
+  if (demorados > 0) {
+    alertaEl.classList.add('visible');
+    document.getElementById('alerta-text').textContent =
+      `🚨  ${demorados} PEDIDO${demorados > 1 ? 'S' : ''} DEMORADO${demorados > 1 ? 'S' : ''}`;
+  } else {
+    alertaEl.classList.remove('visible');
+  }
+}
+
+// ── RELOJ ──
+function tickReloj() {
+  document.getElementById('reloj').textContent =
+    new Date().toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+}
+
+setInterval(tickReloj,  1000);
+setInterval(tickTimers, 1000);
+tickReloj();
+
+// Inicializar timers de pedidos existentes
+pedidos.filter(p => p.estado === 'pendiente').forEach(p => {
+  timers[p.num] = Date.now();
+});
+
+render();
+</script>
+</body>
+</html>

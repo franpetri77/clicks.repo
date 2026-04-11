@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Clicks Burger — Sistema de Comandera</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg:      #0f0f0f;
+      --surface: #1a1a1a;
+      --yellow:  #F5A300;
+      --yellow2: #FFD066;
+      --green:   #1e8c45;
+      --text:    #f0f0f0;
+      --muted:   #888888;
+      --border:  #2e2e2e;
+    }
+
+    html, body { height: 100%; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Lato', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    .bg-glow {
+      position: fixed; inset: 0; pointer-events: none; z-index: 0;
+      background:
+        radial-gradient(ellipse 55% 45% at 15% 25%, #F5A30018 0%, transparent 65%),
+        radial-gradient(ellipse 45% 40% at 85% 75%, #F5A30010 0%, transparent 65%);
+    }
+
+    .hero {
+      position: relative; z-index: 1;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 50px 20px 36px;
+      text-align: center;
+    }
+
+    .status-badge {
+      display: inline-flex; align-items: center; gap: 7px;
+      background: #ffffff08;
+      border: 1px solid #3a3a3a;
+      border-radius: 20px; padding: 6px 16px;
+      font-size: 0.72rem; color: var(--muted);
+      margin-bottom: 32px;
+      letter-spacing: 0.5px;
+      animation: fadeIn 0.6s ease both;
+    }
+    .status-dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 8px var(--green);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+
+    .logo-wrap {
+      margin-bottom: 40px;
+      animation: fadeDown 0.7s ease both;
+    }
+
+    .logo-img {
+      width: 112px; height: 112px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid var(--yellow);
+      box-shadow: 0 0 0 6px #F5A30012, 0 0 40px #F5A30050, 0 0 80px #F5A30020;
+      margin-bottom: 18px;
+      display: block;
+      margin-left: auto; margin-right: auto;
+    }
+
+    .brand-name {
+      font-family: 'Anton', sans-serif;
+      font-size: clamp(2.6rem, 7vw, 4.8rem);
+      letter-spacing: 5px;
+      color: var(--yellow);
+      text-shadow: 0 0 40px #F5A30060;
+      line-height: 1;
+    }
+
+    .brand-tagline {
+      font-size: 0.78rem;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-top: 8px;
+      font-weight: 300;
+    }
+
+    .divider {
+      width: 50px; height: 2px;
+      background: linear-gradient(90deg, transparent, var(--yellow), transparent);
+      margin: 28px auto 36px;
+      animation: fadeIn 0.8s 0.3s ease both;
+    }
+
+    /* ── CARDS ── */
+    .cards-label {
+      font-size: 0.72rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 18px;
+      animation: fadeIn 0.8s 0.4s ease both;
+    }
+
+    .cards {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      flex-wrap: wrap;
+      animation: fadeUp 0.7s 0.45s ease both;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px 28px;
+      width: 240px;
+      cursor: pointer;
+      text-decoration: none;
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 2px 16px #00000030, 0 1px 0 #ffffff06 inset;
+    }
+    .card::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, var(--yellow) 0%, transparent 55%);
+      opacity: 0;
+      transition: opacity 0.25s;
+    }
+    .card:hover {
+      transform: translateY(-6px);
+      border-color: var(--yellow);
+      box-shadow: 0 20px 48px #F5A30035, 0 4px 16px #00000040;
+    }
+    .card:hover::before { opacity: 0.1; }
+
+    .card-icon { font-size: 2.8rem; position: relative; z-index: 1; }
+    .card-title {
+      font-family: 'Anton', sans-serif;
+      font-size: 1.05rem;
+      letter-spacing: 3px;
+      color: var(--yellow);
+      position: relative; z-index: 1;
+    }
+    .card-desc {
+      font-size: 0.72rem;
+      color: var(--muted);
+      text-align: center;
+      line-height: 1.55;
+      position: relative; z-index: 1;
+    }
+    .card-btn {
+      margin-top: 4px;
+      padding: 10px 22px;
+      border-radius: 7px;
+      font-family: 'Anton', sans-serif;
+      font-size: 0.78rem;
+      letter-spacing: 2px;
+      border: none; cursor: pointer;
+      background: var(--yellow); color: #111;
+      transition: background 0.15s, transform 0.1s, box-shadow 0.15s;
+      position: relative; z-index: 1;
+    }
+    .card-btn:hover { background: var(--yellow2); box-shadow: 0 4px 16px #F5A30045; }
+    .card-btn:active { transform: scale(0.96); }
+
+    /* ── INFO STRIP ── */
+    .info-strip {
+      position: relative; z-index: 1;
+      margin-top: 44px;
+      display: flex;
+      gap: 0;
+      justify-content: center;
+      flex-wrap: wrap;
+      animation: fadeIn 0.8s 0.6s ease both;
+    }
+
+    .info-item {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 0.76rem; color: var(--muted);
+      padding: 0 24px 0 0;
+    }
+    .info-item:not(:last-child) {
+      border-right: 1px solid var(--border);
+    }
+    .info-item span:first-child { font-size: 1rem; }
+    .info-item strong { color: #b0b0b0; font-weight: 700; }
+
+    footer {
+      position: relative; z-index: 1;
+      text-align: center;
+      padding: 16px;
+      font-size: 0.72rem;
+      color: var(--muted);
+      border-top: 1px solid var(--border);
+    }
+    footer a { color: var(--yellow); text-decoration: none; }
+
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="bg-glow"></div>
+
+<main class="hero">
+
+  <div class="status-badge">
+    <span class="status-dot"></span>
+    Sistema operativo
+  </div>
+
+  <div class="logo-wrap">
+    <img src="img/cheeseburger.jpg" alt="Clicks Burger" class="logo-img"
+         onerror="this.style.display='none'">
+    <div class="brand-name">CLICKS BURGER</div>
+    <div class="brand-tagline">Fray Luis Beltrán 2735 · Córdoba</div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="cards-label">Seleccioná una pantalla para abrir</div>
+
+  <div class="cards">
+    <a href="pedidos.html" target="_blank" class="card">
+      <span class="card-icon">🖥️</span>
+      <div class="card-title">CAJA</div>
+      <div class="card-desc">Tomá pedidos y enviálos a cocina en tiempo real</div>
+      <button class="card-btn">ABRIR CAJA</button>
+    </a>
+
+    <a href="cocina.html" target="_blank" class="card">
+      <span class="card-icon">👨‍🍳</span>
+      <div class="card-title">COCINA</div>
+      <div class="card-desc">Visualizá los pedidos entrantes y marcalos como listos</div>
+      <button class="card-btn">ABRIR COCINA</button>
+    </a>
+  </div>
+
+  <div class="info-strip">
+    <div class="info-item">
+      <span>📡</span>
+      <span>Comunicación <strong>en tiempo real</strong></span>
+    </div>
+    <div class="info-item">
+      <span>⏱️</span>
+      <span>Timer con <strong>alertas de demora</strong></span>
+    </div>
+    <div class="info-item">
+      <span>📋</span>
+      <span>Variantes <strong>Simple · Doble · Triple</strong></span>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  Clicks Burger &copy; 2025 &nbsp;·&nbsp;
+  <a href="https://www.instagram.com/clicksburger" target="_blank">@clicksburger</a>
+</footer>
+
+<script>
+  const cola = JSON.parse(localStorage.getItem('cb_cola') || '[]');
+</script>
+</body>
+</html>
