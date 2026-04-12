@@ -2,21 +2,24 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Clicks Burger — Caja</title>
+  <title>Clicks Burger — Pedidos</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Anton&family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     :root {
-      /* Menú — tema claro */
-      --menu-bg:      #f5f3ef;
-      --card-bg:      #ffffff;
-      --card-border:  #e4e1db;
-      --card-hover:   #f9f8f6;
-      --menu-text:    #111111;
-      --menu-muted:   #666666;
-      --menu-surface: #f0ede8;
+      /* Menú — tema oscuro (alineado con el resto de la app) */
+      --menu-bg:      #0f0f0f;
+      --menu-surface: #1a1a1a;
+      --menu-surface2:#242424;
+      --menu-text:    #f0f0f0;
+      --menu-muted:   #888888;
+
+      /* Cards en modo oscuro */
+      --card-bg:      #1e1e1e;
+      --card-border:  #333333;
+      --card-hover:   #2a2a2a;
 
       /* Ticket — tema oscuro */
       --ticket-bg:    #141414;
@@ -76,131 +79,48 @@
     .main { display: flex; flex: 1; overflow: hidden; }
 
     /* ════════════════════════════════
-       MENÚ (CLARO)
+       MENÚ (OSCuro)
     ════════════════════════════════ */
     .menu {
-      flex: 1; overflow-y: auto;
-      padding: 16px;
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: clip;
+      padding: 20px 16px;
       background: var(--menu-bg);
       color: var(--menu-text);
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Contenedor de carruseles */
+    .carousel-container {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 8px;
+      flex: 1;
     }
 
     /* Separador de categoría */
     .cat-label {
       font-family: 'Anton', sans-serif;
-      font-size: 0.75rem; letter-spacing: 3px;
-      color: #888; text-transform: uppercase;
-      margin: 22px 0 12px;
+      font-size: 0.78rem; letter-spacing: 3px;
+      color: var(--yellow); text-transform: uppercase;
+      margin: 0 0 6px;
       display: flex; align-items: center; gap: 10px;
       padding-left: 9px;
       border-left: 3px solid var(--yellow);
     }
     .cat-label:first-child { margin-top: 0; }
-    .cat-label::after { content: ''; flex: 1; height: 1px; background: #ddd; }
+    .cat-label::after { content: ''; flex: 1; height: 1px; background: #333; }
 
-    /* ── BURGER CARD (blanca) ── */
-    .burger-card {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 12px;
-      margin-bottom: 10px;
-      overflow: hidden;
-      display: flex;
-      transition: border-color 0.2s, box-shadow 0.2s;
-      box-shadow: 0 1px 0 #00000008, 0 2px 8px #0000000d;
-    }
-    .burger-card:hover {
-      border-color: var(--yellow);
-      box-shadow: 0 4px 16px #F5A30022, 0 1px 0 #00000010;
-    }
-
-    .burger-photo {
-      width: 108px; flex-shrink: 0;
-      object-fit: cover; display: block;
-    }
-
-    .burger-body { flex: 1; display: flex; flex-direction: column; }
-
-    .burger-info { padding: 10px 13px 7px; flex: 1; }
-    .burger-name {
-      font-family: 'Anton', sans-serif;
-      font-size: 1.05rem; letter-spacing: 0.5px;
-      color: #111; margin-bottom: 4px;
-    }
-    .burger-desc { font-size: 0.75rem; color: #777; line-height: 1.5; }
-
-    /* Variantes */
-    .variants {
-      display: grid; grid-template-columns: repeat(3, 1fr);
-      border-top: 1px solid var(--card-border);
-    }
-    .variant-btn {
-      background: none; border: none;
-      border-right: 1px solid var(--card-border);
-      padding: 11px 5px;
-      cursor: pointer; text-align: center;
-      transition: background 0.15s; color: var(--menu-text);
-    }
-    .variant-btn:last-child { border-right: none; }
-    .variant-btn:hover  { background: #fffaf0; }
-    .variant-btn:active { background: #ffefd0; }
-    .variant-name {
-      font-size: 0.72rem; font-weight: 700;
-      letter-spacing: 1px; text-transform: uppercase;
-      color: #999; display: block;
-    }
-    .variant-price {
-      font-family: 'Anton', sans-serif;
-      font-size: 0.96rem; color: var(--yellow);
-      display: block; margin-top: 2px;
-    }
-
-    /* ── BEBIDAS + EXTRAS (grilla unificada) ── */
+    /* ── EXTRAS (grilla) ── */
     .extras-grid {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 8px;
-      margin-bottom: 4px;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-top: 8px;
     }
-
-    /* Carta de bebida con foto */
-    .bebida-btn {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 10px;
-      cursor: pointer; overflow: hidden;
-      display: flex; flex-direction: column;
-      transition: border-color 0.2s, box-shadow 0.2s, transform 0.1s;
-      color: var(--menu-text);
-      box-shadow: 0 1px 4px #0000000a;
-    }
-    .bebida-btn:hover {
-      border-color: var(--yellow);
-      box-shadow: 0 4px 14px #F5A30022;
-      transform: translateY(-2px);
-    }
-    .bebida-btn:active { transform: scale(0.97); }
-
-    .bebida-img-wrap {
-      width: 100%; height: 94px; overflow: hidden;
-      background: #fafafa;
-      display: flex; align-items: center; justify-content: center;
-    }
-    .bebida-img {
-      height: 100%; width: auto; max-width: 100%;
-      object-fit: contain;
-      padding: 6px 4px;
-      transition: transform 0.2s;
-    }
-    .bebida-btn:hover .bebida-img { transform: scale(1.06); }
-
-    .bebida-info {
-      padding: 6px 6px 8px; text-align: center;
-      background: var(--menu-surface);
-      border-top: 1px solid var(--card-border);
-    }
-    .bebida-name  { font-size: 0.74rem; font-weight: 700; display: block; color: #222; }
-    .bebida-price { font-family: 'Anton', sans-serif; font-size: 0.88rem; color: var(--yellow); display: block; margin-top: 2px; }
 
     /* Carta de extra sin foto (papas / mayo) */
     .extra-card-btn {
@@ -209,28 +129,29 @@
       border-radius: 10px;
       cursor: pointer; overflow: hidden;
       display: flex; flex-direction: column; align-items: center;
-      justify-content: center; gap: 5px;
-      padding: 16px 6px;
+      justify-content: center; gap: 6px;
+      padding: 18px 10px;
       transition: border-color 0.2s, box-shadow 0.2s, transform 0.1s;
       color: var(--menu-text);
-      box-shadow: 0 1px 4px #0000000a;
+      box-shadow: 0 2px 8px #00000020;
       text-align: center;
     }
     .extra-card-btn:hover {
       border-color: var(--yellow);
-      box-shadow: 0 4px 14px #F5A30022;
+      box-shadow: 0 4px 16px #F5A30022;
       transform: translateY(-2px);
     }
     .extra-card-btn:active { transform: scale(0.97); }
-    .extra-card-icon  { font-size: 1.9rem; }
-    .extra-card-name  { font-size: 0.74rem; font-weight: 700; color: #222; }
-    .extra-card-price { font-family: 'Anton', sans-serif; font-size: 0.88rem; color: var(--yellow); }
+    .extra-card-icon  { font-size: 2.2rem; }
+    .extra-card-name  { font-size: 0.78rem; font-weight: 700; color: var(--menu-text); }
+    .extra-card-price { font-family: 'Anton', sans-serif; font-size: 0.92rem; color: var(--yellow); }
 
     /* ════════════════════════════════
-       TICKET (OSCURO)
+       TICKET (OSCURO) — más ancho
     ════════════════════════════════ */
     .ticket {
-      width: 316px; flex-shrink: 0;
+      width: 500px;
+      flex-shrink: 0;
       background: var(--ticket-bg);
       border-left: 1px solid #252525;
       display: flex; flex-direction: column;
@@ -238,85 +159,85 @@
     }
 
     .ticket-header {
-      padding: 11px 14px;
+      padding: 14px 18px;
       border-bottom: 1px solid var(--ticket-border);
       display: flex; justify-content: space-between; align-items: center;
       background: #181818;
     }
     .ticket-title {
       font-family: 'Anton', sans-serif;
-      font-size: 0.82rem; letter-spacing: 2.5px; color: #ccc;
+      font-size: 0.9rem; letter-spacing: 2.5px; color: #ccc;
       text-transform: uppercase;
     }
     .btn-limpiar {
       background: none; border: 1px solid var(--red);
       color: var(--red); border-radius: 5px;
-      padding: 5px 12px; font-size: 0.68rem; font-weight: 700;
+      padding: 6px 14px; font-size: 0.72rem; font-weight: 700;
       cursor: pointer; transition: background 0.15s, color 0.15s;
       font-family: 'Anton', sans-serif; letter-spacing: 1px;
     }
     .btn-limpiar:hover { background: var(--red); color: #fff; }
 
-    .ticket-items { flex: 1; overflow-y: auto; padding: 7px; }
+    .ticket-items { flex: 1; overflow-y: auto; padding: 10px; }
 
     .ticket-empty {
       text-align: center; color: var(--ticket-muted);
-      margin-top: 50px; font-size: 0.82rem;
+      margin-top: 60px; font-size: 0.88rem;
     }
-    .ticket-empty .icon { font-size: 2.5rem; display: block; margin-bottom: 8px; opacity: 0.3; }
+    .ticket-empty .icon { font-size: 3rem; display: block; margin-bottom: 10px; opacity: 0.3; }
 
     /* Fila de ítem */
     .ticket-item-wrap {
-      border-radius: 8px; margin-bottom: 6px;
+      border-radius: 8px; margin-bottom: 8px;
       border: 1px solid var(--ticket-border);
       overflow: hidden; background: var(--ticket-surf);
       transition: border-color 0.15s;
     }
     .ticket-item-wrap:focus-within { border-color: #3a3a3a; }
     .ticket-row {
-      display: flex; align-items: center; gap: 7px;
-      padding: 7px 8px;
+      display: flex; align-items: center; gap: 8px;
+      padding: 9px 10px;
     }
 
-    .qty-controls { display: flex; align-items: center; gap: 3px; }
+    .qty-controls { display: flex; align-items: center; gap: 4px; }
     .qty-btn {
-      width: 22px; height: 22px;
+      width: 26px; height: 26px;
       background: var(--ticket-surf3);
-      border: 1px solid var(--ticket-border); border-radius: 4px;
-      color: var(--ticket-text); font-size: 1rem;
+      border: 1px solid var(--ticket-border); border-radius: 5px;
+      color: var(--ticket-text); font-size: 1.1rem;
       cursor: pointer;
       display: flex; align-items: center; justify-content: center;
       transition: background 0.1s; font-family: 'Lato', sans-serif;
     }
     .qty-btn:hover { background: var(--yellow); color: #111; }
-    .qty-num { min-width: 18px; text-align: center; font-weight: 900; font-size: 0.9rem; }
+    .qty-num { min-width: 22px; text-align: center; font-weight: 900; font-size: 0.95rem; }
 
     .item-info { flex: 1; min-width: 0; }
     .item-info .name {
-      font-size: 0.75rem; font-weight: 700;
+      font-size: 0.82rem; font-weight: 700;
       white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
       color: var(--ticket-text);
     }
     .item-info .variant-tag {
-      font-size: 0.62rem; color: var(--ticket-muted);
-      background: var(--ticket-surf3); padding: 1px 5px;
-      border-radius: 3px; display: inline-block; margin-top: 1px;
+      font-size: 0.66rem; color: var(--ticket-muted);
+      background: var(--ticket-surf3); padding: 2px 6px;
+      border-radius: 4px; display: inline-block; margin-top: 2px;
       border: 1px solid var(--ticket-border);
     }
     .line-total {
-      font-family: 'Anton', sans-serif; font-size: 0.88rem;
-      color: var(--yellow); flex-shrink: 0;
+      font-family: 'Anton', sans-serif; font-size: 0.95rem;
+      color: var(--yellow); flex-shrink: 0; min-width: 70px; text-align: right;
     }
 
     /* Observación por ítem */
-    .item-obs-wrap { border-top: 1px solid var(--ticket-border); padding: 0 8px 8px; }
+    .item-obs-wrap { border-top: 1px solid var(--ticket-border); padding: 0 10px 10px; }
     .item-obs {
       width: 100%; background: var(--ticket-surf2);
       border: 1px solid var(--ticket-border); border-radius: 5px;
-      color: var(--ticket-text); padding: 5px 8px;
-      font-size: 0.7rem; font-family: 'Lato', sans-serif;
-      resize: none; height: 36px;
-      transition: border-color 0.15s; margin-top: 6px;
+      color: var(--ticket-text); padding: 6px 10px;
+      font-size: 0.75rem; font-family: 'Lato', sans-serif;
+      resize: none; height: 40px;
+      transition: border-color 0.15s; margin-top: 8px;
     }
     .item-obs::placeholder { color: #4a4a4a; }
     .item-obs:focus { outline: none; border-color: #F5A30070; background: #2e2e2e; }
@@ -324,71 +245,46 @@
     /* ── FOOTER TICKET ── */
     .ticket-footer {
       border-top: 1px solid var(--ticket-border);
-      padding: 12px 13px;
+      padding: 16px 18px;
       background: #141414;
     }
 
     .total-row {
       display: flex; justify-content: space-between;
-      font-size: 0.8rem; color: var(--ticket-muted); margin-bottom: 3px;
+      font-size: 0.88rem; color: var(--ticket-muted); margin-bottom: 4px;
     }
     .total-row.grand {
-      font-family: 'Anton', sans-serif; font-size: 1.15rem;
+      font-family: 'Anton', sans-serif; font-size: 1.35rem;
       color: #fff; border-top: 1px solid #2a2a2a;
-      padding-top: 9px; margin-top: 7px; margin-bottom: 12px;
+      padding-top: 12px; margin-top: 8px; margin-bottom: 14px;
     }
     .total-row.grand span:last-child { color: var(--yellow); }
 
     /* Tipo de pedido */
-    .tipo-wrap { display: flex; gap: 6px; margin-bottom: 10px; }
+    .tipo-wrap { display: flex; gap: 8px; margin-bottom: 12px; }
     .tipo-btn {
-      flex: 1; padding: 9px 6px;
+      flex: 1; padding: 11px 8px;
       border: 1px solid var(--ticket-border);
-      border-radius: 7px; background: var(--ticket-surf2);
+      border-radius: 8px; background: var(--ticket-surf2);
       color: var(--ticket-muted);
       font-family: 'Anton', sans-serif;
-      font-size: 0.78rem; letter-spacing: 1px;
+      font-size: 0.82rem; letter-spacing: 1px;
       cursor: pointer; transition: all 0.15s;
-      display: flex; align-items: center; justify-content: center; gap: 5px;
+      display: flex; align-items: center; justify-content: center; gap: 6px;
     }
     .tipo-btn:hover { border-color: #555; color: var(--ticket-text); }
     .tipo-btn.active-delivery { background: #201800; border-color: #c87d00; color: var(--yellow); }
     .tipo-btn.active-takeaway { background: #0e1c0e; border-color: var(--green); color: #4aba6a; }
 
-    /* Demora estimada */
-    .demora-wrap {
-      display: flex; align-items: center; gap: 8px;
-      margin-bottom: 9px;
-      background: var(--ticket-surf2);
-      border: 1px solid var(--ticket-border);
-      border-radius: 7px; padding: 7px 10px;
-    }
-    .demora-label { font-size: 0.7rem; color: var(--ticket-muted); flex: 1; font-weight: 700; }
-    .demora-stepper { display: flex; align-items: center; gap: 6px; }
-    .demora-step-btn {
-      width: 24px; height: 24px;
-      background: var(--ticket-surf3); border: 1px solid var(--ticket-border);
-      border-radius: 5px; color: var(--ticket-text);
-      font-size: 1rem; cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      transition: background 0.1s; font-family: 'Lato', sans-serif;
-    }
-    .demora-step-btn:hover { background: var(--yellow); color: #111; }
-    .demora-val {
-      font-family: 'Anton', sans-serif; font-size: 1rem;
-      color: var(--yellow); min-width: 32px; text-align: center;
-    }
-    .demora-unit { font-size: 0.7rem; color: var(--ticket-muted); }
-
     /* Aclaración general */
-    .aclaracion-wrap { margin: 10px 0; }
+    .aclaracion-wrap { margin: 12px 0; }
     .aclaracion-wrap textarea {
       width: 100%; background: var(--ticket-surf2);
       border: 1px solid var(--ticket-border);
       border-radius: 6px; color: var(--ticket-text);
-      padding: 7px 10px; font-size: 0.73rem;
+      padding: 9px 12px; font-size: 0.78rem;
       font-family: 'Lato', sans-serif;
-      resize: none; height: 46px;
+      resize: none; height: 50px;
       transition: border-color 0.15s, background 0.15s;
     }
     .aclaracion-wrap textarea::placeholder { color: #4a4a4a; }
@@ -396,11 +292,11 @@
 
     /* Botón enviar */
     .btn-enviar {
-      width: 100%; padding: 14px;
+      width: 100%; padding: 16px;
       background: var(--yellow); color: #111;
       border: none; border-radius: 8px;
       font-family: 'Anton', sans-serif;
-      font-size: 1.05rem; letter-spacing: 2px;
+      font-size: 1.1rem; letter-spacing: 2px;
       cursor: pointer; transition: background 0.15s, transform 0.1s, box-shadow 0.2s;
     }
     .btn-enviar:hover  { background: var(--yellow2); box-shadow: 0 6px 24px #F5A30045; }
@@ -425,12 +321,378 @@
       0%   { border-color: var(--yellow); box-shadow: 0 0 0 3px #F5A30030; }
       100% { border-color: var(--card-border); box-shadow: 0 1px 4px #0000000a; }
     }
-    .burger-card.added { animation: flashAdd 0.5s ease forwards; }
+    .cv-section.added  { animation: flashAdd 0.5s ease forwards; }
+    .bslide-card.added { animation: flashAdd 0.5s ease forwards; }
 
-    ::-webkit-scrollbar { width: 5px; }
+    /* ═══════════════════════════════════════
+       CARRUSEL HAMBURGUESAS
+    ═══════════════════════════════════════ */
+
+    .carousel-section {
+      position: relative;
+      margin-bottom: 4px;
+      user-select: none;
+    }
+
+    .carousel-wrapper {
+      position: relative;
+      height: 340px;
+      overflow: hidden;
+    }
+
+    .carousel-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+
+    .carousel-slide {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 270px;
+      margin-left: -135px;
+      cursor: pointer;
+      transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                  opacity 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      will-change: transform, opacity;
+    }
+
+    .carousel-card {
+      background: var(--card-bg);
+      border: 1.5px solid var(--card-border);
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 4px 24px #00000030, 0 1px 0 #ffffff08 inset;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+
+    .carousel-slide.active .carousel-card {
+      border-color: var(--yellow);
+      box-shadow: 0 10px 48px #F5A30025, 0 2px 0 #ffffff0a inset;
+    }
+
+    .carousel-img-wrap {
+      width: 100%;
+      height: 190px;
+      overflow: hidden;
+      background: #2a2a2a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .carousel-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.5s ease;
+    }
+
+    .carousel-slide.active .carousel-img {
+      transform: scale(1.08);
+    }
+
+    .carousel-info {
+      padding: 10px 12px 12px;
+      background: var(--menu-surface);
+      border-top: 1px solid var(--card-border);
+    }
+
+    .carousel-name {
+      font-family: 'Anton', sans-serif;
+      font-size: 0.92rem;
+      letter-spacing: 0.5px;
+      color: var(--menu-text);
+      margin-bottom: 4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .carousel-desc {
+      font-size: 0.66rem;
+      color: var(--menu-muted);
+      line-height: 1.4;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    /* ═══════════════════════════════════════
+       CARRUSEL BEBIDAS
+    ═══════════════════════════════════════ */
+
+    .bcarousel-section {
+      position: relative;
+      margin-bottom: 4px;
+      user-select: none;
+    }
+
+    .bcarousel-wrapper {
+      position: relative;
+      height: 270px;
+      overflow: hidden;
+    }
+
+    .bcarousel-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+
+    .bslide {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 175px;
+      margin-left: -87px;
+      cursor: pointer;
+      transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                  opacity 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      will-change: transform, opacity;
+    }
+
+    .bslide-card {
+      background: var(--card-bg);
+      border: 1.5px solid var(--card-border);
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px #00000025;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+
+    .bslide.active .bslide-card {
+      border-color: var(--yellow);
+      box-shadow: 0 8px 36px #F5A30022;
+    }
+
+    .bslide-img-wrap {
+      width: 100%;
+      height: 140px;
+      overflow: hidden;
+      background: #2a2a2a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .bslide-img {
+      height: 100%;
+      width: auto;
+      max-width: 100%;
+      object-fit: contain;
+      padding: 8px 6px;
+      transition: transform 0.5s ease;
+    }
+
+    .bslide.active .bslide-img {
+      transform: scale(1.1);
+    }
+
+    .bslide-footer {
+      padding: 8px 10px 10px;
+      text-align: center;
+      background: var(--menu-surface);
+      border-top: 1px solid var(--card-border);
+    }
+
+    .bslide-name {
+      font-size: 0.74rem;
+      font-weight: 700;
+      color: var(--menu-text);
+      display: block;
+    }
+
+    .bslide-price {
+      font-family: 'Anton', sans-serif;
+      font-size: 0.9rem;
+      color: var(--yellow);
+      display: block;
+      margin: 2px 0 8px;
+    }
+
+    .bslide-add {
+      display: none;
+      width: 100%;
+      background: var(--yellow);
+      color: #111;
+      border: none;
+      border-radius: 6px;
+      padding: 7px 0;
+      cursor: pointer;
+      font-family: 'Anton', sans-serif;
+      font-size: 0.7rem;
+      letter-spacing: 1px;
+      transition: background 0.15s, transform 0.1s;
+    }
+
+    .bslide.active .bslide-add {
+      display: block;
+    }
+
+    .bslide-add:hover {
+      background: var(--yellow2);
+    }
+
+    .bslide-add:active {
+      transform: scale(0.97);
+    }
+
+    /* ── NAVS + DOTS ── */
+    .carousel-nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 20;
+      width: 36px;
+      height: 36px;
+      background: rgba(30,30,30,0.95);
+      border: 1px solid var(--card-border);
+      border-radius: 50%;
+      font-size: 1.3rem;
+      color: var(--menu-muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+      box-shadow: 0 2px 12px #00000030;
+      line-height: 1;
+    }
+
+    .carousel-nav:hover {
+      border-color: var(--yellow);
+      color: var(--yellow);
+      box-shadow: 0 4px 20px #F5A30030;
+      background: #2a2a2a;
+    }
+
+    .carousel-nav:active {
+      transform: translateY(-50%) scale(0.93);
+    }
+
+    .carousel-nav.prev { left: 8px; }
+    .carousel-nav.next { right: 8px; }
+
+    .carousel-dots, .bcarousel-dots {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin: 8px 0 4px;
+    }
+
+    .c-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #444;
+      cursor: pointer;
+      transition: all 0.25s;
+    }
+
+    .c-dot.active {
+      background: var(--yellow);
+      transform: scale(1.6);
+      box-shadow: 0 0 8px #F5A30060;
+    }
+
+    /* ── VARIANTES BURGER ── */
+    #carousel-variants {
+      transition: opacity 0.15s ease, transform 0.15s ease;
+    }
+
+    .cv-section {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 12px;
+      box-shadow: 0 2px 12px #00000020;
+      transition: border-color 0.3s;
+    }
+
+    .cv-header {
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--card-border);
+      background: var(--menu-surface2);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .cv-active-name {
+      font-family: 'Anton', sans-serif;
+      font-size: 0.95rem;
+      color: var(--menu-text);
+      letter-spacing: 0.5px;
+      flex: 1;
+    }
+
+    .cv-elegir {
+      font-size: 0.64rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--yellow);
+      background: rgba(245, 163, 0, 0.12);
+      border: 1px solid rgba(245, 163, 0, 0.3);
+      padding: 3px 10px;
+      border-radius: 6px;
+    }
+
+    .cv-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .cv-btn {
+      background: none;
+      border: none;
+      border-right: 1px solid var(--card-border);
+      padding: 14px 8px;
+      cursor: pointer;
+      text-align: center;
+      transition: background 0.15s;
+      color: var(--menu-text);
+    }
+
+    .cv-btn:last-child {
+      border-right: none;
+    }
+
+    .cv-btn:hover {
+      background: var(--menu-surface2);
+    }
+
+    .cv-btn:active {
+      background: rgba(245, 163, 0, 0.1);
+    }
+
+    .cv-btn-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--menu-muted);
+      display: block;
+    }
+
+    .cv-btn-price {
+      font-family: 'Anton', sans-serif;
+      font-size: 1rem;
+      color: var(--yellow);
+      display: block;
+      margin-top: 4px;
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 6px; }
     ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: #c8c4bc; border-radius: 3px; }
-    .ticket ::-webkit-scrollbar-thumb { background: #3a3a3a; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb { background: #3a3a3a; border-radius: 3px; }
+    .menu ::-webkit-scrollbar-thumb { background: #444; }
   </style>
 </head>
 <body>
@@ -440,7 +702,7 @@
     <span class="logo-icon">🍔</span>
     <div>
       <div class="logo-text">CLICKS BURGER</div>
-      <div class="logo-sub">Comandera · Caja</div>
+      <div class="logo-sub">Hacé tu Pedido</div>
     </div>
   </div>
   <div class="pedido-badge" id="num-pedido">PEDIDO #001</div>
@@ -468,21 +730,11 @@
         <button class="tipo-btn" id="btn-takeaway" onclick="setTipo('takeaway')">🥡 Takeaway</button>
       </div>
 
-      <div class="demora-wrap">
-        <span class="demora-label">⏱ Demora estimada</span>
-        <div class="demora-stepper">
-          <button class="demora-step-btn" onclick="ajustarDemora(-5)">−</button>
-          <span class="demora-val" id="demora-val">20</span>
-          <button class="demora-step-btn" onclick="ajustarDemora(5)">+</button>
-          <span class="demora-unit">min</span>
-        </div>
-      </div>
-
       <div class="aclaracion-wrap">
         <textarea id="aclaracion" placeholder="Aclaración general del pedido..."></textarea>
       </div>
       <button class="btn-enviar" id="btn-enviar" onclick="enviarPedido()" disabled>
-        ENVIAR A COCINA
+        ENVIAR PEDIDO
       </button>
     </div>
   </div>
@@ -491,79 +743,97 @@
 <div class="toast" id="toast"></div>
 
 <script>
-// ── DATOS ──
-const BURGERS = [
-  {
-    id: 'american',
-    img: 'img/american-clicks.jpg',
-    nombre: 'AMERICAN CLICKS',
-    desc: 'Carne, doble queso, bacon, lechuga, tomate, cebolla y aderezo clicks',
-    variantes: [
-      { key: 'simple', label: 'Simple', precio: 11500 },
-      { key: 'doble',  label: 'Doble',  precio: 14500 },
-      { key: 'triple', label: 'Triple', precio: 17500 },
-    ]
-  },
-  {
-    id: 'cheeseburger',
-    img: 'img/cheeseburger.jpg',
-    nombre: 'CHEESEBURGER',
-    desc: 'Carne, doble queso, doble bacon y mayonesa',
-    variantes: [
-      { key: 'simple', label: 'Simple', precio: 11000 },
-      { key: 'doble',  label: 'Doble',  precio: 14000 },
-      { key: 'triple', label: 'Triple', precio: 17000 },
-    ]
-  },
-  {
-    id: 'cuarto',
-    img: 'img/cuarto-clicks.jpg',
-    nombre: 'CUARTO CLICKS',
-    desc: 'Carne, doble queso, bacon, ketchup, mostaza y cebolla brunoise',
-    variantes: [
-      { key: 'simple', label: 'Simple', precio: 11000 },
-      { key: 'doble',  label: 'Doble',  precio: 14000 },
-      { key: 'triple', label: 'Triple', precio: 17000 },
-    ]
-  },
-];
+// ── CATÁLOGO (con defaults hardcodeados como fallback) ──
+const CATALOGO_DEFAULT = {
+  burgers: [
+    {
+      id: 'american',
+      img: 'img/american-clicks.jpg',
+      nombre: 'AMERICAN CLICKS',
+      desc: 'Carne, doble queso, bacon, lechuga, tomate, cebolla y aderezo clicks',
+      variantes: [
+        { key: 'simple', label: 'Simple', precio: 11500 },
+        { key: 'doble',  label: 'Doble',  precio: 14500 },
+        { key: 'triple', label: 'Triple', precio: 17500 },
+      ]
+    },
+    {
+      id: 'cheeseburger',
+      img: 'img/cheeseburger.jpg',
+      nombre: 'CHEESEBURGER',
+      desc: 'Carne, doble queso, doble bacon y mayonesa',
+      variantes: [
+        { key: 'simple', label: 'Simple', precio: 11000 },
+        { key: 'doble',  label: 'Doble',  precio: 14000 },
+        { key: 'triple', label: 'Triple', precio: 17000 },
+      ]
+    },
+    {
+      id: 'cuarto',
+      img: 'img/cuarto-clicks.jpg',
+      nombre: 'CUARTO CLICKS',
+      desc: 'Carne, doble queso, bacon, ketchup, mostaza y cebolla brunoise',
+      variantes: [
+        { key: 'simple', label: 'Simple', precio: 11000 },
+        { key: 'doble',  label: 'Doble',  precio: 14000 },
+        { key: 'triple', label: 'Triple', precio: 17000 },
+      ]
+    },
+  ],
+  bebidas: [
+    { id: 'coca',     img: 'img/latacoca.jpg',     nombre: 'Coca-Cola', precio: 2500 },
+    { id: 'sprite',   img: 'img/latasprite.jpg',   nombre: 'Sprite',    precio: 2500 },
+    { id: 'fanta',    img: 'img/latafanta.jpg',    nombre: 'Fanta',     precio: 2500 },
+    { id: 'cocazero', img: 'img/latacocazero.jpg', nombre: 'Coca Zero', precio: 2500 },
+  ],
+  extras: [
+    { id: 'papas', icon: '🍟', nombre: 'Porción de Papas', precio: 2500 },
+    { id: 'mayo',  icon: '🥣', nombre: 'Mayonesa',         precio: 500  },
+  ]
+};
 
-const BEBIDAS = [
-  { id: 'coca',     img: 'img/latacoca.jpg',     nombre: 'Coca-Cola', precio: 2500 },
-  { id: 'sprite',   img: 'img/latasprite.jpg',   nombre: 'Sprite',    precio: 2500 },
-  { id: 'fanta',    img: 'img/latafanta.jpg',     nombre: 'Fanta',     precio: 2500 },
-  { id: 'cocazero', img: 'img/latacocazero.jpg', nombre: 'Coca Zero', precio: 2500 },
-];
+function cargarCatalogo() {
+  const guardado = localStorage.getItem('cb_catalog');
+  return guardado ? JSON.parse(guardado) : JSON.parse(JSON.stringify(CATALOGO_DEFAULT));
+}
 
-const EXTRAS = [
-  { id: 'papas', icon: '🍟', nombre: 'Porción de Papas', precio: 2500 },
-  { id: 'mayo',  icon: '🥣', nombre: 'Mayonesa',         precio: 500  },
-];
+let catalogo = cargarCatalogo();
+let BURGERS  = catalogo.burgers;
+let BEBIDAS  = catalogo.bebidas;
+let EXTRAS   = catalogo.extras;
 
 // ── MAPA DE ITEMS ──
-const ITEM_MAP = {};
+let ITEM_MAP = {};
 
-BURGERS.forEach(b => b.variantes.forEach(v => {
-  ITEM_MAP[`${b.id}_${v.key}`] = {
-    nombre: b.nombre, variante: v.label,
-    precio: v.precio, icon: '🍔', esBurger: true,
-  };
-}));
+function construirItemMap() {
+  ITEM_MAP = {};
+  BURGERS.forEach(b => b.variantes.forEach(v => {
+    ITEM_MAP[`${b.id}_${v.key}`] = {
+      nombre: b.nombre, variante: v.label,
+      precio: v.precio, icon: '🍔', esBurger: true,
+    };
+  }));
+  BEBIDAS.forEach(b => {
+    ITEM_MAP[b.id] = { nombre: b.nombre, variante: null, precio: b.precio, icon: '🥤', esBurger: false };
+  });
+  EXTRAS.forEach(e => {
+    ITEM_MAP[e.id] = { nombre: e.nombre, variante: null, precio: e.precio, icon: e.icon, esBurger: false };
+  });
+}
 
-BEBIDAS.forEach(b => {
-  ITEM_MAP[b.id] = { nombre: b.nombre, variante: null, precio: b.precio, icon: '🥤', esBurger: false };
-});
-
-EXTRAS.forEach(e => {
-  ITEM_MAP[e.id] = { nombre: e.nombre, variante: null, precio: e.precio, icon: e.icon, esBurger: false };
-});
+construirItemMap();
 
 // ── ESTADO ──
-let pedido    = {};
+let pedido     = {};
 let tipoPedido = 'delivery';
-let demoraMin  = 20;
 let numPedido  = Number(localStorage.getItem('cb_ultimo_pedido') || 0) + 1;
 const channel  = new BroadcastChannel('clicks_burger');
+
+// Estado de carruseles
+let activeBurger = 0;
+let activeBebida = 0;
+let burgerTouchInitialized = false;
+let bebidaTouchInitialized = false;
 
 function setTipo(tipo) {
   tipoPedido = tipo;
@@ -573,46 +843,262 @@ function setTipo(tipo) {
     'tipo-btn' + (tipo === 'takeaway' ? ' active-takeaway' : '');
 }
 
-function ajustarDemora(delta) {
-  demoraMin = Math.max(5, Math.min(120, demoraMin + delta));
-  document.getElementById('demora-val').textContent = demoraMin;
+// ═══════════════════════════════════════
+// CARRUSEL HAMBURGUESAS
+// ═══════════════════════════════════════
+
+function getOffset(i, total) {
+  let o = (i - activeBurger + total) % total;
+  if (o > Math.floor(total / 2)) o -= total;
+  return o;
 }
 
-// ── RENDER MENÚ ──
-function renderMenu() {
-  const el = document.getElementById('menu');
+function renderCarruselBurgers() {
+  const inner = document.getElementById('carousel-inner');
+  const dots  = document.getElementById('carousel-dots');
+  if (!inner) return;
 
-  const burgersHTML = BURGERS.map(b => `
-    <div class="burger-card" id="bc-${b.id}">
-      <img class="burger-photo" src="${b.img}" alt="${b.nombre}" onerror="this.style.display='none'">
-      <div class="burger-body">
-        <div class="burger-info">
-          <div class="burger-name">${b.nombre}</div>
-          <div class="burger-desc">${b.desc}</div>
+  inner.innerHTML = BURGERS.map((b, i) => `
+    <div class="carousel-slide" id="cslide-${i}" onclick="irABurger(${i})">
+      <div class="carousel-card">
+        <div class="carousel-img-wrap">
+          <img class="carousel-img" src="${b.img}" alt="${b.nombre}" onerror="this.style.display='none'">
         </div>
-        <div class="variants">
-          ${b.variantes.map(v => `
-            <button class="variant-btn" onclick="agregarItem('${b.id}_${v.key}', '${b.id}')">
-              <span class="variant-name">${v.label}</span>
-              <span class="variant-price">$${v.precio.toLocaleString('es-AR')}</span>
-            </button>
-          `).join('')}
+        <div class="carousel-info">
+          <div class="carousel-name">${b.nombre}</div>
+          <div class="carousel-desc">${b.desc}</div>
         </div>
       </div>
     </div>
   `).join('');
 
-  const bebidasHTML = BEBIDAS.map(b => `
-    <button class="bebida-btn" onclick="agregarItem('${b.id}', null)">
-      <div class="bebida-img-wrap">
-        <img class="bebida-img" src="${b.img}" alt="${b.nombre}" onerror="this.style.display='none'">
+  dots.innerHTML = BURGERS.map((_, i) =>
+    `<span class="c-dot ${i === activeBurger ? 'active' : ''}" onclick="irABurger(${i})"></span>`
+  ).join('');
+
+  // Swipe touch - solo agregar una vez
+  if (!burgerTouchInitialized) {
+    const wrapper = inner.closest('.carousel-wrapper');
+    let touchStartX = 0;
+    wrapper.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, { passive: true });
+    wrapper.addEventListener('touchend', e => {
+      const dx = e.changedTouches[0].clientX - touchStartX;
+      if (Math.abs(dx) > 40) dx < 0 ? nextBurger() : prevBurger();
+    }, { passive: true });
+    burgerTouchInitialized = true;
+  }
+
+  posicionarSlidesBurgers();
+  renderVariantes();
+}
+
+function posicionarSlidesBurgers() {
+  const total = BURGERS.length;
+
+  BURGERS.forEach((_, i) => {
+    const slide = document.getElementById(`cslide-${i}`);
+    if (!slide) return;
+
+    const offset = getOffset(i, total);
+    const abs = Math.abs(offset);
+
+    // Configuración simétrica: izquierda/derecha con misma lógica
+    const cfg = [
+      { x:    0, scale: 1.0,  opacity: 1.0,  z: 5, rot:  0 },
+      { x:  300, scale: 0.70, opacity: 0.45, z: 3, rot: 10 },
+      { x:  510, scale: 0.48, opacity: 0.12, z: 1, rot: 18 },
+    ];
+
+    if (abs >= cfg.length) {
+      slide.style.opacity = '0';
+      slide.style.zIndex  = '0';
+      slide.style.pointerEvents = 'none';
+      return;
+    }
+
+    const c = cfg[abs];
+    const xPx = offset >= 0 ? c.x : -c.x;
+    const rotDir = offset > 0 ? -1 : 1;
+
+    slide.style.transform = abs === 0
+      ? `translateY(-50%) translateX(${xPx}px) scale(${c.scale})`
+      : `translateY(-50%) translateX(${xPx}px) scale(${c.scale}) perspective(700px) rotateY(${rotDir * c.rot}deg)`;
+
+    slide.style.opacity = String(c.opacity);
+    slide.style.zIndex  = String(c.z);
+    slide.style.pointerEvents = 'auto';
+    slide.classList.toggle('active', offset === 0);
+  });
+
+  document.querySelectorAll('.c-dot').forEach((d, i) => {
+    d.classList.toggle('active', i === activeBurger);
+  });
+}
+
+function renderVariantes() {
+  const b = BURGERS[activeBurger];
+  const el = document.getElementById('carousel-variants');
+  if (!el) return;
+
+  // Verificar si ya está renderizado este burger
+  const existingSection = document.getElementById(`bc-${b.id}`);
+  if (existingSection) {
+    // Solo actualizar el nombre si es diferente
+    const nameEl = existingSection.querySelector('.cv-active-name');
+    if (nameEl && nameEl.textContent !== b.nombre) {
+      nameEl.textContent = b.nombre;
+    }
+    return;
+  }
+
+  // Crear nueva sección sin hacer fade brusco
+  const html = `
+    <div class="cv-section" id="bc-${b.id}">
+      <div class="cv-header">
+        <span class="cv-active-name">${b.nombre}</span>
+        <span class="cv-elegir">ELEGÍ TU TAMAÑO</span>
       </div>
-      <div class="bebida-info">
-        <span class="bebida-name">${b.nombre}</span>
-        <span class="bebida-price">$${b.precio.toLocaleString('es-AR')}</span>
+      <div class="cv-grid">
+        ${b.variantes.map(v => `
+          <button class="cv-btn" onclick="agregarItem('${b.id}_${v.key}', '${b.id}')">
+            <span class="cv-btn-label">${v.label}</span>
+            <span class="cv-btn-price">$${v.precio.toLocaleString('es-AR')}</span>
+          </button>
+        `).join('')}
       </div>
-    </button>
+    </div>
+  `;
+
+  el.innerHTML = html;
+}
+
+function irABurger(i) {
+  if (i === activeBurger) return;
+  activeBurger = i;
+  posicionarSlidesBurgers();
+  renderVariantes();
+}
+
+function prevBurger() {
+  activeBurger = (activeBurger - 1 + BURGERS.length) % BURGERS.length;
+  posicionarSlidesBurgers();
+  renderVariantes();
+}
+
+function nextBurger() {
+  activeBurger = (activeBurger + 1) % BURGERS.length;
+  posicionarSlidesBurgers();
+  renderVariantes();
+}
+
+// ═══════════════════════════════════════
+// CARRUSEL BEBIDAS
+// ═══════════════════════════════════════
+
+function getOffsetBebida(i) {
+  const total = BEBIDAS.length;
+  let o = (i - activeBebida + total) % total;
+  if (o > Math.floor(total / 2)) o -= total;
+  return o;
+}
+
+function renderCarruselBebidas() {
+  const inner = document.getElementById('bcarousel-inner');
+  const dots  = document.getElementById('bcarousel-dots');
+  if (!inner) return;
+
+  inner.innerHTML = BEBIDAS.map((b, i) => `
+    <div class="bslide" id="bslide-${i}" onclick="irABebida(${i})">
+      <div class="bslide-card">
+        <div class="bslide-img-wrap">
+          <img class="bslide-img" src="${b.img}" alt="${b.nombre}" onerror="this.style.display='none'">
+        </div>
+        <div class="bslide-footer">
+          <span class="bslide-name">${b.nombre}</span>
+          <span class="bslide-price">$${b.precio.toLocaleString('es-AR')}</span>
+          <button class="bslide-add" onclick="event.stopPropagation(); agregarItem('${b.id}', null)">AGREGAR</button>
+        </div>
+      </div>
+    </div>
   `).join('');
+
+  dots.innerHTML = BEBIDAS.map((_, i) =>
+    `<span class="c-dot ${i === activeBebida ? 'active' : ''}" onclick="irABebida(${i})"></span>`
+  ).join('');
+
+  // Swipe touch - solo agregar una vez
+  if (!bebidaTouchInitialized) {
+    const wrapper = inner.closest('.bcarousel-wrapper');
+    let touchStartX = 0;
+    wrapper.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, { passive: true });
+    wrapper.addEventListener('touchend', e => {
+      const dx = e.changedTouches[0].clientX - touchStartX;
+      if (Math.abs(dx) > 30) dx < 0 ? nextBebida() : prevBebida();
+    }, { passive: true });
+    bebidaTouchInitialized = true;
+  }
+
+  posicionarSlidesBebidas();
+}
+
+function posicionarSlidesBebidas() {
+  const total = BEBIDAS.length;
+
+  BEBIDAS.forEach((_, i) => {
+    const slide = document.getElementById(`bslide-${i}`);
+    if (!slide) return;
+
+    const offset = getOffsetBebida(i, total);
+    const abs = Math.abs(offset);
+
+    // Configuración simétrica para bebidas
+    const cfg = [
+      { x:    0, scale: 1.0,  opacity: 1.0,  z: 5 },
+      { x:  210, scale: 0.72, opacity: 0.45, z: 3 },
+      { x:  365, scale: 0.50, opacity: 0.12, z: 1 },
+    ];
+
+    if (abs >= cfg.length) {
+      slide.style.opacity = '0';
+      slide.style.zIndex  = '0';
+      slide.style.pointerEvents = 'none';
+      return;
+    }
+
+    const c = cfg[abs];
+    const xPx = offset >= 0 ? c.x : -c.x;
+
+    slide.style.transform = `translateY(-50%) translateX(${xPx}px) scale(${c.scale})`;
+    slide.style.opacity = String(c.opacity);
+    slide.style.zIndex  = String(c.z);
+    slide.style.pointerEvents = 'auto';
+    slide.classList.toggle('active', offset === 0);
+  });
+
+  document.querySelectorAll('#bcarousel-dots .c-dot').forEach((d, i) => {
+    d.classList.toggle('active', i === activeBebida);
+  });
+}
+
+function irABebida(i) {
+  if (i === activeBebida) return;
+  activeBebida = i;
+  posicionarSlidesBebidas();
+}
+
+function prevBebida() {
+  activeBebida = (activeBebida - 1 + BEBIDAS.length) % BEBIDAS.length;
+  posicionarSlidesBebidas();
+}
+
+function nextBebida() {
+  activeBebida = (activeBebida + 1) % BEBIDAS.length;
+  posicionarSlidesBebidas();
+}
+
+// ── RENDER MENÚ ──
+function renderMenu() {
+  const el = document.getElementById('menu');
 
   const extrasHTML = EXTRAS.map(e => `
     <button class="extra-card-btn" onclick="agregarItem('${e.id}', null)">
@@ -623,24 +1109,65 @@ function renderMenu() {
   `).join('');
 
   el.innerHTML = `
-    <div class="cat-label">Hamburguesas</div>
-    ${burgersHTML}
-    <div class="cat-label">Bebidas y Extras</div>
-    <div class="extras-grid">
-      ${bebidasHTML}
-      ${extrasHTML}
+    <div class="carousel-container">
+      <div class="cat-label">Hamburguesas</div>
+      <div class="carousel-section">
+        <div class="carousel-wrapper">
+          <div class="carousel-inner" id="carousel-inner"></div>
+          <button class="carousel-nav prev" onclick="prevBurger()">&#8249;</button>
+          <button class="carousel-nav next" onclick="nextBurger()">&#8250;</button>
+        </div>
+        <div class="carousel-dots" id="carousel-dots"></div>
+        <div id="carousel-variants"></div>
+      </div>
+
+      <div class="cat-label">Bebidas</div>
+      <div class="bcarousel-section">
+        <div class="bcarousel-wrapper">
+          <div class="bcarousel-inner" id="bcarousel-inner"></div>
+          <button class="carousel-nav prev" onclick="prevBebida()">&#8249;</button>
+          <button class="carousel-nav next" onclick="nextBebida()">&#8250;</button>
+        </div>
+        <div class="bcarousel-dots" id="bcarousel-dots"></div>
+      </div>
+
+      <div class="cat-label">Extras</div>
+      <div class="extras-grid">
+        ${extrasHTML}
+      </div>
     </div>
   `;
+
+  renderCarruselBurgers();
+  renderCarruselBebidas();
 }
 
 // ── TICKET ──
 function agregarItem(id, burgerCardId) {
   if (!pedido[id]) pedido[id] = { qty: 0, obs: '' };
   pedido[id].qty++;
+
   if (burgerCardId) {
     const card = document.getElementById(`bc-${burgerCardId}`);
-    if (card) { card.classList.remove('added'); void card.offsetWidth; card.classList.add('added'); }
+    if (card) {
+      card.classList.remove('added');
+      void card.offsetWidth; // forzar reflow
+      card.classList.add('added');
+    }
   }
+
+  // Flash en bebida seleccionada
+  const bIndex = BEBIDAS.findIndex(b => b.id === id);
+  if (bIndex !== -1) {
+    const bslide = document.getElementById(`bslide-${bIndex}`);
+    if (bslide) {
+      const card = bslide.querySelector('.bslide-card');
+      card.classList.remove('added');
+      void card.offsetWidth;
+      card.classList.add('added');
+    }
+  }
+
   renderTicket();
 }
 
@@ -712,6 +1239,40 @@ function renderTicket() {
   btnEnviar.disabled = false;
 }
 
+// ── WHATSAPP ──
+function construirUrlWhatsApp(data) {
+  const WA_NUMBER = localStorage.getItem('cb_wsp_phone') || '5493518142654';
+
+  const tipo = data.tipo === 'delivery' ? '🏍 Delivery' : '🥡 Takeaway';
+
+  let lineas = [];
+  lineas.push(`🍔 *NUEVO PEDIDO #${String(data.num).padStart(3,'0')}*`);
+  lineas.push(`🕐 Hora: ${data.hora}`);
+  lineas.push(`📦 Tipo: ${tipo}`);
+  lineas.push('');
+  lineas.push('*Detalle:*');
+
+  let total = 0;
+  data.items.forEach(it => {
+    let linea = `• ${it.cantidad}x ${it.nombre}`;
+    if (it.variante) linea += ` (${it.variante})`;
+    lineas.push(linea);
+    if (it.obs) lineas.push(`  ↳ _${it.obs}_`);
+    total += it.precio * it.cantidad;
+  });
+
+  if (data.aclaracion) {
+    lineas.push('');
+    lineas.push(`⚠ *Aclaración:* ${data.aclaracion}`);
+  }
+
+  lineas.push('');
+  lineas.push(`💰 *Total: $${total.toLocaleString('es-AR')}*`);
+
+  const mensaje = lineas.join('\n');
+  return `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(mensaje)}`;
+}
+
 // ── ENVIAR ──
 function enviarPedido() {
   const ids = Object.keys(pedido);
@@ -722,7 +1283,6 @@ function enviarPedido() {
     num:    numPedido,
     hora:   new Date().toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' }),
     tipo:   tipoPedido,
-    demora: demoraMin,
     items:  ids.map(id => ({
       ...ITEM_MAP[id],
       key:      id,
@@ -730,7 +1290,7 @@ function enviarPedido() {
       obs:      pedido[id].obs || '',
     })),
     aclaracion,
-    estado: 'pendiente',
+    estado: 'nuevo',
   };
 
   const cola = JSON.parse(localStorage.getItem('cb_cola') || '[]');
@@ -738,7 +1298,8 @@ function enviarPedido() {
   localStorage.setItem('cb_cola', JSON.stringify(cola));
   channel.postMessage({ tipo: 'nuevo_pedido', pedido: data });
 
-  mostrarToast(`✓ Pedido #${String(numPedido).padStart(3,'0')} enviado a cocina!`);
+  mostrarToast(`✓ Pedido #${String(numPedido).padStart(3,'0')} enviado. ¡Esperá la confirmación!`);
+  window.open(construirUrlWhatsApp(data), '_blank');
 
   numPedido++;
   localStorage.setItem('cb_ultimo_pedido', numPedido - 1);
@@ -755,6 +1316,25 @@ function mostrarToast(msg) {
   setTimeout(() => t.classList.remove('show'), 2500);
 }
 
+// ── ESCUCHAR ACTUALIZACIONES DEL ADMIN ──
+channel.onmessage = ({ data }) => {
+  if (data.tipo === 'catalog_updated') {
+    catalogo = cargarCatalogo();
+    BURGERS  = catalogo.burgers;
+    BEBIDAS  = catalogo.bebidas;
+    EXTRAS   = catalogo.extras;
+    construirItemMap();
+    activeBurger = 0;
+    activeBebida = 0;
+    burgerTouchInitialized = false;
+    bebidaTouchInitialized = false;
+    pedido = {};
+    renderMenu();
+    renderTicket();
+  }
+};
+
+// ── INIT ──
 renderMenu();
 renderTicket();
 document.getElementById('num-pedido').textContent = `PEDIDO #${String(numPedido).padStart(3,'0')}`;

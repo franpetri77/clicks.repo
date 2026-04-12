@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(taskkill /F /IM node.exe)",
+      "Bash(taskkill /F /IM \"Clicks Burger.exe\")",
+      "Bash(netstat -ano)",
+      "Bash(findstr :3131)",
+      "Bash(taskkill //F //IM node.exe)",
+      "Bash(taskkill //F //IM \"Clicks Burger.exe\")",
+      "Bash(awk '{print $5}')",
+      "Bash(xargs -I{} taskkill //F //PID {})",
+      "Bash(ls /c/Users/popet/OneDrive/Desktop/snake/*.html /c/Users/popet/OneDrive/Desktop/snake/*.css /c/Users/popet/OneDrive/Desktop/snake/*.js)",
+      "Bash(node:*)"
+    ]
+  }
+}

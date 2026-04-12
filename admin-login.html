@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Clicks Burger — Acceso Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg:      #0f0f0f;
+      --surface: #1a1a1a;
+      --yellow:  #F5A300;
+      --yellow2: #FFD066;
+      --red:     #d93025;
+      --text:    #f0f0f0;
+      --muted:   #888888;
+      --border:  #2e2e2e;
+    }
+
+    html, body {
+      height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Lato', sans-serif;
+    }
+
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    .bg-glow {
+      position: fixed; inset: 0; pointer-events: none; z-index: 0;
+      background:
+        radial-gradient(ellipse 55% 45% at 20% 30%, #F5A30014 0%, transparent 65%),
+        radial-gradient(ellipse 40% 40% at 80% 70%, #F5A30009 0%, transparent 65%);
+    }
+
+    .login-card {
+      position: relative; z-index: 1;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 48px 40px 40px;
+      width: 100%;
+      max-width: 380px;
+      box-shadow: 0 8px 48px #00000060, 0 1px 0 #ffffff06 inset;
+      animation: fadeUp 0.5s ease both;
+    }
+
+    .brand {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    .brand-logo {
+      width: 64px; height: 64px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--yellow);
+      box-shadow: 0 0 24px #F5A30040;
+      margin: 0 auto 14px;
+      display: block;
+    }
+
+    .brand-name {
+      font-family: 'Anton', sans-serif;
+      font-size: 1.6rem;
+      letter-spacing: 4px;
+      color: var(--yellow);
+      text-shadow: 0 0 24px #F5A30050;
+    }
+
+    .brand-sub {
+      font-size: 0.68rem;
+      letter-spacing: 3.5px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-top: 6px;
+    }
+
+    .divider {
+      width: 36px; height: 2px;
+      background: linear-gradient(90deg, transparent, var(--yellow), transparent);
+      margin: 20px auto;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    label {
+      display: block;
+      font-size: 0.68rem;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    input[type="text"],
+    input[type="password"] {
+      width: 100%;
+      background: #111;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 14px;
+      color: var(--text);
+      font-family: 'Lato', sans-serif;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    input:focus {
+      border-color: var(--yellow);
+      box-shadow: 0 0 0 3px #F5A30018;
+    }
+
+    .btn-login {
+      width: 100%;
+      margin-top: 8px;
+      padding: 14px;
+      background: var(--yellow);
+      color: #111;
+      border: none;
+      border-radius: 8px;
+      font-family: 'Anton', sans-serif;
+      font-size: 0.95rem;
+      letter-spacing: 3px;
+      cursor: pointer;
+      transition: background 0.15s, box-shadow 0.15s, transform 0.1s;
+    }
+
+    .btn-login:hover {
+      background: var(--yellow2);
+      box-shadow: 0 6px 24px #F5A30045;
+    }
+
+    .btn-login:active { transform: scale(0.97); }
+
+    .error-msg {
+      display: none;
+      background: #2a0808;
+      border: 1px solid #5a1010;
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 0.78rem;
+      color: #ff6b6b;
+      margin-bottom: 18px;
+      text-align: center;
+    }
+
+    .error-msg.visible { display: block; }
+
+    .back-link {
+      display: block;
+      text-align: center;
+      margin-top: 20px;
+      font-size: 0.72rem;
+      color: var(--muted);
+      text-decoration: none;
+      letter-spacing: 1px;
+    }
+
+    .back-link:hover { color: var(--yellow); }
+
+    .lock-icon {
+      font-size: 1.8rem;
+      display: block;
+      text-align: center;
+      margin-bottom: 6px;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+<div class="bg-glow"></div>
+
+<div class="login-card">
+
+  <div class="brand">
+    <img src="img/cheeseburger.jpg" alt="Clicks Burger" class="brand-logo"
+         onerror="this.style.display='none'">
+    <div class="brand-name">CLICKS BURGER</div>
+    <div class="brand-sub">Panel de Administración</div>
+    <div class="divider"></div>
+    <span class="lock-icon">🔐</span>
+  </div>
+
+  <div class="error-msg" id="error-msg">
+    Usuario o contraseña incorrectos
+  </div>
+
+  <form method="POST" action="/api/login">
+    <div class="form-group">
+      <label for="user">Usuario</label>
+      <input type="text" id="user" name="user" placeholder="admin"
+             autocomplete="username" autofocus>
+    </div>
+    <div class="form-group">
+      <label for="pass">Contraseña</label>
+      <input type="password" id="pass" name="pass" placeholder="••••••••"
+             autocomplete="current-password">
+    </div>
+    <button type="submit" class="btn-login">INGRESAR</button>
+  </form>
+
+  <a href="/" class="back-link">← Volver al inicio</a>
+
+</div>
+
+<script>
+  // Mostrar error si viene con ?error=1
+  if (new URLSearchParams(location.search).get('error') === '1') {
+    document.getElementById('error-msg').classList.add('visible');
+  }
+</script>
+
+</body>
+</html>

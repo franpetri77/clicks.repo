@@ -34,10 +34,12 @@
     .bg-glow {
       position: fixed; inset: 0; pointer-events: none; z-index: 0;
       background:
-        radial-gradient(ellipse 55% 45% at 15% 25%, #F5A30018 0%, transparent 65%),
-        radial-gradient(ellipse 45% 40% at 85% 75%, #F5A30010 0%, transparent 65%);
+        radial-gradient(ellipse 60% 50% at 50% 20%, #F5A30014 0%, transparent 65%),
+        radial-gradient(ellipse 40% 40% at 15% 80%, #F5A30008 0%, transparent 60%),
+        radial-gradient(ellipse 40% 40% at 85% 80%, #F5A30008 0%, transparent 60%);
     }
 
+    /* ── HERO ── */
     .hero {
       position: relative; z-index: 1;
       flex: 1;
@@ -45,17 +47,18 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 50px 20px 36px;
+      padding: 40px 24px 32px;
       text-align: center;
     }
 
+    /* ── STATUS ── */
     .status-badge {
       display: inline-flex; align-items: center; gap: 7px;
       background: #ffffff08;
       border: 1px solid #3a3a3a;
       border-radius: 20px; padding: 6px 16px;
       font-size: 0.72rem; color: var(--muted);
-      margin-bottom: 32px;
+      margin-bottom: 28px;
       letter-spacing: 0.5px;
       animation: fadeIn 0.6s ease both;
     }
@@ -67,25 +70,26 @@
     }
     @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
 
+    /* ── BRANDING ── */
     .logo-wrap {
-      margin-bottom: 40px;
+      margin-bottom: 32px;
       animation: fadeDown 0.7s ease both;
     }
 
     .logo-img {
-      width: 112px; height: 112px;
+      width: 96px; height: 96px;
       border-radius: 50%;
       object-fit: cover;
       border: 3px solid var(--yellow);
       box-shadow: 0 0 0 6px #F5A30012, 0 0 40px #F5A30050, 0 0 80px #F5A30020;
-      margin-bottom: 18px;
+      margin-bottom: 16px;
       display: block;
       margin-left: auto; margin-right: auto;
     }
 
     .brand-name {
       font-family: 'Anton', sans-serif;
-      font-size: clamp(2.6rem, 7vw, 4.8rem);
+      font-size: clamp(2.2rem, 6vw, 4rem);
       letter-spacing: 5px;
       color: var(--yellow);
       text-shadow: 0 0 40px #F5A30060;
@@ -93,57 +97,93 @@
     }
 
     .brand-tagline {
-      font-size: 0.78rem;
-      letter-spacing: 5px;
+      font-size: 0.75rem;
+      letter-spacing: 4px;
       text-transform: uppercase;
       color: var(--muted);
-      margin-top: 8px;
+      margin-top: 7px;
       font-weight: 300;
     }
 
     .divider {
-      width: 50px; height: 2px;
+      width: 48px; height: 2px;
       background: linear-gradient(90deg, transparent, var(--yellow), transparent);
-      margin: 28px auto 36px;
+      margin: 24px auto 28px;
       animation: fadeIn 0.8s 0.3s ease both;
     }
 
-    /* ── CARDS ── */
+    /* ── LABEL ── */
     .cards-label {
-      font-size: 0.72rem;
+      font-size: 0.7rem;
       letter-spacing: 3px;
       text-transform: uppercase;
       color: var(--muted);
-      margin-bottom: 18px;
+      margin-bottom: 24px;
       animation: fadeIn 0.8s 0.4s ease both;
     }
 
-    .cards {
+    /* ── SEPARADOR VERTICAL ── */
+    .col-sep {
+      width: 1px;
+      background: linear-gradient(to bottom, transparent, var(--border) 30%, var(--border) 70%, transparent);
+      align-self: stretch;
+      margin: 0 4px;
+      flex-shrink: 0;
+    }
+
+    /* ── CARDS ROW ── */
+    .cards-row {
       display: flex;
-      gap: 20px;
+      align-items: stretch;
       justify-content: center;
-      flex-wrap: wrap;
+      gap: 0;
       animation: fadeUp 0.7s 0.45s ease both;
     }
 
+    /* ── ROLE GROUP ── */
+    .role-group {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+      padding: 0 36px;
+    }
+
+    .role-label {
+      font-size: 0.62rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    /* fila de tarjetas dentro de un grupo */
+    .group-cards {
+      display: flex;
+      gap: 16px;
+      align-items: stretch;
+    }
+
+    /* ── CARD ── */
     .card {
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 16px;
-      padding: 32px 28px;
+      padding: 32px 26px;
       width: 240px;
+      min-height: 290px;
       cursor: pointer;
       text-decoration: none;
       color: var(--text);
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 12px;
+      gap: 11px;
       transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
       position: relative;
       overflow: hidden;
       box-shadow: 0 2px 16px #00000030, 0 1px 0 #ffffff06 inset;
     }
+
     .card::before {
       content: '';
       position: absolute; inset: 0;
@@ -151,6 +191,7 @@
       opacity: 0;
       transition: opacity 0.25s;
     }
+
     .card:hover {
       transform: translateY(-6px);
       border-color: var(--yellow);
@@ -158,7 +199,29 @@
     }
     .card:hover::before { opacity: 0.1; }
 
+    .role-badge {
+      font-size: 0.58rem;
+      font-weight: 900;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 3px 10px;
+      border-radius: 20px;
+      display: inline-block;
+      position: relative; z-index: 1;
+    }
+    .role-badge.cliente {
+      background: rgba(30,140,69,0.15);
+      color: #4aba6a;
+      border: 1px solid rgba(30,140,69,0.4);
+    }
+    .role-badge.admin {
+      background: rgba(245,163,0,0.12);
+      color: var(--yellow);
+      border: 1px solid rgba(245,163,0,0.35);
+    }
+
     .card-icon { font-size: 2.8rem; position: relative; z-index: 1; }
+
     .card-title {
       font-family: 'Anton', sans-serif;
       font-size: 1.05rem;
@@ -166,19 +229,22 @@
       color: var(--yellow);
       position: relative; z-index: 1;
     }
+
     .card-desc {
-      font-size: 0.72rem;
+      font-size: 0.71rem;
       color: var(--muted);
       text-align: center;
-      line-height: 1.55;
+      line-height: 1.6;
       position: relative; z-index: 1;
+      flex: 1;
     }
+
     .card-btn {
       margin-top: 4px;
-      padding: 10px 22px;
+      padding: 11px 22px;
       border-radius: 7px;
       font-family: 'Anton', sans-serif;
-      font-size: 0.78rem;
+      font-size: 0.75rem;
       letter-spacing: 2px;
       border: none; cursor: pointer;
       background: var(--yellow); color: #111;
@@ -191,7 +257,7 @@
     /* ── INFO STRIP ── */
     .info-strip {
       position: relative; z-index: 1;
-      margin-top: 44px;
+      margin-top: 40px;
       display: flex;
       gap: 0;
       justify-content: center;
@@ -201,24 +267,32 @@
 
     .info-item {
       display: flex; align-items: center; gap: 8px;
-      font-size: 0.76rem; color: var(--muted);
-      padding: 0 24px 0 0;
+      font-size: 0.73rem; color: var(--muted);
+      padding: 0 24px;
     }
-    .info-item:not(:last-child) {
-      border-right: 1px solid var(--border);
-    }
+    .info-item + .info-item { border-left: 1px solid var(--border); }
     .info-item span:first-child { font-size: 1rem; }
     .info-item strong { color: #b0b0b0; font-weight: 700; }
 
+    /* ── FOOTER ── */
     footer {
       position: relative; z-index: 1;
       text-align: center;
-      padding: 16px;
+      padding: 14px;
       font-size: 0.72rem;
       color: var(--muted);
       border-top: 1px solid var(--border);
     }
     footer a { color: var(--yellow); text-decoration: none; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 780px) {
+      .cards-row { flex-direction: column; align-items: center; gap: 28px; }
+      .col-sep { display: none; }
+      .role-group { padding: 0; }
+      .group-cards { flex-direction: column; }
+      .card { width: 280px; min-height: unset; }
+    }
 
     @keyframes fadeDown {
       from { opacity: 0; transform: translateY(-18px); }
@@ -256,20 +330,45 @@
 
   <div class="cards-label">Seleccioná una pantalla para abrir</div>
 
-  <div class="cards">
-    <a href="pedidos.html" target="_blank" class="card">
-      <span class="card-icon">🖥️</span>
-      <div class="card-title">CAJA</div>
-      <div class="card-desc">Tomá pedidos y enviálos a cocina en tiempo real</div>
-      <button class="card-btn">ABRIR CAJA</button>
-    </a>
+  <div class="cards-row">
 
-    <a href="cocina.html" target="_blank" class="card">
-      <span class="card-icon">👨‍🍳</span>
-      <div class="card-title">COCINA</div>
-      <div class="card-desc">Visualizá los pedidos entrantes y marcalos como listos</div>
-      <button class="card-btn">ABRIR COCINA</button>
-    </a>
+    <!-- CLIENTE -->
+    <div class="role-group">
+      <div class="role-label">Cliente</div>
+      <div class="group-cards">
+        <a href="/menu" target="_blank" class="card">
+          <span class="role-badge cliente">CLIENTE</span>
+          <span class="card-icon">📱</span>
+          <div class="card-title">PEDIDOS</div>
+          <div class="card-desc">Link o QR que el cliente abre para armar y enviar su pedido</div>
+          <button class="card-btn">ABRIR PEDIDOS</button>
+        </a>
+      </div>
+    </div>
+
+    <div class="col-sep"></div>
+
+    <!-- ADMINISTRACIÓN: Caja + Cocina -->
+    <div class="role-group">
+      <div class="role-label">Administración</div>
+      <div class="group-cards">
+        <a href="/admin" target="_blank" class="card">
+          <span class="role-badge admin">ADMIN</span>
+          <span class="card-icon">🖥️</span>
+          <div class="card-title">CAJA</div>
+          <div class="card-desc">Recibí y confirmá pedidos, gestioná el catálogo y configurá el negocio</div>
+          <button class="card-btn">ABRIR CAJA</button>
+        </a>
+        <a href="/admin/cocina" target="_blank" class="card">
+          <span class="role-badge admin">ADMIN</span>
+          <span class="card-icon">👨‍🍳</span>
+          <div class="card-title">COCINA</div>
+          <div class="card-desc">Visualizá los pedidos en preparación y marcalos como listos</div>
+          <button class="card-btn">ABRIR COCINA</button>
+        </a>
+      </div>
+    </div>
+
   </div>
 
   <div class="info-strip">

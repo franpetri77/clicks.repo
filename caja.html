@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Clicks Burger — Caja</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg:       #0f0f0f;
+      --surface:  #1a1a1a;
+      --surface2: #212121;
+      --surface3: #2a2a2a;
+      --yellow:   #F5A300;
+      --yellow2:  #FFD066;
+      --red:      #d93025;
+      --red2:     #ff4444;
+      --green:    #1e8c45;
+      --blue:     #4a9eff;
+      --text:     #f0f0f0;
+      --muted:    #888888;
+      --border:   #2e2e2e;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Lato', sans-serif;
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+    }
+
+    /* ── HEADER ── */
+    header {
+      background: #111;
+      border-bottom: 2px solid var(--yellow);
+      padding: 0 20px;
+      height: 58px;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-shrink: 0;
+    }
+
+    .logo { display: flex; align-items: center; gap: 10px; }
+    .logo-icon { font-size: 1.5rem; }
+    .logo-text { font-family: 'Anton', sans-serif; font-size: 1.3rem; letter-spacing: 2px; color: var(--yellow); }
+    .logo-sub  { font-size: 0.68rem; color: #666; letter-spacing: 2.5px; text-transform: uppercase; margin-top: 2px; }
+
+    .header-right { display: flex; align-items: center; gap: 20px; }
+
+    .stats { display: flex; gap: 0; }
+    .stat {
+      text-align: center; font-size: 0.68rem; color: var(--muted);
+      letter-spacing: 1px; text-transform: uppercase;
+      padding: 0 20px;
+    }
+    .stat + .stat { border-left: 1px solid var(--border); }
+    .stat-num { font-family: 'Anton', sans-serif; font-size: 1.5rem; display: block; color: var(--yellow); line-height: 1; }
+    .stat-num.blue  { color: var(--blue); }
+    .stat-num.green { color: #4aba6a; }
+
+    .reloj { font-family: 'Anton', sans-serif; font-size: 1.5rem; color: var(--yellow); font-variant-numeric: tabular-nums; letter-spacing: 2px; border-left: 1px solid var(--border); padding-left: 20px; margin-left: 4px; }
+
+    /* ── ALERTA NUEVOS ── */
+    .alerta-nuevos {
+      display: none;
+      background: #0d1a2a;
+      border-bottom: 2px solid var(--blue);
+      padding: 8px 20px;
+      flex-shrink: 0;
+      align-items: center; gap: 10px;
+      animation: pulseBg 1.5s ease-in-out infinite;
+    }
+    .alerta-nuevos.visible { display: flex; }
+    .alerta-icon { font-size: 1.2rem; }
+    .alerta-text { font-family: 'Anton', sans-serif; font-size: 0.85rem; letter-spacing: 2px; color: var(--blue); }
+    @keyframes pulseBg {
+      0%, 100% { background: #0d1a2a; }
+      50%       { background: #132233; }
+    }
+
+    /* ── TABS ── */
+    .tabs {
+      display: flex;
+      background: #111;
+      border-bottom: 1px solid var(--border);
+      padding: 0 20px;
+      flex-shrink: 0;
+    }
+    .tab {
+      padding: 11px 22px;
+      font-size: 0.75rem; font-weight: 700; letter-spacing: 1.5px;
+      text-transform: uppercase; cursor: pointer;
+      border-bottom: 3px solid transparent; color: var(--muted);
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .tab.active { color: var(--yellow); border-color: var(--yellow); }
+    .badge { display: inline-block; color: #fff; font-size: 0.65rem; font-weight: 900; border-radius: 10px; padding: 1px 6px; margin-left: 6px; }
+    .badge.azul  { background: #1a3a5a; color: var(--blue); }
+    .badge.verde { background: var(--green); }
+
+    /* ── GRID ── */
+    .content { flex: 1; padding: 20px; overflow-y: auto; }
+    .grid    { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; }
+
+    /* ── CARD ── */
+    .card {
+      background: var(--surface);
+      border: 2px solid var(--border);
+      border-radius: 12px; overflow: hidden;
+      animation: slideIn 0.22s ease;
+    }
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(-8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .card.entrante {
+      border-color: var(--blue);
+      animation: slideIn 0.22s ease, ringBlue 0.7s ease 0.22s 2;
+    }
+    @keyframes ringBlue {
+      0%   { box-shadow: 0 0 0 0 #4a9eff66; }
+      70%  { box-shadow: 0 0 0 14px transparent; }
+      100% { box-shadow: 0 0 0 0 transparent; }
+    }
+    .card.en-cocina { border-color: #2a4a2a; opacity: 0.8; }
+
+    /* ── HEAD ── */
+    .card-head {
+      background: linear-gradient(180deg, #242424 0%, #1e1e1e 100%);
+      padding: 11px 13px;
+      display: flex; align-items: center; gap: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+    .card-num {
+      font-family: 'Anton', sans-serif;
+      font-size: 1.65rem; color: var(--yellow); letter-spacing: 1px; line-height: 1;
+    }
+    .card-meta { flex: 1; min-width: 0; }
+    .card-hora { font-size: 0.74rem; color: var(--muted); }
+
+    .tipo-badge {
+      font-family: 'Anton', sans-serif;
+      font-size: 0.65rem; letter-spacing: 1px;
+      padding: 3px 8px; border-radius: 10px;
+      display: inline-flex; align-items: center; gap: 3px;
+      margin-top: 2px;
+    }
+    .tipo-badge.delivery { background: #1a2a3a; color: var(--blue);  border: 1px solid #2a4a6a; }
+    .tipo-badge.takeaway { background: #1a2a1a; color: #5ecf7a;      border: 1px solid #2a5a2a; }
+
+    .estado-pill {
+      font-family: 'Anton', sans-serif;
+      font-size: 0.68rem; letter-spacing: 1px;
+      padding: 3px 9px; border-radius: 10px;
+    }
+    .estado-pill.nuevo     { background: #0d1a2a; color: var(--blue);  border: 1px solid #1a3a5a; }
+    .estado-pill.en-cocina { background: #0e1c0e; color: #4aba6a;      border: 1px solid #2a5a2a; }
+
+    /* ── ITEMS ── */
+    .card-items { padding: 6px 13px 10px; }
+
+    .card-item-wrap { border-bottom: 1px solid var(--border); }
+    .card-item-wrap:last-child { border-bottom: none; }
+
+    .card-item {
+      display: flex; align-items: center; gap: 9px;
+      padding: 7px 0; font-size: 0.9rem;
+    }
+    .item-qty {
+      background: var(--yellow); color: #111;
+      font-family: 'Anton', sans-serif; font-size: 0.82rem;
+      min-width: 26px; height: 26px; border-radius: 5px;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .item-icon   { font-size: 1rem; }
+    .item-nombre { flex: 1; font-weight: 700; font-size: 0.92rem; }
+    .item-var    {
+      font-size: 0.65rem; color: var(--muted);
+      background: var(--surface3); padding: 2px 5px;
+      border-radius: 4px; border: 1px solid var(--border);
+    }
+    .item-obs-cocina {
+      font-size: 0.74rem; color: #d4a030;
+      background: #241a00;
+      border-left: 3px solid var(--yellow);
+      padding: 5px 8px 5px 10px;
+      margin-bottom: 2px;
+    }
+
+    /* ── NOTA GENERAL ── */
+    .card-nota {
+      margin: 0 12px 8px;
+      background: #241a00; border: 1px solid #5a4000;
+      border-radius: 6px; padding: 7px 10px;
+      font-size: 0.78rem; color: #d4a030;
+    }
+    .card-nota::before { content: "⚠ "; font-weight: 900; }
+
+    /* ── DEMORA STEPPER (en card) ── */
+    .card-demora-row {
+      display: flex; align-items: center; gap: 8px;
+      padding: 8px 12px;
+      border-top: 1px solid var(--border);
+      background: #161616;
+    }
+    .demora-label-card { font-size: 0.7rem; color: var(--muted); flex: 1; font-weight: 700; }
+    .demora-stepper { display: flex; align-items: center; gap: 6px; }
+    .demora-step-btn {
+      width: 24px; height: 24px;
+      background: var(--surface3); border: 1px solid var(--border);
+      border-radius: 5px; color: var(--text);
+      font-size: 1rem; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.1s; font-family: 'Lato', sans-serif;
+    }
+    .demora-step-btn:hover { background: var(--yellow); color: #111; }
+    .demora-val  { font-family: 'Anton', sans-serif; font-size: 1rem; color: var(--yellow); min-width: 28px; text-align: center; }
+    .demora-unit { font-size: 0.7rem; color: var(--muted); }
+
+    /* ── ACTIONS ── */
+    .card-actions {
+      padding: 10px 12px; display: flex; gap: 8px;
+      border-top: 1px solid var(--border);
+      background: #161616;
+    }
+    .btn-action {
+      flex: 1; padding: 12px;
+      border: none; border-radius: 7px;
+      font-family: 'Anton', sans-serif;
+      font-size: 0.85rem; letter-spacing: 1px;
+      cursor: pointer; transition: opacity 0.15s, transform 0.1s;
+    }
+    .btn-action:hover  { opacity: 0.85; }
+    .btn-action:active { transform: scale(0.97); }
+    .btn-confirmar { background: var(--green); color: #fff; }
+    .btn-rechazar  { background: transparent; color: var(--red); border: 1px solid #3a1a1a; }
+    .btn-rechazar:hover { background: #1f0808 !important; border-color: var(--red); }
+
+    /* ── EMPTY ── */
+    .empty { grid-column: 1/-1; text-align: center; padding: 80px 20px; color: var(--muted); }
+    .empty .icon { font-size: 3.5rem; display: block; margin-bottom: 12px; opacity: 0.35; }
+    .empty h2 { font-family: 'Anton', sans-serif; font-size: 1.2rem; letter-spacing: 2px; color: var(--text); margin-bottom: 6px; }
+    .empty p  { font-size: 0.82rem; }
+
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #3a3a3a; border-radius: 3px; }
+
+    /* ══════════════════════════════
+       CATÁLOGO ADMIN
+    ══════════════════════════════ */
+    .cat-panel { padding: 20px; overflow-y: auto; flex: 1; display: none; flex-direction: column; gap: 24px; }
+    .cat-panel.visible { display: flex; }
+
+    .cat-block {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .cat-block-head {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 16px;
+      background: var(--surface2);
+      border-bottom: 1px solid var(--border);
+    }
+    .cat-block-title {
+      font-family: 'Anton', sans-serif;
+      font-size: 0.9rem; letter-spacing: 2px; color: var(--yellow);
+    }
+    .btn-add-prod {
+      background: var(--yellow); color: #111;
+      border: none; border-radius: 6px;
+      padding: 7px 14px;
+      font-family: 'Anton', sans-serif;
+      font-size: 0.72rem; letter-spacing: 1.5px;
+      cursor: pointer; transition: background 0.15s;
+    }
+    .btn-add-prod:hover { background: var(--yellow2); }
+
+    .prod-list { padding: 8px 12px; }
+
+    .prod-row {
+      display: flex; align-items: center; gap: 10px;
+      padding: 9px 6px;
+      border-bottom: 1px solid var(--border);
+    }
+    .prod-row:last-child { border-bottom: none; }
+    .prod-icon { font-size: 1.4rem; flex-shrink: 0; }
+    .prod-info { flex: 1; min-width: 0; }
+    .prod-name { font-weight: 700; font-size: 0.88rem; color: var(--text); }
+    .prod-detail { font-size: 0.7rem; color: var(--muted); margin-top: 2px; }
+    .prod-actions { display: flex; gap: 6px; flex-shrink: 0; }
+    .btn-edit-prod {
+      background: none; border: 1px solid var(--border);
+      color: var(--muted); border-radius: 5px;
+      padding: 5px 10px; font-size: 0.68rem; font-weight: 700;
+      cursor: pointer; transition: all 0.15s;
+    }
+    .btn-edit-prod:hover { border-color: var(--yellow); color: var(--yellow); }
+    .btn-del-prod {
+      background: none; border: 1px solid #3a1a1a;
+      color: var(--red); border-radius: 5px;
+      padding: 5px 10px; font-size: 0.68rem; font-weight: 700;
+      cursor: pointer; transition: all 0.15s;
+    }
+    .btn-del-prod:hover { background: #1f0808; border-color: var(--red); }
+
+    /* Config row */
+    .config-block { display: flex; flex-direction: column; gap: 14px; padding: 16px; }
+    .config-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .config-label { font-size: 0.78rem; color: var(--muted); font-weight: 700; min-width: 130px; }
+    .config-input {
+      flex: 1; min-width: 200px;
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 6px; color: var(--text);
+      padding: 8px 12px; font-size: 0.82rem;
+      font-family: 'Lato', sans-serif;
+    }
+    .config-input:focus { outline: none; border-color: #F5A30070; }
+    .btn-save-cfg {
+      background: var(--green); color: #fff;
+      border: none; border-radius: 6px;
+      padding: 9px 18px;
+      font-family: 'Anton', sans-serif;
+      font-size: 0.75rem; letter-spacing: 1px;
+      cursor: pointer; transition: opacity 0.15s;
+    }
+    .btn-save-cfg:hover { opacity: 0.85; }
+
+    /* ── MODAL FORM ── */
+    .modal-overlay {
+      position: fixed; inset: 0;
+      background: #000000b0;
+      z-index: 100;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .modal-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 24px;
+      width: 420px; max-width: 95vw;
+      max-height: 90vh;
+      overflow-y: auto;
+      display: flex; flex-direction: column; gap: 16px;
+    }
+    .modal-title {
+      font-family: 'Anton', sans-serif;
+      font-size: 1rem; letter-spacing: 2px; color: var(--yellow);
+    }
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .form-label { font-size: 0.72rem; color: var(--muted); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
+    .form-input, .form-textarea {
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 6px; color: var(--text);
+      padding: 9px 12px; font-size: 0.84rem;
+      font-family: 'Lato', sans-serif;
+    }
+    .form-input:focus, .form-textarea:focus { outline: none; border-color: #F5A30070; }
+    .form-textarea { resize: vertical; min-height: 60px; }
+    .variantes-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    .modal-actions { display: flex; gap: 10px; margin-top: 4px; }
+    .btn-modal-ok {
+      flex: 1; background: var(--yellow); color: #111;
+      border: none; border-radius: 7px; padding: 12px;
+      font-family: 'Anton', sans-serif; font-size: 0.85rem; letter-spacing: 1.5px;
+      cursor: pointer; transition: background 0.15s;
+    }
+    .btn-modal-ok:hover { background: var(--yellow2); }
+    .btn-modal-cancel {
+      background: none; color: var(--muted);
+      border: 1px solid var(--border); border-radius: 7px; padding: 12px 18px;
+      font-family: 'Anton', sans-serif; font-size: 0.85rem;
+      cursor: pointer; transition: all 0.15s;
+    }
+    .btn-modal-cancel:hover { border-color: #555; color: var(--text); }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <span class="logo-icon">🖥️</span>
+    <div>
+      <div class="logo-text">CLICKS BURGER</div>
+      <div class="logo-sub">Panel Admin</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="stats">
+      <div class="stat">
+        <span class="stat-num blue" id="cnt-entrantes">0</span>
+        Entrantes
+      </div>
+      <div class="stat">
+        <span class="stat-num green" id="cnt-cocina">0</span>
+        En Cocina
+      </div>
+    </div>
+    <div class="reloj" id="reloj">00:00:00</div>
+    <form method="POST" action="/api/logout" style="margin-left:8px;">
+      <button type="submit" title="Cerrar sesión" style="
+        background: transparent;
+        border: 1px solid #3a3a3a;
+        border-radius: 6px;
+        color: #888;
+        font-family: 'Lato', sans-serif;
+        font-size: 0.72rem;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        padding: 6px 12px;
+        cursor: pointer;
+        transition: border-color 0.2s, color 0.2s;
+      " onmouseover="this.style.borderColor='#F5A300';this.style.color='#F5A300'"
+         onmouseout="this.style.borderColor='#3a3a3a';this.style.color='#888'">
+        Salir
+      </button>
+    </form>
+  </div>
+</header>
+
+<div class="alerta-nuevos" id="alerta-nuevos">
+  <span class="alerta-icon">🔔</span>
+  <span class="alerta-text" id="alerta-text">NUEVO PEDIDO ENTRANTE</span>
+</div>
+
+<div class="tabs">
+  <div class="tab active" id="tab-entrantes" onclick="setTab('entrantes')">
+    Entrantes <span class="badge azul" id="badge-entrantes">0</span>
+  </div>
+  <div class="tab" id="tab-cocina" onclick="setTab('cocina')">
+    En Cocina <span class="badge verde" id="badge-cocina">0</span>
+  </div>
+  <div class="tab" id="tab-catalogo" onclick="setTab('catalogo')">
+    Catálogo
+  </div>
+</div>
+
+<div class="content" id="panel-pedidos">
+  <div class="grid" id="grid"></div>
+</div>
+
+<!-- Panel Catálogo -->
+<div class="cat-panel" id="panel-catalogo">
+
+  <!-- Hamburguesas -->
+  <div class="cat-block">
+    <div class="cat-block-head">
+      <span class="cat-block-title">🍔 HAMBURGUESAS</span>
+      <button class="btn-add-prod" onclick="abrirFormBurger(null)">+ AGREGAR</button>
+    </div>
+    <div class="prod-list" id="list-burgers"></div>
+  </div>
+
+  <!-- Bebidas -->
+  <div class="cat-block">
+    <div class="cat-block-head">
+      <span class="cat-block-title">🥤 BEBIDAS</span>
+      <button class="btn-add-prod" onclick="abrirFormBebida(null)">+ AGREGAR</button>
+    </div>
+    <div class="prod-list" id="list-bebidas"></div>
+  </div>
+
+  <!-- Extras -->
+  <div class="cat-block">
+    <div class="cat-block-head">
+      <span class="cat-block-title">🍟 EXTRAS</span>
+      <button class="btn-add-prod" onclick="abrirFormExtra(null)">+ AGREGAR</button>
+    </div>
+    <div class="prod-list" id="list-extras"></div>
+  </div>
+
+  <!-- Configuración -->
+  <div class="cat-block">
+    <div class="cat-block-head">
+      <span class="cat-block-title">⚙ CONFIGURACIÓN</span>
+    </div>
+    <div class="config-block">
+      <div class="config-row">
+        <span class="config-label">WhatsApp número</span>
+        <input class="config-input" id="cfg-wsp" type="text" placeholder="5493518142654"
+               value="">
+        <button class="btn-save-cfg" onclick="guardarConfig()">GUARDAR</button>
+      </div>
+      <div style="font-size:0.7rem;color:#555;padding-left:2px;">
+        Formato internacional sin + ni espacios. Ej: <strong style="color:#777">5493511234567</strong>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Modal Burger -->
+<div class="modal-overlay" id="modal-burger" style="display:none;" onclick="cerrarModal('modal-burger')">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <div class="modal-title" id="modal-burger-title">AGREGAR HAMBURGUESA</div>
+    <input type="hidden" id="mb-idx">
+    <div class="form-group">
+      <label class="form-label">Nombre</label>
+      <input class="form-input" id="mb-nombre" type="text" placeholder="SUPER CLICKS">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Descripción</label>
+      <textarea class="form-textarea" id="mb-desc" placeholder="Ingredientes..."></textarea>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Ruta de imagen</label>
+      <input class="form-input" id="mb-img" type="text" placeholder="img/mi-burger.jpg">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Precios por variante</label>
+      <div class="variantes-grid">
+        <div class="form-group">
+          <label class="form-label">Simple</label>
+          <input class="form-input" id="mb-p-simple" type="number" placeholder="11000">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Doble</label>
+          <input class="form-input" id="mb-p-doble" type="number" placeholder="14000">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Triple</label>
+          <input class="form-input" id="mb-p-triple" type="number" placeholder="17000">
+        </div>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-modal-ok" onclick="guardarBurger()">GUARDAR</button>
+      <button class="btn-modal-cancel" onclick="cerrarModal('modal-burger')">CANCELAR</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Bebida -->
+<div class="modal-overlay" id="modal-bebida" style="display:none;" onclick="cerrarModal('modal-bebida')">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <div class="modal-title" id="modal-bebida-title">AGREGAR BEBIDA</div>
+    <input type="hidden" id="mbe-idx">
+    <div class="form-group">
+      <label class="form-label">Nombre</label>
+      <input class="form-input" id="mbe-nombre" type="text" placeholder="Jugo de Naranja">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Ruta de imagen</label>
+      <input class="form-input" id="mbe-img" type="text" placeholder="img/jugo.jpg">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Precio</label>
+      <input class="form-input" id="mbe-precio" type="number" placeholder="2500">
+    </div>
+    <div class="modal-actions">
+      <button class="btn-modal-ok" onclick="guardarBebida()">GUARDAR</button>
+      <button class="btn-modal-cancel" onclick="cerrarModal('modal-bebida')">CANCELAR</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Extra -->
+<div class="modal-overlay" id="modal-extra" style="display:none;" onclick="cerrarModal('modal-extra')">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <div class="modal-title" id="modal-extra-title">AGREGAR EXTRA</div>
+    <input type="hidden" id="mex-idx">
+    <div class="form-group">
+      <label class="form-label">Nombre</label>
+      <input class="form-input" id="mex-nombre" type="text" placeholder="Aros de Cebolla">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Emoji / Ícono</label>
+      <input class="form-input" id="mex-icon" type="text" placeholder="🧅" maxlength="4">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Precio</label>
+      <input class="form-input" id="mex-precio" type="number" placeholder="1500">
+    </div>
+    <div class="modal-actions">
+      <button class="btn-modal-ok" onclick="guardarExtra()">GUARDAR</button>
+      <button class="btn-modal-cancel" onclick="cerrarModal('modal-extra')">CANCELAR</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const channel = new BroadcastChannel('clicks_burger');
+let pedidos   = JSON.parse(localStorage.getItem('cb_cola') || '[]');
+let tabActual = 'entrantes';
+let demorasPorPedido = {}; // num -> minutos
+
+// ── RECIBIR PEDIDOS DEL CLIENTE ──
+channel.onmessage = ({ data }) => {
+  if (data.tipo === 'nuevo_pedido') {
+    const existe = pedidos.find(x => x.num === data.pedido.num);
+    if (!existe) pedidos.push(data.pedido);
+    render(true, data.pedido.num);
+    alertarNuevo(data.pedido.num);
+  }
+};
+
+window.addEventListener('storage', e => {
+  if (e.key === 'cb_cola') {
+    pedidos = JSON.parse(e.newValue || '[]');
+    render();
+  }
+});
+
+function alertarNuevo(num) {
+  if (navigator.vibrate) navigator.vibrate([200, 80, 200]);
+  let n = 0; const orig = document.title;
+  const iv = setInterval(() => {
+    document.title = n++ % 2 === 0 ? `🔔 PEDIDO #${String(num).padStart(3,'0')}` : '🖥️ CAJA';
+    if (n > 8) { clearInterval(iv); document.title = orig; }
+  }, 500);
+}
+
+// ── TABS ──
+function setTab(tab) {
+  tabActual = tab;
+  document.getElementById('tab-entrantes').classList.toggle('active', tab === 'entrantes');
+  document.getElementById('tab-cocina').classList.toggle('active', tab === 'cocina');
+  document.getElementById('tab-catalogo').classList.toggle('active', tab === 'catalogo');
+
+  const esPedidos = tab === 'entrantes' || tab === 'cocina';
+  document.getElementById('panel-pedidos').style.display  = esPedidos ? '' : 'none';
+  document.getElementById('panel-catalogo').classList.toggle('visible', tab === 'catalogo');
+
+  if (tab === 'catalogo') {
+    renderCatalogo();
+  } else {
+    render();
+  }
+}
+
+// ── DEMORA POR PEDIDO ──
+function ajustarDemora(num, delta) {
+  demorasPorPedido[num] = Math.max(5, Math.min(120, (demorasPorPedido[num] || 15) + delta));
+  const el = document.getElementById(`demora-val-${num}`);
+  if (el) el.textContent = demorasPorPedido[num];
+}
+
+// ── CONFIRMAR → pasa a Cocina ──
+function confirmar(num) {
+  const p = pedidos.find(x => x.num === num);
+  if (!p) return;
+  p.estado = 'pendiente';
+  p.demora = demorasPorPedido[num] || 15;
+  p.hora_confirmado = hora();
+  guardar();
+  channel.postMessage({ tipo: 'pedido_confirmado', pedido: p });
+  render();
+}
+
+// ── RECHAZAR ──
+function rechazar(num) {
+  pedidos = pedidos.filter(x => x.num !== num);
+  guardar();
+  render();
+}
+
+function guardar() { localStorage.setItem('cb_cola', JSON.stringify(pedidos)); }
+function hora()    { return new Date().toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' }); }
+
+// ── RENDER ──
+function render(esNuevo = false, numNuevo = null) {
+  const entrantes = pedidos.filter(p => p.estado === 'nuevo');
+  const enCocina  = pedidos.filter(p => p.estado === 'pendiente' || p.estado === 'listo');
+  const filtrados = tabActual === 'entrantes' ? entrantes : enCocina;
+
+  document.getElementById('cnt-entrantes').textContent  = entrantes.length;
+  document.getElementById('cnt-cocina').textContent     = enCocina.length;
+  document.getElementById('badge-entrantes').textContent = entrantes.length;
+  document.getElementById('badge-cocina').textContent    = enCocina.length;
+
+  // Alerta
+  const alertaEl = document.getElementById('alerta-nuevos');
+  if (entrantes.length > 0) {
+    alertaEl.classList.add('visible');
+    document.getElementById('alerta-text').textContent =
+      `🔔  ${entrantes.length} PEDIDO${entrantes.length > 1 ? 'S' : ''} ENTRANTE${entrantes.length > 1 ? 'S' : ''}`;
+  } else {
+    alertaEl.classList.remove('visible');
+  }
+
+  const grid = document.getElementById('grid');
+
+  if (!filtrados.length) {
+    grid.innerHTML = `
+      <div class="empty">
+        <span class="icon">${tabActual === 'entrantes' ? '📭' : '👨‍🍳'}</span>
+        <h2>${tabActual === 'entrantes' ? 'SIN PEDIDOS ENTRANTES' : 'NADA EN COCINA'}</h2>
+        <p>${tabActual === 'entrantes' ? 'Los pedidos del cliente aparecen aquí para confirmar.' : 'No hay pedidos confirmados en este momento.'}</p>
+      </div>`;
+    return;
+  }
+
+  grid.innerHTML = filtrados.map(p => {
+    const isNew = esNuevo && p.num === numNuevo;
+    const tipo  = p.tipo || 'takeaway';
+    const tipoBadge = tipo === 'delivery'
+      ? `<span class="tipo-badge delivery">🏍 DELIVERY</span>`
+      : `<span class="tipo-badge takeaway">🥡 TAKEAWAY</span>`;
+
+    const demoraActual = demorasPorPedido[p.num] !== undefined
+      ? demorasPorPedido[p.num]
+      : 15;
+
+    const cardClass = p.estado === 'nuevo'
+      ? (isNew ? 'entrante' : '')
+      : 'en-cocina';
+
+    const estadoPill = p.estado === 'nuevo'
+      ? `<span class="estado-pill nuevo">● NUEVO</span>`
+      : `<span class="estado-pill en-cocina">● EN COCINA</span>`;
+
+    const acciones = p.estado === 'nuevo' ? `
+      <div class="card-demora-row">
+        <span class="demora-label-card">⏱ Demora estimada</span>
+        <div class="demora-stepper">
+          <button class="demora-step-btn" onclick="ajustarDemora(${p.num}, -5)">−</button>
+          <span class="demora-val" id="demora-val-${p.num}">${demoraActual}</span>
+          <button class="demora-step-btn" onclick="ajustarDemora(${p.num}, 5)">+</button>
+          <span class="demora-unit">min</span>
+        </div>
+      </div>
+      <div class="card-actions">
+        <button class="btn-action btn-confirmar" onclick="confirmar(${p.num})">✓ CONFIRMAR</button>
+        <button class="btn-action btn-rechazar"  onclick="rechazar(${p.num})">✕ RECHAZAR</button>
+      </div>` : '';
+
+    return `
+      <div class="card ${cardClass}" id="card-${p.num}">
+        <div class="card-head">
+          <div class="card-num">#${String(p.num).padStart(3,'0')}</div>
+          <div class="card-meta">
+            <div class="card-hora">${p.hora}${p.hora_confirmado ? ' → ' + p.hora_confirmado : ''}</div>
+            ${tipoBadge}
+          </div>
+          ${estadoPill}
+        </div>
+
+        <div class="card-items">
+          ${p.items.map(it => `
+            <div class="card-item-wrap">
+              <div class="card-item">
+                <span class="item-qty">${it.cantidad}</span>
+                <span class="item-icon">${it.icon}</span>
+                <span class="item-nombre">${it.nombre}</span>
+                ${it.variante ? `<span class="item-var">${it.variante}</span>` : ''}
+              </div>
+              ${it.obs ? `<div class="item-obs-cocina">✏ ${it.obs}</div>` : ''}
+            </div>
+          `).join('')}
+        </div>
+
+        ${p.aclaracion ? `<div class="card-nota">${p.aclaracion}</div>` : ''}
+        ${acciones}
+      </div>
+    `;
+  }).join('');
+}
+
+// ════════════════════════════════════════
+// CATÁLOGO — GESTIÓN DE PRODUCTOS
+// ════════════════════════════════════════
+
+const CATALOGO_DEFAULT = {
+  burgers: [
+    {
+      id: 'american',
+      img: 'img/american-clicks.jpg',
+      nombre: 'AMERICAN CLICKS',
+      desc: 'Carne, doble queso, bacon, lechuga, tomate, cebolla y aderezo clicks',
+      variantes: [
+        { key: 'simple', label: 'Simple', precio: 11500 },
+        { key: 'doble',  label: 'Doble',  precio: 14500 },
+        { key: 'triple', label: 'Triple', precio: 17500 },
+      ]
+    },
+    {
+      id: 'cheeseburger',
+      img: 'img/cheeseburger.jpg',
+      nombre: 'CHEESEBURGER',
+      desc: 'Carne, doble queso, doble bacon y mayonesa',
+      variantes: [
+        { key: 'simple', label: 'Simple', precio: 11000 },
+        { key: 'doble',  label: 'Doble',  precio: 14000 },
+        { key: 'triple', label: 'Triple', precio: 17000 },
+      ]
+    },
+    {
+      id: 'cuarto',
+      img: 'img/cuarto-clicks.jpg',
+      nombre: 'CUARTO CLICKS',
+      desc: 'Carne, doble queso, bacon, ketchup, mostaza y cebolla brunoise',
+      variantes: [
+        { key: 'simple', label: 'Simple', precio: 11000 },
+        { key: 'doble',  label: 'Doble',  precio: 14000 },
+        { key: 'triple', label: 'Triple', precio: 17000 },
+      ]
+    },
+  ],
+  bebidas: [
+    { id: 'coca',     img: 'img/latacoca.jpg',     nombre: 'Coca-Cola', precio: 2500 },
+    { id: 'sprite',   img: 'img/latasprite.jpg',   nombre: 'Sprite',    precio: 2500 },
+    { id: 'fanta',    img: 'img/latafanta.jpg',    nombre: 'Fanta',     precio: 2500 },
+    { id: 'cocazero', img: 'img/latacocazero.jpg', nombre: 'Coca Zero', precio: 2500 },
+  ],
+  extras: [
+    { id: 'papas', icon: '🍟', nombre: 'Porción de Papas', precio: 2500 },
+    { id: 'mayo',  icon: '🥣', nombre: 'Mayonesa',         precio: 500  },
+  ]
+};
+
+function getCatalog() {
+  const s = localStorage.getItem('cb_catalog');
+  return s ? JSON.parse(s) : JSON.parse(JSON.stringify(CATALOGO_DEFAULT));
+}
+
+function saveCatalog(cat) {
+  localStorage.setItem('cb_catalog', JSON.stringify(cat));
+  channel.postMessage({ tipo: 'catalog_updated' });
+  renderCatalog();
+}
+
+function slugify(str) {
+  return str.toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, '_')
+    .replace(/^_+|_+$/g, '');
+}
+
+// ── RENDER CATÁLOGO ──
+function renderCatalog() {
+  const cat = getCatalog();
+
+  // Burgers
+  document.getElementById('list-burgers').innerHTML = cat.burgers.length
+    ? cat.burgers.map((b, i) => `
+        <div class="prod-row">
+          <span class="prod-icon">🍔</span>
+          <div class="prod-info">
+            <div class="prod-name">${b.nombre}</div>
+            <div class="prod-detail">S $${b.variantes[0]?.precio?.toLocaleString('es-AR')} · D $${b.variantes[1]?.precio?.toLocaleString('es-AR')} · T $${b.variantes[2]?.precio?.toLocaleString('es-AR')}</div>
+          </div>
+          <div class="prod-actions">
+            <button class="btn-edit-prod" onclick="abrirFormBurger(${i})">EDITAR</button>
+            <button class="btn-del-prod"  onclick="eliminarBurger(${i})">✕</button>
+          </div>
+        </div>
+      `).join('')
+    : '<div style="padding:12px;color:#666;font-size:0.8rem;">Sin hamburguesas. Agregá una.</div>';
+
+  // Bebidas
+  document.getElementById('list-bebidas').innerHTML = cat.bebidas.length
+    ? cat.bebidas.map((b, i) => `
+        <div class="prod-row">
+          <span class="prod-icon">🥤</span>
+          <div class="prod-info">
+            <div class="prod-name">${b.nombre}</div>
+            <div class="prod-detail">$${b.precio.toLocaleString('es-AR')}</div>
+          </div>
+          <div class="prod-actions">
+            <button class="btn-edit-prod" onclick="abrirFormBebida(${i})">EDITAR</button>
+            <button class="btn-del-prod"  onclick="eliminarBebida(${i})">✕</button>
+          </div>
+        </div>
+      `).join('')
+    : '<div style="padding:12px;color:#666;font-size:0.8rem;">Sin bebidas. Agregá una.</div>';
+
+  // Extras
+  document.getElementById('list-extras').innerHTML = cat.extras.length
+    ? cat.extras.map((e, i) => `
+        <div class="prod-row">
+          <span class="prod-icon">${e.icon}</span>
+          <div class="prod-info">
+            <div class="prod-name">${e.nombre}</div>
+            <div class="prod-detail">$${e.precio.toLocaleString('es-AR')}</div>
+          </div>
+          <div class="prod-actions">
+            <button class="btn-edit-prod" onclick="abrirFormExtra(${i})">EDITAR</button>
+            <button class="btn-del-prod"  onclick="eliminarExtra(${i})">✕</button>
+          </div>
+        </div>
+      `).join('')
+    : '<div style="padding:12px;color:#666;font-size:0.8rem;">Sin extras. Agregá uno.</div>';
+}
+
+// alias para onclick desde HTML
+function renderCatalogo() { renderCatalog(); }
+
+// ── BURGER FORM ──
+function abrirFormBurger(idx) {
+  const cat = getCatalog();
+  const b   = idx !== null ? cat.burgers[idx] : null;
+  document.getElementById('modal-burger-title').textContent = b ? 'EDITAR HAMBURGUESA' : 'AGREGAR HAMBURGUESA';
+  document.getElementById('mb-idx').value     = idx !== null ? idx : '';
+  document.getElementById('mb-nombre').value  = b ? b.nombre : '';
+  document.getElementById('mb-desc').value    = b ? b.desc   : '';
+  document.getElementById('mb-img').value     = b ? b.img    : '';
+  document.getElementById('mb-p-simple').value = b ? b.variantes[0]?.precio : '';
+  document.getElementById('mb-p-doble').value  = b ? b.variantes[1]?.precio : '';
+  document.getElementById('mb-p-triple').value = b ? b.variantes[2]?.precio : '';
+  document.getElementById('modal-burger').style.display = 'flex';
+}
+
+function guardarBurger() {
+  const nombre  = document.getElementById('mb-nombre').value.trim();
+  const desc    = document.getElementById('mb-desc').value.trim();
+  const img     = document.getElementById('mb-img').value.trim() || 'img/placeholder.jpg';
+  const pSimple = Number(document.getElementById('mb-p-simple').value) || 0;
+  const pDoble  = Number(document.getElementById('mb-p-doble').value)  || 0;
+  const pTriple = Number(document.getElementById('mb-p-triple').value) || 0;
+
+  if (!nombre) { alert('El nombre es obligatorio.'); return; }
+
+  const cat = getCatalog();
+  const idxStr = document.getElementById('mb-idx').value;
+  const idx    = idxStr !== '' ? Number(idxStr) : null;
+
+  const burger = {
+    id: idx !== null ? cat.burgers[idx].id : slugify(nombre),
+    img, nombre: nombre.toUpperCase(), desc,
+    variantes: [
+      { key: 'simple', label: 'Simple', precio: pSimple },
+      { key: 'doble',  label: 'Doble',  precio: pDoble  },
+      { key: 'triple', label: 'Triple', precio: pTriple },
+    ]
+  };
+
+  if (idx !== null) cat.burgers[idx] = burger;
+  else cat.burgers.push(burger);
+
+  saveCatalog(cat);
+  cerrarModal('modal-burger');
+}
+
+function eliminarBurger(idx) {
+  if (!confirm('¿Eliminar esta hamburguesa del catálogo?')) return;
+  const cat = getCatalog();
+  cat.burgers.splice(idx, 1);
+  saveCatalog(cat);
+}
+
+// ── BEBIDA FORM ──
+function abrirFormBebida(idx) {
+  const cat = getCatalog();
+  const b   = idx !== null ? cat.bebidas[idx] : null;
+  document.getElementById('modal-bebida-title').textContent = b ? 'EDITAR BEBIDA' : 'AGREGAR BEBIDA';
+  document.getElementById('mbe-idx').value    = idx !== null ? idx : '';
+  document.getElementById('mbe-nombre').value = b ? b.nombre : '';
+  document.getElementById('mbe-img').value    = b ? b.img    : '';
+  document.getElementById('mbe-precio').value = b ? b.precio : '';
+  document.getElementById('modal-bebida').style.display = 'flex';
+}
+
+function guardarBebida() {
+  const nombre = document.getElementById('mbe-nombre').value.trim();
+  const img    = document.getElementById('mbe-img').value.trim() || 'img/placeholder.jpg';
+  const precio = Number(document.getElementById('mbe-precio').value) || 0;
+
+  if (!nombre) { alert('El nombre es obligatorio.'); return; }
+
+  const cat    = getCatalog();
+  const idxStr = document.getElementById('mbe-idx').value;
+  const idx    = idxStr !== '' ? Number(idxStr) : null;
+
+  const bebida = {
+    id: idx !== null ? cat.bebidas[idx].id : slugify(nombre),
+    img, nombre, precio
+  };
+
+  if (idx !== null) cat.bebidas[idx] = bebida;
+  else cat.bebidas.push(bebida);
+
+  saveCatalog(cat);
+  cerrarModal('modal-bebida');
+}
+
+function eliminarBebida(idx) {
+  if (!confirm('¿Eliminar esta bebida del catálogo?')) return;
+  const cat = getCatalog();
+  cat.bebidas.splice(idx, 1);
+  saveCatalog(cat);
+}
+
+// ── EXTRA FORM ──
+function abrirFormExtra(idx) {
+  const cat = getCatalog();
+  const e   = idx !== null ? cat.extras[idx] : null;
+  document.getElementById('modal-extra-title').textContent = e ? 'EDITAR EXTRA' : 'AGREGAR EXTRA';
+  document.getElementById('mex-idx').value    = idx !== null ? idx : '';
+  document.getElementById('mex-nombre').value = e ? e.nombre : '';
+  document.getElementById('mex-icon').value   = e ? e.icon   : '';
+  document.getElementById('mex-precio').value = e ? e.precio : '';
+  document.getElementById('modal-extra').style.display = 'flex';
+}
+
+function guardarExtra() {
+  const nombre = document.getElementById('mex-nombre').value.trim();
+  const icon   = document.getElementById('mex-icon').value.trim() || '🍴';
+  const precio = Number(document.getElementById('mex-precio').value) || 0;
+
+  if (!nombre) { alert('El nombre es obligatorio.'); return; }
+
+  const cat    = getCatalog();
+  const idxStr = document.getElementById('mex-idx').value;
+  const idx    = idxStr !== '' ? Number(idxStr) : null;
+
+  const extra = {
+    id: idx !== null ? cat.extras[idx].id : slugify(nombre),
+    icon, nombre, precio
+  };
+
+  if (idx !== null) cat.extras[idx] = extra;
+  else cat.extras.push(extra);
+
+  saveCatalog(cat);
+  cerrarModal('modal-extra');
+}
+
+function eliminarExtra(idx) {
+  if (!confirm('¿Eliminar este extra del catálogo?')) return;
+  const cat = getCatalog();
+  cat.extras.splice(idx, 1);
+  saveCatalog(cat);
+}
+
+// ── MODAL ──
+function cerrarModal(id) {
+  document.getElementById(id).style.display = 'none';
+}
+
+// ── CONFIGURACIÓN ──
+function guardarConfig() {
+  const wsp = document.getElementById('cfg-wsp').value.trim();
+  if (wsp) localStorage.setItem('cb_wsp_phone', wsp);
+  else localStorage.removeItem('cb_wsp_phone');
+  alert('Configuración guardada.');
+}
+
+function cargarConfig() {
+  const wsp = localStorage.getItem('cb_wsp_phone') || '';
+  document.getElementById('cfg-wsp').value = wsp;
+}
+
+// ── RELOJ ──
+function tickReloj() {
+  document.getElementById('reloj').textContent =
+    new Date().toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+}
+
+setInterval(tickReloj, 1000);
+tickReloj();
+render();
+cargarConfig();
+</script>
+</body>
+</html>

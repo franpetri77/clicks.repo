@@ -296,6 +296,24 @@
       </div>
     </div>
     <div class="reloj" id="reloj">00:00:00</div>
+    <form method="POST" action="/api/logout" style="margin-left:8px;">
+      <button type="submit" title="Cerrar sesión" style="
+        background: transparent;
+        border: 1px solid #3a3a3a;
+        border-radius: 6px;
+        color: #888;
+        font-family: 'Lato', sans-serif;
+        font-size: 0.72rem;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        padding: 6px 12px;
+        cursor: pointer;
+        transition: border-color 0.2s, color 0.2s;
+      " onmouseover="this.style.borderColor='#F5A300';this.style.color='#F5A300'"
+         onmouseout="this.style.borderColor='#3a3a3a';this.style.color='#888'">
+        Salir
+      </button>
+    </form>
   </div>
 </header>
 
@@ -326,8 +344,10 @@ let timers     = {};   // num -> timestamp inicio
 
 // ── RECIBIR EN TIEMPO REAL ──
 channel.onmessage = ({ data }) => {
-  if (data.tipo === 'nuevo_pedido') {
-    pedidos.push(data.pedido);
+  if (data.tipo === 'pedido_confirmado') {
+    const idx = pedidos.findIndex(x => x.num === data.pedido.num);
+    if (idx >= 0) pedidos[idx] = data.pedido;
+    else pedidos.push(data.pedido);
     render(true, data.pedido.num);
     alertarNuevo(data.pedido.num);
   }
