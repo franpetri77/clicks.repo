@@ -104,47 +104,115 @@
     /* Separador de categoría */
     .cat-label {
       font-family: 'Anton', sans-serif;
-      font-size: 0.78rem; letter-spacing: 3px;
-      color: var(--yellow); text-transform: uppercase;
-      margin: 0 0 6px;
-      display: flex; align-items: center; gap: 10px;
-      padding-left: 9px;
+      font-size: 0.76rem;
+      letter-spacing: 3.5px;
+      color: var(--yellow);
+      text-transform: uppercase;
+      margin: 4px 0 8px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding-left: 10px;
       border-left: 3px solid var(--yellow);
     }
     .cat-label:first-child { margin-top: 0; }
-    .cat-label::after { content: ''; flex: 1; height: 1px; background: #333; }
+    .cat-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(to right, #3a3a3a, transparent);
+    }
 
     /* ── EXTRAS (grilla) ── */
     .extras-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 10px;
-      margin-top: 8px;
+      gap: 12px;
+      margin-top: 10px;
     }
 
-    /* Carta de extra sin foto (papas / mayo) */
+    /* Carta de extra */
     .extra-card-btn {
       background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 10px;
-      cursor: pointer; overflow: hidden;
-      display: flex; flex-direction: column; align-items: center;
-      justify-content: center; gap: 6px;
-      padding: 18px 10px;
-      transition: border-color 0.2s, box-shadow 0.2s, transform 0.1s;
+      border: 1.5px solid var(--card-border);
+      border-radius: 16px;
+      cursor: pointer;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      padding: 0;
+      transition: border-color 0.22s, box-shadow 0.22s, transform 0.12s;
       color: var(--menu-text);
-      box-shadow: 0 2px 8px #00000020;
+      box-shadow: 0 4px 20px #00000028, 0 1px 0 #ffffff06 inset;
       text-align: center;
     }
     .extra-card-btn:hover {
       border-color: var(--yellow);
-      box-shadow: 0 4px 16px #F5A30022;
-      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(245,163,0,0.18), 0 1px 0 #ffffff08 inset;
+      transform: translateY(-3px);
     }
-    .extra-card-btn:active { transform: scale(0.97); }
-    .extra-card-icon  { font-size: 2.2rem; }
-    .extra-card-name  { font-size: 0.78rem; font-weight: 700; color: var(--menu-text); }
-    .extra-card-price { font-family: 'Anton', sans-serif; font-size: 0.92rem; color: var(--yellow); }
+    .extra-card-btn:active {
+      transform: scale(0.97);
+      box-shadow: 0 2px 12px rgba(245,163,0,0.12);
+    }
+
+    .extra-card-top {
+      width: 100%;
+      padding: 24px 12px 18px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      background: linear-gradient(to bottom, #222, #1c1c1c);
+    }
+
+    .extra-card-icon-wrap {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: rgba(245, 163, 0, 0.1);
+      border: 1.5px solid rgba(245, 163, 0, 0.22);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.22s, border-color 0.22s, box-shadow 0.22s;
+    }
+
+    .extra-card-btn:hover .extra-card-icon-wrap {
+      background: rgba(245, 163, 0, 0.16);
+      border-color: rgba(245, 163, 0, 0.45);
+      box-shadow: 0 0 18px rgba(245,163,0,0.2);
+    }
+
+    .extra-card-icon  { font-size: 2.4rem; line-height: 1; }
+
+    .extra-card-bottom {
+      width: 100%;
+      padding: 12px 12px 16px;
+      background: linear-gradient(to bottom, #1a1a1a, #161616);
+      border-top: 1px solid rgba(245,163,0,0.1);
+    }
+
+    .extra-card-name  {
+      font-family: 'Anton', sans-serif;
+      font-size: 0.88rem;
+      letter-spacing: 0.5px;
+      color: var(--menu-text);
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .extra-card-btn:hover .extra-card-name { color: #fff; }
+
+    .extra-card-price {
+      font-family: 'Anton', sans-serif;
+      font-size: 1.05rem;
+      color: var(--yellow);
+      display: block;
+    }
 
     /* ════════════════════════════════
        TICKET (OSCURO) — más ancho
@@ -318,11 +386,15 @@
 
     /* ── FLASH AL AGREGAR ── */
     @keyframes flashAdd {
+      0%   { border-color: var(--yellow); box-shadow: 0 0 0 4px rgba(245,163,0,0.28), 0 12px 40px rgba(0,0,0,0.55); }
+      100% { border-color: rgba(245,163,0,0.2);  box-shadow: 0 12px 40px rgba(0,0,0,0.55); }
+    }
+    @keyframes flashAddCard {
       0%   { border-color: var(--yellow); box-shadow: 0 0 0 3px #F5A30030; }
       100% { border-color: var(--card-border); box-shadow: 0 1px 4px #0000000a; }
     }
-    .cv-section.added  { animation: flashAdd 0.5s ease forwards; }
-    .bslide-card.added { animation: flashAdd 0.5s ease forwards; }
+    .cv-section.added  { animation: flashAdd 0.55s ease forwards; }
+    .bslide-card.added { animation: flashAddCard 0.5s ease forwards; }
 
     /* ═══════════════════════════════════════
        CARRUSEL HAMBURGUESAS
@@ -332,11 +404,40 @@
       position: relative;
       margin-bottom: 4px;
       user-select: none;
+      background: radial-gradient(ellipse at 38% 52%, rgba(245, 163, 0, 0.055) 0%, transparent 62%);
+      border-radius: 16px;
+      padding: 8px 0 6px;
+    }
+
+    /* ─── BURGER HERO LAYOUT ─── */
+    .burger-hero-wrap {
+      display: flex;
+      align-items: stretch;
+    }
+
+    .carousel-area {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .size-panel {
+      width: 136px;
+      flex-shrink: 0;
+      padding-left: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .size-panel > div {
+      width: 100%;
     }
 
     .carousel-wrapper {
       position: relative;
-      height: 340px;
+      height: 400px;
       overflow: hidden;
     }
 
@@ -350,8 +451,8 @@
       position: absolute;
       top: 50%;
       left: 50%;
-      width: 270px;
-      margin-left: -135px;
+      width: 310px;
+      margin-left: -155px;
       cursor: pointer;
       transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
                   opacity 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
@@ -369,14 +470,14 @@
 
     .carousel-slide.active .carousel-card {
       border-color: var(--yellow);
-      box-shadow: 0 10px 48px #F5A30025, 0 2px 0 #ffffff0a inset;
+      box-shadow: 0 16px 64px #F5A3003a, 0 0 0 1px rgba(245,163,0,0.14), 0 2px 0 #ffffff0a inset;
     }
 
     .carousel-img-wrap {
       width: 100%;
-      height: 190px;
+      height: 218px;
       overflow: hidden;
-      background: #2a2a2a;
+      background: #1e1e1e;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -387,34 +488,42 @@
       height: 100%;
       object-fit: cover;
       display: block;
-      transition: transform 0.5s ease;
+      transition: transform 0.55s ease;
     }
 
     .carousel-slide.active .carousel-img {
-      transform: scale(1.08);
+      transform: scale(1.07);
     }
 
     .carousel-info {
-      padding: 10px 12px 12px;
-      background: var(--menu-surface);
-      border-top: 1px solid var(--card-border);
+      padding: 12px 14px 14px;
+      background: linear-gradient(to bottom, #1c1c1c, #181818);
+      border-top: 1px solid rgba(245,163,0,0.12);
+    }
+
+    .carousel-slide.active .carousel-info {
+      background: linear-gradient(to bottom, #222, #1a1a1a);
     }
 
     .carousel-name {
       font-family: 'Anton', sans-serif;
-      font-size: 0.92rem;
-      letter-spacing: 0.5px;
+      font-size: 1rem;
+      letter-spacing: 0.8px;
       color: var(--menu-text);
-      margin-bottom: 4px;
+      margin-bottom: 5px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
 
+    .carousel-slide.active .carousel-name {
+      color: #fff;
+    }
+
     .carousel-desc {
-      font-size: 0.66rem;
+      font-size: 0.67rem;
       color: var(--menu-muted);
-      line-height: 1.4;
+      line-height: 1.45;
       display: -webkit-box;
       -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
@@ -429,11 +538,14 @@
       position: relative;
       margin-bottom: 4px;
       user-select: none;
+      background: radial-gradient(ellipse at 50% 55%, rgba(245, 163, 0, 0.04) 0%, transparent 60%);
+      border-radius: 14px;
+      padding: 6px 0 4px;
     }
 
     .bcarousel-wrapper {
       position: relative;
-      height: 270px;
+      height: 390px;
       overflow: hidden;
     }
 
@@ -447,8 +559,8 @@
       position: absolute;
       top: 50%;
       left: 50%;
-      width: 175px;
-      margin-left: -87px;
+      width: 265px;
+      margin-left: -132px;
       cursor: pointer;
       transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
                   opacity 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
@@ -458,22 +570,22 @@
     .bslide-card {
       background: var(--card-bg);
       border: 1.5px solid var(--card-border);
-      border-radius: 14px;
+      border-radius: 16px;
       overflow: hidden;
-      box-shadow: 0 4px 20px #00000025;
+      box-shadow: 0 4px 24px #00000030, 0 1px 0 #ffffff06 inset;
       transition: border-color 0.3s, box-shadow 0.3s;
     }
 
     .bslide.active .bslide-card {
       border-color: var(--yellow);
-      box-shadow: 0 8px 36px #F5A30022;
+      box-shadow: 0 14px 52px #F5A3002e, 0 0 0 1px rgba(245,163,0,0.12), 0 2px 0 #ffffff09 inset;
     }
 
     .bslide-img-wrap {
       width: 100%;
-      height: 140px;
+      height: 210px;
       overflow: hidden;
-      background: #2a2a2a;
+      background: #1e1e1e;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -484,34 +596,44 @@
       width: auto;
       max-width: 100%;
       object-fit: contain;
-      padding: 8px 6px;
+      padding: 10px 8px;
       transition: transform 0.5s ease;
     }
 
     .bslide.active .bslide-img {
-      transform: scale(1.1);
+      transform: scale(1.08);
     }
 
     .bslide-footer {
-      padding: 8px 10px 10px;
+      padding: 14px 14px 16px;
       text-align: center;
-      background: var(--menu-surface);
-      border-top: 1px solid var(--card-border);
+      background: linear-gradient(to bottom, #1c1c1c, #181818);
+      border-top: 1px solid rgba(245,163,0,0.1);
+    }
+
+    .bslide.active .bslide-footer {
+      background: linear-gradient(to bottom, #222, #1a1a1a);
     }
 
     .bslide-name {
-      font-size: 0.74rem;
-      font-weight: 700;
+      font-family: 'Anton', sans-serif;
+      font-size: 1rem;
+      letter-spacing: 0.5px;
       color: var(--menu-text);
       display: block;
+      margin-bottom: 4px;
+    }
+
+    .bslide.active .bslide-name {
+      color: #fff;
     }
 
     .bslide-price {
       font-family: 'Anton', sans-serif;
-      font-size: 0.9rem;
+      font-size: 1.1rem;
       color: var(--yellow);
       display: block;
-      margin: 2px 0 8px;
+      margin: 0 0 12px;
     }
 
     .bslide-add {
@@ -520,25 +642,233 @@
       background: var(--yellow);
       color: #111;
       border: none;
-      border-radius: 6px;
-      padding: 7px 0;
+      border-radius: 9px;
+      padding: 11px 0;
       cursor: pointer;
       font-family: 'Anton', sans-serif;
-      font-size: 0.7rem;
-      letter-spacing: 1px;
-      transition: background 0.15s, transform 0.1s;
+      font-size: 0.82rem;
+      letter-spacing: 1.5px;
+      transition: background 0.15s, transform 0.1s, box-shadow 0.15s;
     }
 
-    .bslide.active .bslide-add {
+    /* ─── BEBIDA HERO LAYOUT ─── */
+    .bdrink-hero-wrap {
+      display: flex;
+      align-items: stretch;
+    }
+
+    .bcarousel-area {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .bside-panel {
+      width: 136px;
+      flex-shrink: 0;
+      padding-left: 12px;
+      display: flex;
+      align-items: stretch;
+    }
+
+    .bside-panel > div {
+      width: 100%;
+    }
+
+    /* ─── PANEL LATERAL DE EXTRAS ─── */
+    .extras-side-panel {
+      background: rgba(12, 12, 12, 0.82);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(245, 163, 0, 0.2);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow:
+        0 12px 40px rgba(0,0,0,0.55),
+        0 0 0 1px rgba(255,255,255,0.04) inset;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .esp-header {
+      padding: 12px 10px 11px;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      background: rgba(255,255,255,0.03);
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    .esp-title {
+      font-size: 0.57rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--yellow);
+      background: rgba(245, 163, 0, 0.1);
+      border: 1px solid rgba(245, 163, 0, 0.28);
+      padding: 3px 8px;
+      border-radius: 5px;
+      white-space: nowrap;
+      display: inline-block;
+    }
+
+    .esp-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding: 12px 8px;
+      flex: 1;
+      justify-content: center;
+    }
+
+    .esp-btn {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      padding: 18px 6px 16px;
+      cursor: pointer;
+      text-align: center;
+      transition: background 0.18s, border-color 0.18s, transform 0.1s, box-shadow 0.18s;
+      color: var(--menu-text);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+      width: 100%;
+      flex: 1;
+    }
+
+    .esp-btn:hover {
+      background: rgba(245, 163, 0, 0.13);
+      border-color: rgba(245, 163, 0, 0.42);
+      box-shadow: 0 2px 12px rgba(245,163,0,0.12);
+    }
+
+    .esp-btn:active {
+      background: rgba(245, 163, 0, 0.22);
+      border-color: rgba(245, 163, 0, 0.6);
+      transform: scale(0.96);
+    }
+
+    .esp-icon {
+      font-size: 2.2rem;
+      line-height: 1;
+    }
+
+    .esp-name {
+      font-size: 0.6rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: #bbb;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
       display: block;
     }
 
-    .bslide-add:hover {
-      background: var(--yellow2);
+    .esp-btn:hover .esp-name { color: var(--yellow); }
+
+    .esp-price {
+      font-family: 'Anton', sans-serif;
+      font-size: 0.92rem;
+      color: var(--yellow);
+      display: block;
     }
 
-    .bslide-add:active {
-      transform: scale(0.97);
+
+    /* Panel acción bebida activa */
+    .bdp-section {
+      background: rgba(12, 12, 12, 0.82);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(245, 163, 0, 0.2);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow:
+        0 12px 40px rgba(0,0,0,0.55),
+        0 0 0 1px rgba(255,255,255,0.04) inset;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+
+    .bdp-section.added {
+      animation: flashAdd 0.55s ease forwards;
+    }
+
+    .bdp-header {
+      padding: 13px 10px 12px;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      background: rgba(255,255,255,0.03);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+      text-align: center;
+    }
+
+    .bdp-name {
+      font-family: 'Anton', sans-serif;
+      font-size: 0.75rem;
+      letter-spacing: 0.5px;
+      color: #ddd;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
+      display: block;
+    }
+
+    .bdp-label {
+      font-size: 0.57rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--yellow);
+      background: rgba(245, 163, 0, 0.1);
+      border: 1px solid rgba(245, 163, 0, 0.28);
+      padding: 3px 8px;
+      border-radius: 5px;
+      white-space: nowrap;
+    }
+
+    .bdp-price {
+      font-family: 'Anton', sans-serif;
+      font-size: 1.05rem;
+      color: var(--yellow);
+      display: block;
+    }
+
+    .bdp-body {
+      padding: 10px 8px;
+    }
+
+    .bdp-add-btn {
+      width: 100%;
+      background: var(--yellow);
+      color: #111;
+      border: none;
+      border-radius: 11px;
+      padding: 14px 6px;
+      cursor: pointer;
+      font-family: 'Anton', sans-serif;
+      font-size: 0.8rem;
+      letter-spacing: 1.5px;
+      transition: background 0.18s, transform 0.12s, box-shadow 0.18s;
+      display: block;
+    }
+
+    .bdp-add-btn:hover {
+      background: var(--yellow2);
+      box-shadow: 0 4px 20px rgba(245,163,0,0.38);
+    }
+
+    .bdp-add-btn:active {
+      background: var(--yellow);
+      transform: scale(0.95);
+      box-shadow: none;
     }
 
     /* ── NAVS + DOTS ── */
@@ -547,31 +877,33 @@
       top: 50%;
       transform: translateY(-50%);
       z-index: 20;
-      width: 36px;
-      height: 36px;
-      background: rgba(30,30,30,0.95);
-      border: 1px solid var(--card-border);
+      width: 38px;
+      height: 38px;
+      background: rgba(18,18,18,0.92);
+      border: 1px solid rgba(255,255,255,0.12);
       border-radius: 50%;
-      font-size: 1.3rem;
-      color: var(--menu-muted);
+      font-size: 1.4rem;
+      color: #888;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
       transition: all 0.2s;
-      box-shadow: 0 2px 12px #00000030;
+      box-shadow: 0 3px 14px #00000040;
       line-height: 1;
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
     }
 
     .carousel-nav:hover {
-      border-color: var(--yellow);
+      border-color: rgba(245,163,0,0.6);
       color: var(--yellow);
-      box-shadow: 0 4px 20px #F5A30030;
-      background: #2a2a2a;
+      box-shadow: 0 4px 20px rgba(245,163,0,0.25);
+      background: rgba(30,20,0,0.9);
     }
 
     .carousel-nav:active {
-      transform: translateY(-50%) scale(0.93);
+      transform: translateY(-50%) scale(0.92);
     }
 
     .carousel-nav.prev { left: 8px; }
@@ -580,112 +912,144 @@
     .carousel-dots, .bcarousel-dots {
       display: flex;
       justify-content: center;
-      gap: 8px;
-      margin: 8px 0 4px;
+      gap: 7px;
+      margin: 10px 0 4px;
     }
 
     .c-dot {
-      width: 7px;
-      height: 7px;
+      width: 6px;
+      height: 6px;
       border-radius: 50%;
-      background: #444;
+      background: #3a3a3a;
       cursor: pointer;
-      transition: all 0.25s;
+      transition: all 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
     .c-dot.active {
+      width: 20px;
+      border-radius: 3px;
       background: var(--yellow);
-      transform: scale(1.6);
-      box-shadow: 0 0 8px #F5A30060;
+      box-shadow: 0 0 10px rgba(245,163,0,0.5);
+      transform: none;
     }
 
-    /* ── VARIANTES BURGER ── */
+    /* ── PANEL DE TAMAÑOS (lateral derecho) ── */
     #carousel-variants {
-      transition: opacity 0.15s ease, transform 0.15s ease;
+      transition: opacity 0.18s ease;
+      width: 100%;
     }
 
     .cv-section {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 12px;
+      background: rgba(12, 12, 12, 0.82);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(245, 163, 0, 0.2);
+      border-radius: 16px;
       overflow: hidden;
-      margin-bottom: 12px;
-      box-shadow: 0 2px 12px #00000020;
-      transition: border-color 0.3s;
+      margin-bottom: 0;
+      box-shadow:
+        0 12px 40px rgba(0,0,0,0.55),
+        0 0 0 1px rgba(255,255,255,0.04) inset;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+
+    .cv-section.added {
+      border-color: var(--yellow);
+      box-shadow: 0 0 0 2px rgba(245,163,0,0.25), 0 12px 40px rgba(0,0,0,0.55);
     }
 
     .cv-header {
-      padding: 10px 16px;
-      border-bottom: 1px solid var(--card-border);
-      background: var(--menu-surface2);
+      padding: 11px 10px 10px;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      background: rgba(255,255,255,0.03);
       display: flex;
+      flex-direction: column;
       align-items: center;
-      gap: 10px;
+      gap: 6px;
+      text-align: center;
     }
 
     .cv-active-name {
       font-family: 'Anton', sans-serif;
-      font-size: 0.95rem;
-      color: var(--menu-text);
+      font-size: 0.72rem;
+      color: #ddd;
       letter-spacing: 0.5px;
-      flex: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
     }
 
     .cv-elegir {
-      font-size: 0.64rem;
+      font-size: 0.57rem;
       font-weight: 700;
       letter-spacing: 1.5px;
       text-transform: uppercase;
       color: var(--yellow);
-      background: rgba(245, 163, 0, 0.12);
-      border: 1px solid rgba(245, 163, 0, 0.3);
-      padding: 3px 10px;
-      border-radius: 6px;
+      background: rgba(245, 163, 0, 0.1);
+      border: 1px solid rgba(245, 163, 0, 0.28);
+      padding: 3px 8px;
+      border-radius: 5px;
+      white-space: nowrap;
     }
 
     .cv-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      padding: 10px 8px;
     }
 
     .cv-btn {
-      background: none;
-      border: none;
-      border-right: 1px solid var(--card-border);
-      padding: 14px 8px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 11px;
+      padding: 13px 6px;
       cursor: pointer;
       text-align: center;
-      transition: background 0.15s;
+      transition: background 0.18s, border-color 0.18s, transform 0.1s, box-shadow 0.18s;
       color: var(--menu-text);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
     }
 
     .cv-btn:last-child {
-      border-right: none;
+      border-right: 1px solid rgba(255,255,255,0.1);
     }
 
     .cv-btn:hover {
-      background: var(--menu-surface2);
+      background: rgba(245, 163, 0, 0.13);
+      border-color: rgba(245, 163, 0, 0.42);
+      box-shadow: 0 2px 12px rgba(245,163,0,0.12);
     }
 
     .cv-btn:active {
-      background: rgba(245, 163, 0, 0.1);
+      background: rgba(245, 163, 0, 0.22);
+      border-color: rgba(245, 163, 0, 0.6);
+      transform: scale(0.96);
     }
 
     .cv-btn-label {
-      font-size: 0.72rem;
+      font-size: 0.68rem;
       font-weight: 700;
       letter-spacing: 1px;
       text-transform: uppercase;
-      color: var(--menu-muted);
+      color: #bbb;
       display: block;
+    }
+
+    .cv-btn:hover .cv-btn-label {
+      color: var(--yellow);
     }
 
     .cv-btn-price {
       font-family: 'Anton', sans-serif;
-      font-size: 1rem;
+      font-size: 0.92rem;
       color: var(--yellow);
       display: block;
-      margin-top: 4px;
+      margin-top: 1px;
     }
 
     /* Scrollbar */
@@ -902,11 +1266,11 @@ function posicionarSlidesBurgers() {
     const offset = getOffset(i, total);
     const abs = Math.abs(offset);
 
-    // Configuración simétrica: izquierda/derecha con misma lógica
+    // Configuración hero: activo protagonista, laterales con profundidad marcada
     const cfg = [
       { x:    0, scale: 1.0,  opacity: 1.0,  z: 5, rot:  0 },
-      { x:  300, scale: 0.70, opacity: 0.45, z: 3, rot: 10 },
-      { x:  510, scale: 0.48, opacity: 0.12, z: 1, rot: 18 },
+      { x:  318, scale: 0.63, opacity: 0.35, z: 3, rot: 14 },
+      { x:  540, scale: 0.40, opacity: 0.08, z: 1, rot: 22 },
     ];
 
     if (abs >= cfg.length) {
@@ -1039,6 +1403,37 @@ function renderCarruselBebidas() {
   }
 
   posicionarSlidesBebidas();
+  renderBebidaPanel();
+}
+
+function renderBebidaPanel() {
+  const b  = BEBIDAS[activeBebida];
+  const el = document.getElementById('bdrink-panel');
+  if (!el || !b) return;
+
+  el.innerHTML = `
+    <div class="bdp-section" id="bdp-active">
+      <div class="bdp-header">
+        <span class="bdp-name">${b.nombre}</span>
+        <span class="bdp-label">AGREGAR</span>
+        <span class="bdp-price">$${b.precio.toLocaleString('es-AR')}</span>
+      </div>
+      <div class="bdp-body">
+        <button class="bdp-add-btn" onclick="agregarBebidaActiva()">+ AGREGAR</button>
+      </div>
+    </div>
+  `;
+}
+
+function agregarBebidaActiva() {
+  const b   = BEBIDAS[activeBebida];
+  const el  = document.getElementById('bdp-active');
+  agregarItem(b.id, null);
+  if (el) {
+    el.classList.remove('added');
+    void el.offsetWidth;
+    el.classList.add('added');
+  }
 }
 
 function posicionarSlidesBebidas() {
@@ -1051,11 +1446,11 @@ function posicionarSlidesBebidas() {
     const offset = getOffsetBebida(i, total);
     const abs = Math.abs(offset);
 
-    // Configuración simétrica para bebidas
+    // Configuración profundidad bebidas — proporcional a cards 265px
     const cfg = [
       { x:    0, scale: 1.0,  opacity: 1.0,  z: 5 },
-      { x:  210, scale: 0.72, opacity: 0.45, z: 3 },
-      { x:  365, scale: 0.50, opacity: 0.12, z: 1 },
+      { x:  292, scale: 0.63, opacity: 0.34, z: 3 },
+      { x:  495, scale: 0.40, opacity: 0.08, z: 1 },
     ];
 
     if (abs >= cfg.length) {
@@ -1100,40 +1495,57 @@ function nextBebida() {
 function renderMenu() {
   const el = document.getElementById('menu');
 
-  const extrasHTML = EXTRAS.map(e => `
-    <button class="extra-card-btn" onclick="agregarItem('${e.id}', null)">
-      <span class="extra-card-icon">${e.icon}</span>
-      <span class="extra-card-name">${e.nombre}</span>
-      <span class="extra-card-price">$${e.precio.toLocaleString('es-AR')}</span>
-    </button>
-  `).join('');
+  const extrasPanelHTML = `
+    <div class="extras-side-panel">
+      <div class="esp-header">
+        <span class="esp-title">EXTRAS</span>
+      </div>
+      <div class="esp-grid">
+        ${EXTRAS.map(e => `
+          <button class="esp-btn" onclick="agregarItem('${e.id}', null)">
+            <span class="esp-icon">${e.icon}</span>
+            <span class="esp-name">${e.nombre}</span>
+            <span class="esp-price">$${e.precio.toLocaleString('es-AR')}</span>
+          </button>
+        `).join('')}
+      </div>
+    </div>
+  `;
 
   el.innerHTML = `
     <div class="carousel-container">
       <div class="cat-label">Hamburguesas</div>
       <div class="carousel-section">
-        <div class="carousel-wrapper">
-          <div class="carousel-inner" id="carousel-inner"></div>
-          <button class="carousel-nav prev" onclick="prevBurger()">&#8249;</button>
-          <button class="carousel-nav next" onclick="nextBurger()">&#8250;</button>
+        <div class="burger-hero-wrap">
+          <div class="carousel-area">
+            <div class="carousel-wrapper">
+              <div class="carousel-inner" id="carousel-inner"></div>
+              <button class="carousel-nav prev" onclick="prevBurger()">&#8249;</button>
+              <button class="carousel-nav next" onclick="nextBurger()">&#8250;</button>
+            </div>
+            <div class="carousel-dots" id="carousel-dots"></div>
+          </div>
+          <div class="size-panel">
+            <div id="carousel-variants"></div>
+          </div>
         </div>
-        <div class="carousel-dots" id="carousel-dots"></div>
-        <div id="carousel-variants"></div>
       </div>
 
       <div class="cat-label">Bebidas</div>
       <div class="bcarousel-section">
-        <div class="bcarousel-wrapper">
-          <div class="bcarousel-inner" id="bcarousel-inner"></div>
-          <button class="carousel-nav prev" onclick="prevBebida()">&#8249;</button>
-          <button class="carousel-nav next" onclick="nextBebida()">&#8250;</button>
+        <div class="bdrink-hero-wrap">
+          <div class="bcarousel-area">
+            <div class="bcarousel-wrapper">
+              <div class="bcarousel-inner" id="bcarousel-inner"></div>
+              <button class="carousel-nav prev" onclick="prevBebida()">&#8249;</button>
+              <button class="carousel-nav next" onclick="nextBebida()">&#8250;</button>
+            </div>
+            <div class="bcarousel-dots" id="bcarousel-dots"></div>
+          </div>
+          <div class="bside-panel">
+            ${extrasPanelHTML}
+          </div>
         </div>
-        <div class="bcarousel-dots" id="bcarousel-dots"></div>
-      </div>
-
-      <div class="cat-label">Extras</div>
-      <div class="extras-grid">
-        ${extrasHTML}
       </div>
     </div>
   `;

@@ -89,9 +89,10 @@ const server = http.createServer((req, res) => {
     return;
   }
 
-  // ── HOME ──
+  // ── HOME → redirige al admin ──
   if (urlPath === '/' || urlPath === '/index.html') {
-    serveFile(path.join(REAL_DIR, 'index.html'), res);
+    res.writeHead(302, { 'Location': '/admin' });
+    res.end();
     return;
   }
 
@@ -204,5 +205,5 @@ server.listen(PORT, '127.0.0.1', () => {
   console.log('   ⚠  No cierres esta ventana mientras uses el sistema.');
   console.log('  ================================================');
   console.log('');
-  exec(`start "" "${url}"`);
+  exec(`start "" "${url}/admin"`);
 });
