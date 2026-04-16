@@ -99,7 +99,7 @@
     /* ════════════════════════════════
        LAYOUT
     ════════════════════════════════ */
-    .main { display: flex; flex: 1; overflow: hidden; }
+    .main { display: flex; flex: 1; overflow: hidden; flex-direction: row; }
 
     /* ════════════════════════════════
        MENÚ (OSCuro)
@@ -107,7 +107,7 @@
     .menu {
       flex: 1;
       overflow-y: auto;
-      overflow-x: clip;
+      overflow-x: hidden;
       padding: 20px 16px;
       background: var(--menu-bg);
       color: var(--menu-text);
@@ -241,10 +241,11 @@
        TICKET (OSCURO) — más ancho
     ════════════════════════════════ */
     .ticket {
-      width: 500px;
+      width: 360px;
       flex-shrink: 0;
       background: var(--ticket-bg);
       border-left: 1px solid #252525;
+      border-top: none;
       display: flex; flex-direction: column;
       color: var(--ticket-text);
     }
@@ -269,13 +270,21 @@
     }
     .btn-limpiar:hover { background: var(--red); color: #fff; }
 
-    .ticket-items { flex: 1; overflow-y: auto; padding: 10px; }
+    /* ── TICKET BODY: horizontal en desktop ── */
+    .ticket-body {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      min-height: 0;
+    }
+
+    .ticket-items { flex: 1; overflow-y: auto; padding: 14px 16px; min-width: 0; }
 
     .ticket-empty {
       text-align: center; color: var(--ticket-muted);
-      margin-top: 60px; font-size: 0.88rem;
+      margin-top: 40px; font-size: 0.88rem;
     }
-    .ticket-empty .icon { font-size: 3rem; display: block; margin-bottom: 10px; opacity: 0.3; }
+    .ticket-empty .icon { font-size: 2.4rem; display: block; margin-bottom: 8px; opacity: 0.3; }
 
     /* Fila de ítem */
     .ticket-item-wrap {
@@ -335,9 +344,11 @@
 
     /* ── FOOTER TICKET ── */
     .ticket-footer {
-      border-top: 1px solid var(--ticket-border);
-      padding: 16px 18px;
+      flex-shrink: 0;
+      padding: 16px 20px;
       background: #141414;
+      border-top: 1px solid var(--ticket-border);
+      overflow-y: auto;
     }
 
     .total-row {
@@ -1119,6 +1130,160 @@
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: #3a3a3a; border-radius: 3px; }
     .menu ::-webkit-scrollbar-thumb { background: #444; }
+
+    /* ══════════════════════════════════════════
+       MOBILE TAB BAR
+    ══════════════════════════════════════════ */
+    .mobile-tabbar { display: none; }
+
+    /* ══════════════════════════════════════════
+       RESPONSIVE — MOBILE (≤ 767px)
+    ══════════════════════════════════════════ */
+    @media (max-width: 767px) {
+
+      body { height: 100dvh; overflow: hidden; }
+
+      header { height: 48px; padding: 0 14px; }
+      .logo-img { height: 34px; }
+      .pedido-badge { font-size: 0.7rem; padding: 4px 10px; letter-spacing: 1px; border-radius: 20px; }
+
+      /* ─── TAB BAR ─── */
+      .mobile-tabbar {
+        display: flex; flex-shrink: 0; height: 50px;
+        background: #111; border-bottom: 2px solid #1e1e1e; z-index: 20;
+      }
+      .mobile-tab {
+        flex: 1; display: flex; flex-direction: column;
+        align-items: center; justify-content: center; gap: 2px;
+        background: none; border: none; border-bottom: 3px solid transparent;
+        color: #666; font-family: 'Anton', sans-serif; font-size: 0.57rem;
+        letter-spacing: 1.5px; text-transform: uppercase; cursor: pointer;
+        transition: color 0.15s, border-color 0.15s, background 0.15s; position: relative;
+      }
+      .mobile-tab.active { color: var(--yellow); border-bottom-color: var(--yellow); background: rgba(245,163,0,0.05); }
+      .mobile-tab-icon { font-size: 1.15rem; line-height: 1; }
+      .mobile-tab-badge {
+        position: absolute; top: 6px; right: calc(50% - 20px);
+        background: var(--yellow); color: #111;
+        font-family: 'Anton', sans-serif; font-size: 0.58rem;
+        min-width: 16px; height: 16px; border-radius: 50%;
+        display: flex; align-items: center; justify-content: center; padding: 0 3px;
+        transform: scale(0); transition: transform 0.2s cubic-bezier(0.34,1.56,0.64,1);
+      }
+      .mobile-tab-badge.visible { transform: scale(1); }
+
+      /* ─── LAYOUT ─── */
+      .main { flex-direction: column; flex: 1; overflow: hidden; }
+
+      .menu {
+        flex: 1; min-height: 0; padding: 10px 10px 6px;
+        overflow-y: auto; overflow-x: hidden; display: flex; flex-direction: column;
+      }
+      .menu.panel-hidden { display: none; }
+
+      .ticket {
+        width: 100%; border-top: none;
+        flex: 1; min-height: 0; display: flex; flex-direction: column; overflow: hidden;
+      }
+      .ticket.panel-hidden { display: none; }
+
+      /* ticket-body vuelve a ser vertical en móvil */
+      .ticket-body { flex-direction: column; flex: 1; min-height: 0; overflow: hidden; }
+
+      .ticket-items {
+        flex: 1; min-height: 0; overflow-y: auto;
+        padding: 8px 12px; border-right: none;
+        max-height: none;
+      }
+      .ticket-empty { margin-top: 30px; font-size: 0.82rem; }
+      .ticket-empty .icon { font-size: 2rem; }
+
+      .ticket-row { padding: 10px 12px; gap: 10px; }
+      .qty-btn { width: 30px; height: 30px; font-size: 1.2rem; border-radius: 7px; }
+      .qty-num { font-size: 1rem; min-width: 24px; }
+      .item-info .name { font-size: 0.86rem; }
+      .line-total { font-size: 1rem; }
+
+      .ticket-footer {
+        width: 100%; flex-shrink: 0; overflow: visible;
+        padding: 12px 16px 16px;
+        border-top: 1px solid var(--ticket-border); background: #141414;
+      }
+
+      .ticket-header { padding: 12px 16px; flex-shrink: 0; }
+      .ticket-title  { font-size: 0.82rem; letter-spacing: 2px; }
+      .btn-limpiar   { font-size: 0.68rem; padding: 5px 12px; }
+
+      .cat-label { font-size: 0.68rem; letter-spacing: 2px; margin: 4px 0 8px; padding-left: 8px; }
+
+      .total-row        { font-size: 0.86rem; margin-bottom: 3px; }
+      .total-row.grand  { font-size: 1.15rem; padding-top: 8px; margin-top: 6px; margin-bottom: 12px; }
+
+      .tipo-wrap { gap: 8px; margin-bottom: 10px; }
+      .tipo-btn  { padding: 10px 6px; font-size: 0.76rem; letter-spacing: 0.5px; border-radius: 10px; }
+
+      .delivery-fields      { padding: 10px 12px; gap: 8px; margin: 8px 0; border-radius: 10px; }
+      .delivery-field-label { font-size: 0.65rem; margin-bottom: 3px; }
+      .delivery-input       { padding: 9px 10px; font-size: 0.84rem; border-radius: 8px; }
+
+      .aclaracion-wrap          { margin: 8px 0; }
+      .aclaracion-wrap textarea { height: 38px; padding: 8px 10px; font-size: 0.8rem; border-radius: 8px; }
+
+      .btn-enviar { padding: 14px; font-size: 0.96rem; letter-spacing: 2px; border-radius: 10px; }
+
+      /* ─── CARRUSELES ─── */
+      .carousel-section  { padding: 4px 0 6px; }
+      .carousel-wrapper  { height: 256px; }
+      .carousel-img-wrap { height: 162px; }
+      .carousel-slide    { width: 238px; margin-left: -119px; }
+      .carousel-info     { padding: 8px 10px 10px; }
+      .carousel-name     { font-size: 0.9rem; }
+      .carousel-desc     { font-size: 0.63rem; -webkit-line-clamp: 1; }
+
+      .size-panel     { width: 90px; padding-left: 7px; }
+      .cv-header      { padding: 8px 7px 7px; gap: 4px; }
+      .cv-active-name { font-size: 0.61rem; }
+      .cv-elegir      { font-size: 0.49rem; padding: 2px 5px; letter-spacing: 1px; }
+      .cv-grid        { padding: 7px 5px; gap: 5px; }
+      .cv-btn         { padding: 9px 4px; gap: 3px; border-radius: 9px; }
+      .cv-btn-label   { font-size: 0.6rem; }
+      .cv-btn-price   { font-size: 0.8rem; }
+
+      .bcarousel-section { padding: 4px 0; }
+      .bcarousel-wrapper { height: 234px; }
+      .bslide-img-wrap   { height: 138px; }
+      .bslide            { width: 204px; margin-left: -102px; }
+      .bslide-footer     { padding: 9px 10px 11px; }
+      .bslide-name       { font-size: 0.9rem; }
+      .bslide-price      { font-size: 0.95rem; margin: 0 0 8px; }
+      .bslide-add        { padding: 9px 0; font-size: 0.75rem; }
+
+      .bside-panel { width: 90px; padding-left: 7px; }
+      .esp-header { padding: 7px 6px; }
+      .esp-title  { font-size: 0.49rem; letter-spacing: 1px; padding: 2px 5px; }
+      .esp-grid   { padding: 6px 4px; gap: 5px; }
+      .esp-btn    { padding: 10px 3px 8px; border-radius: 10px; gap: 3px; }
+      .esp-icon   { font-size: 1.65rem; }
+      .esp-name   { font-size: 0.5rem; }
+      .esp-price  { font-size: 0.74rem; }
+
+      .carousel-nav       { width: 30px; height: 30px; font-size: 1.1rem; }
+      .carousel-nav.prev  { left: 3px; }
+      .carousel-nav.next  { right: 3px; }
+
+      .carousel-dots, .bcarousel-dots { margin: 7px 0 3px; gap: 5px; }
+      .c-dot        { width: 5px; height: 5px; }
+      .c-dot.active { width: 16px; }
+    }
+
+    /* Pantallas muy pequeñas (≤ 374px) */
+    @media (max-width: 374px) {
+      .carousel-wrapper  { height: 220px; }
+      .bcarousel-wrapper { height: 200px; }
+      .carousel-img-wrap { height: 136px; }
+      .bslide-img-wrap   { height: 116px; }
+      .size-panel, .bside-panel { width: 80px; }
+    }
   </style>
 </head>
 <body>
@@ -1128,6 +1293,18 @@
   <div class="pedido-badge" id="num-pedido">PEDIDO #001</div>
 </header>
 
+<div class="mobile-tabbar" id="mobile-tabbar">
+  <button class="mobile-tab active" id="tab-menu" onclick="switchTab('menu')">
+    <span class="mobile-tab-icon">🍔</span>
+    MENÚ
+  </button>
+  <button class="mobile-tab" id="tab-ticket" onclick="switchTab('ticket')">
+    <span class="mobile-tab-icon">🧾</span>
+    PEDIDO
+    <span class="mobile-tab-badge" id="tab-badge">0</span>
+  </button>
+</div>
+
 <div class="main">
   <div class="menu" id="menu"></div>
 
@@ -1136,41 +1313,43 @@
       <span class="ticket-title">PEDIDO ACTUAL</span>
       <button class="btn-limpiar" onclick="limpiarTicket()">LIMPIAR</button>
     </div>
-    <div class="ticket-items" id="ticket-items">
-      <div class="ticket-empty">
-        <span class="icon">🧾</span>
-        Agregá ítems del menú
-      </div>
-    </div>
-    <div class="ticket-footer">
-      <div id="totals"></div>
-
-      <div class="tipo-wrap">
-        <button class="tipo-btn active-delivery" id="btn-delivery" onclick="setTipo('delivery')">🏍 Delivery</button>
-        <button class="tipo-btn" id="btn-takeaway" onclick="setTipo('takeaway')">🥡 Takeaway</button>
-      </div>
-
-      <div class="delivery-fields" id="delivery-fields">
-        <div>
-          <div class="delivery-field-label">📍 Dirección</div>
-          <input class="delivery-input" id="campo-direccion" type="text" placeholder="Calle, número, piso, barrio...">
-        </div>
-        <div>
-          <div class="delivery-field-label">👤 Nombre</div>
-          <input class="delivery-input" id="campo-nombre" type="text" placeholder="Nombre del cliente">
-        </div>
-        <div>
-          <div class="delivery-field-label">📞 Teléfono</div>
-          <input class="delivery-input" id="campo-telefono" type="tel" placeholder="351 000-0000">
+    <div class="ticket-body">
+      <div class="ticket-items" id="ticket-items">
+        <div class="ticket-empty">
+          <span class="icon">🧾</span>
+          Agregá ítems del menú
         </div>
       </div>
+      <div class="ticket-footer">
+        <div id="totals"></div>
 
-      <div class="aclaracion-wrap">
-        <textarea id="aclaracion" placeholder="Aclaración general del pedido..."></textarea>
+        <div class="tipo-wrap">
+          <button class="tipo-btn active-delivery" id="btn-delivery" onclick="setTipo('delivery')">🏍 Delivery</button>
+          <button class="tipo-btn" id="btn-takeaway" onclick="setTipo('takeaway')">🥡 Takeaway</button>
+        </div>
+
+        <div class="delivery-fields" id="delivery-fields">
+          <div>
+            <div class="delivery-field-label">📍 Dirección</div>
+            <input class="delivery-input" id="campo-direccion" type="text" placeholder="Calle, número, piso, barrio...">
+          </div>
+          <div>
+            <div class="delivery-field-label">👤 Nombre</div>
+            <input class="delivery-input" id="campo-nombre" type="text" placeholder="Nombre del cliente">
+          </div>
+          <div>
+            <div class="delivery-field-label">📞 Teléfono</div>
+            <input class="delivery-input" id="campo-telefono" type="tel" placeholder="351 000-0000">
+          </div>
+        </div>
+
+        <div class="aclaracion-wrap">
+          <textarea id="aclaracion" placeholder="Aclaración general del pedido..."></textarea>
+        </div>
+        <button class="btn-enviar" id="btn-enviar" onclick="enviarPedido()" disabled>
+          ENVIAR PEDIDO
+        </button>
       </div>
-      <button class="btn-enviar" id="btn-enviar" onclick="enviarPedido()" disabled>
-        ENVIAR PEDIDO
-      </button>
     </div>
   </div>
 </div>
@@ -1626,6 +1805,34 @@ function renderMenu() {
   renderCarruselBebidas();
 }
 
+// ── TABS MÓVIL ──
+let activeTab = 'menu';
+function switchTab(tab) {
+  activeTab = tab;
+  const menu   = document.getElementById('menu');
+  const ticket = document.querySelector('.ticket');
+  const tabMenu   = document.getElementById('tab-menu');
+  const tabTicket = document.getElementById('tab-ticket');
+  if (tab === 'menu') {
+    menu.classList.remove('panel-hidden');
+    ticket.classList.add('panel-hidden');
+    tabMenu.classList.add('active');
+    tabTicket.classList.remove('active');
+  } else {
+    menu.classList.add('panel-hidden');
+    ticket.classList.remove('panel-hidden');
+    tabMenu.classList.remove('active');
+    tabTicket.classList.add('active');
+  }
+}
+function updateTabBadge() {
+  const badge = document.getElementById('tab-badge');
+  if (!badge) return;
+  const total = Object.values(pedido).reduce((s, it) => s + it.qty, 0);
+  badge.textContent = total;
+  badge.classList.toggle('visible', total > 0);
+}
+
 // ── TICKET ──
 function agregarItem(id, burgerCardId) {
   if (!pedido[id]) pedido[id] = { qty: 0, obs: '' };
@@ -1681,6 +1888,7 @@ function renderTicket() {
     container.innerHTML = `<div class="ticket-empty"><span class="icon">🧾</span>Agregá ítems del menú</div>`;
     totalsEl.innerHTML = '';
     btnEnviar.disabled = true;
+    updateTabBadge();
     return;
   }
 
@@ -1721,6 +1929,7 @@ function renderTicket() {
     <div class="total-row grand"><span>TOTAL</span><span>$${subtotal.toLocaleString('es-AR')}</span></div>
   `;
   btnEnviar.disabled = false;
+  updateTabBadge();
 }
 
 // ── WHATSAPP ──
@@ -1758,7 +1967,7 @@ function construirUrlWhatsApp(data) {
 }
 
 // ── ENVIAR ──
-function enviarPedido() {
+async function enviarPedido() {
   const ids = Object.keys(pedido);
   if (!ids.length) return;
 
@@ -1769,8 +1978,7 @@ function enviarPedido() {
     direccion: document.getElementById('campo-direccion').value.trim(),
   } : null;
 
-  const data = {
-    num:    numPedido,
+  const payload = {
     hora:   new Date().toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' }),
     tipo:   tipoPedido,
     items:  ids.map(id => ({
@@ -1784,16 +1992,42 @@ function enviarPedido() {
     estado: 'nuevo',
   };
 
-  const cola = JSON.parse(localStorage.getItem('cb_cola') || '[]');
-  cola.push(data);
-  localStorage.setItem('cb_cola', JSON.stringify(cola));
-  channel.postMessage({ tipo: 'nuevo_pedido', pedido: data });
+  let numUsado = numPedido;
+  let usandoServidor = false;
 
-  mostrarToast(`✓ Pedido #${String(numPedido).padStart(3,'0')} enviado. ¡Esperá la confirmación!`);
+  // Intentar enviar al servidor (cross-device)
+  try {
+    const resp = await fetch('/api/cola', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    if (resp.ok) {
+      const result = await resp.json();
+      numUsado = result.num;
+      usandoServidor = true;
+    }
+  } catch {
+    // Servidor no disponible, fallback a localStorage
+  }
+
+  const data = { ...payload, num: numUsado };
+
+  if (usandoServidor) {
+    numPedido = numUsado + 1; // sincronizar con el servidor
+  } else {
+    // Fallback local (misma red, misma PC)
+    const cola = JSON.parse(localStorage.getItem('cb_cola') || '[]');
+    cola.push(data);
+    localStorage.setItem('cb_cola', JSON.stringify(cola));
+    channel.postMessage({ tipo: 'nuevo_pedido', pedido: data });
+    numPedido++;
+    localStorage.setItem('cb_ultimo_pedido', numPedido - 1);
+  }
+
+  mostrarToast(`✓ Pedido #${String(numUsado).padStart(3,'0')} enviado. ¡Esperá la confirmación!`);
   window.open(construirUrlWhatsApp(data), '_blank');
 
-  numPedido++;
-  localStorage.setItem('cb_ultimo_pedido', numPedido - 1);
   document.getElementById('num-pedido').textContent = `PEDIDO #${String(numPedido).padStart(3,'0')}`;
   pedido = {};
   document.getElementById('aclaracion').value = '';

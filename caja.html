@@ -551,7 +551,23 @@
       </div>
     </div>
     <div class="reloj" id="reloj">00:00:00</div>
-    <form method="POST" action="/api/logout" style="margin-left:8px;">
+    <button onclick="limpiarPedidos()" title="Limpiar todos los pedidos del día" style="
+        background: transparent;
+        border: 1px solid #3a3a3a;
+        border-radius: 6px;
+        color: #888;
+        font-family: 'Lato', sans-serif;
+        font-size: 0.72rem;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        padding: 6px 12px;
+        cursor: pointer;
+        transition: border-color 0.2s, color 0.2s;
+      " onmouseover="this.style.borderColor='#d93025';this.style.color='#d93025'"
+         onmouseout="this.style.borderColor='#3a3a3a';this.style.color='#888'">
+      🗑 Limpiar
+    </button>
+    <form method="POST" action="/api/logout" style="margin-left:0;">
       <button type="submit" title="Cerrar sesión" style="
         background: transparent;
         border: 1px solid #3a3a3a;
@@ -743,21 +759,95 @@
 
 <script>
 const channel = new BroadcastChannel('clicks_burger');
-let pedidos   = JSON.parse(localStorage.getItem('cb_cola') || '[]');
+let pedidos   = [];
 let tabActual = 'entrantes';
 let demorasPorPedido = {}; // num -> minutos
+let usandoServidor   = false;
 
-// ── RECIBIR PEDIDOS DEL CLIENTE ──
+// ── INICIALIZAR DESDE SERVIDOR ──
+async function inicializarDesdeServidor() {
+  try {
+    const resp = await fetch('/api/cola');
+    if (!resp.ok) throw new Error('sin servidor');
+    const { pedidos: lista } = await resp.json();
+    pedidos = lista;
+    usandoServidor = true;
+    render();
+    conectarSSE();
+  } catch {
+    // Fallback a localStorage
+    pedidos = JSON.parse(localStorage.getItem('cb_cola') || '[]');
+    render();
+  }
+}
+
+// ── SSE: recibir eventos del servidor en tiempo real ──
+function conectarSSE() {
+  const es = new EventSource('/api/cola/events');
+
+  es.addEventListener('nuevo_pedido', e => {
+    const p = JSON.parse(e.data);
+    const existe = pedidos.find(x => x.num === p.num);
+    if (!existe) { pedidos.push(p); render(true, p.num); alertarNuevo(p.num); }
+  });
+
+  es.addEventListener('pedido_actualizado', e => {
+    const p = JSON.parse(e.data);
+    const idx = pedidos.findIndex(x => x.num === p.num);
+    if (idx >= 0) pedidos[idx] = p;
+    render();
+  });
+
+  es.addEventListener('pedido_eliminado', e => {
+    const { num } = JSON.parse(e.data);
+    pedidos = pedidos.filter(x => x.num !== num);
+    render();
+  });
+
+  es.addEventListener('pedidos_limpiados', () => {
+    pedidos = [];
+    render();
+  });
+
+  es.onerror = () => {
+    // reconectar automáticamente (EventSource lo hace solo)
+  };
+}
+
+// ── RECIBIR PEDIDOS DEL CLIENTE (fallback mismo navegador) ──
 channel.onmessage = ({ data }) => {
+  if (usandoServidor) return; // SSE lo maneja
   if (data.tipo === 'nuevo_pedido') {
     const existe = pedidos.find(x => x.num === data.pedido.num);
     if (!existe) pedidos.push(data.pedido);
     render(true, data.pedido.num);
     alertarNuevo(data.pedido.num);
   }
+  if (data.tipo === 'limpiar_pedidos') {
+    pedidos = [];
+    render();
+  }
 };
 
+// ── LIMPIAR PEDIDOS DEL DÍA ──
+async function limpiarPedidos() {
+  if (!confirm('¿Limpiar todos los pedidos del día?\nEsta acción no se puede deshacer.')) return;
+  if (usandoServidor) {
+    try {
+      await fetch('/api/cola', { method: 'DELETE' });
+      // SSE actualizará el estado
+    } catch { /* ignorar */ }
+  } else {
+    pedidos = [];
+    localStorage.setItem('cb_cola', '[]');
+    localStorage.removeItem('cb_num');
+    channel.postMessage({ tipo: 'limpiar_pedidos' });
+    render();
+  }
+}
+
 window.addEventListener('storage', e => {
+  if (usandoServidor) return;
   if (e.key === 'cb_cola') {
     pedidos = JSON.parse(e.newValue || '[]');
     render();
@@ -849,34 +939,49 @@ function ajustarDemora(num, delta) {
 }
 
 // ── CONFIRMAR → pasa a estado 'confirmado' (cocina lo verá) ──
-function confirmar(num) {
+async function confirmar(num) {
   const p = pedidos.find(x => x.num === num);
   if (!p) return;
   p.estado = 'confirmado';
   p.demora = demorasPorPedido[num] || 15;
   p.hora_confirmado = hora();
-  guardar();
-  channel.postMessage({ tipo: 'pedido_confirmado', pedido: p });
-  render();
+  if (usandoServidor) {
+    try { await fetch(`/api/cola/${num}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ estado: p.estado, demora: p.demora, hora_confirmado: p.hora_confirmado }) }); }
+    catch { /* ignorar */ }
+  } else {
+    guardar();
+    channel.postMessage({ tipo: 'pedido_confirmado', pedido: p });
+    render();
+  }
 }
 
 // ── RECHAZAR ──
-function rechazar(num) {
+async function rechazar(num) {
   if (!confirm(`¿Rechazar el pedido #${String(num).padStart(3,'0')}?`)) return;
-  pedidos = pedidos.filter(x => x.num !== num);
-  guardar();
-  render();
+  if (usandoServidor) {
+    try { await fetch(`/api/cola/${num}`, { method: 'DELETE' }); }
+    catch { /* ignorar */ }
+  } else {
+    pedidos = pedidos.filter(x => x.num !== num);
+    guardar();
+    render();
+  }
 }
 
 // ── MARCAR ENTREGADO (desde vista cocina/listos del admin) ──
-function marcarEntregado(num) {
+async function marcarEntregado(num) {
   const p = pedidos.find(x => x.num === num);
   if (!p) return;
   p.estado = 'entregado';
   p.hora_entregado = hora();
-  guardar();
-  channel.postMessage({ tipo: 'pedido_entregado', pedido: p });
-  render();
+  if (usandoServidor) {
+    try { await fetch(`/api/cola/${num}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ estado: p.estado, hora_entregado: p.hora_entregado }) }); }
+    catch { /* ignorar */ }
+  } else {
+    guardar();
+    channel.postMessage({ tipo: 'pedido_entregado', pedido: p });
+    render();
+  }
 }
 
 function guardar() { localStorage.setItem('cb_cola', JSON.stringify(pedidos)); }
@@ -1336,8 +1441,8 @@ function tickReloj() {
 
 setInterval(tickReloj, 1000);
 tickReloj();
-render();
 cargarConfig();
+inicializarDesdeServidor();
 </script>
 </body>
 </html>

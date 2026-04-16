@@ -433,7 +433,23 @@
       </div>
     </div>
     <div class="reloj" id="reloj">00:00:00</div>
-    <form method="POST" action="/api/logout" style="margin-left:8px;">
+    <button onclick="limpiarPedidos()" title="Limpiar todos los pedidos del día" style="
+        background: transparent;
+        border: 1px solid #3a3a3a;
+        border-radius: 6px;
+        color: #888;
+        font-family: 'Lato', sans-serif;
+        font-size: 0.72rem;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        padding: 6px 12px;
+        cursor: pointer;
+        transition: border-color 0.2s, color 0.2s;
+      " onmouseover="this.style.borderColor='#d93025';this.style.color='#d93025'"
+         onmouseout="this.style.borderColor='#3a3a3a';this.style.color='#888'">
+      🗑 Limpiar
+    </button>
+    <form method="POST" action="/api/logout" style="margin-left:0;">
       <button type="submit" title="Cerrar sesión" style="
         background: transparent;
         border: 1px solid #3a3a3a;
@@ -481,12 +497,74 @@
 
 <script>
 const channel  = new BroadcastChannel('clicks_burger');
-let pedidos    = JSON.parse(localStorage.getItem('cb_cola') || '[]');
+let pedidos    = [];
 let tabActual  = 'confirmados';
 let timers     = {};   // num -> timestamp inicio
+let usandoServidor = false;
 
-// ── RECIBIR EN TIEMPO REAL ──
+// ── INICIALIZAR DESDE SERVIDOR ──
+async function inicializarDesdeServidor() {
+  try {
+    const resp = await fetch('/api/cola');
+    if (!resp.ok) throw new Error('sin servidor');
+    const { pedidos: lista } = await resp.json();
+    pedidos = lista;
+    usandoServidor = true;
+    // Restaurar timers para pedidos en cocina
+    pedidos.filter(p => p.estado === 'en_cocina' || p.estado === 'pendiente').forEach(p => {
+      timers[p.num] = Date.now();
+    });
+    setTab('confirmados');
+    conectarSSE();
+  } catch {
+    pedidos = JSON.parse(localStorage.getItem('cb_cola') || '[]');
+    pedidos.filter(p => p.estado === 'en_cocina' || p.estado === 'pendiente').forEach(p => {
+      timers[p.num] = Date.now();
+    });
+    setTab('confirmados');
+  }
+}
+
+// ── SSE: recibir eventos del servidor en tiempo real ──
+function conectarSSE() {
+  const es = new EventSource('/api/cola/events');
+
+  es.addEventListener('nuevo_pedido', e => {
+    const p = JSON.parse(e.data);
+    const idx = pedidos.findIndex(x => x.num === p.num);
+    if (idx >= 0) pedidos[idx] = p;
+    else pedidos.push(p);
+    render();
+  });
+
+  es.addEventListener('pedido_actualizado', e => {
+    const p = JSON.parse(e.data);
+    const idx = pedidos.findIndex(x => x.num === p.num);
+    if (idx >= 0) pedidos[idx] = p;
+    if ((p.estado === 'en_cocina' || p.estado === 'pendiente') && !timers[p.num]) {
+      timers[p.num] = Date.now();
+    }
+    render(true, p.num);
+    if (p.estado === 'confirmado') alertarNuevo(p.num);
+  });
+
+  es.addEventListener('pedido_eliminado', e => {
+    const { num } = JSON.parse(e.data);
+    pedidos = pedidos.filter(x => x.num !== num);
+    delete timers[num];
+    render();
+  });
+
+  es.addEventListener('pedidos_limpiados', () => {
+    pedidos = [];
+    timers  = {};
+    render();
+  });
+}
+
+// ── RECIBIR EN TIEMPO REAL (fallback mismo navegador) ──
 channel.onmessage = ({ data }) => {
+  if (usandoServidor) return; // SSE lo maneja
   if (data.tipo === 'pedido_confirmado') {
     const idx = pedidos.findIndex(x => x.num === data.pedido.num);
     if (idx >= 0) pedidos[idx] = data.pedido;
@@ -499,9 +577,31 @@ channel.onmessage = ({ data }) => {
     if (idx >= 0) pedidos[idx] = data.pedido;
     render();
   }
+  if (data.tipo === 'limpiar_pedidos') {
+    pedidos = [];
+    timers  = {};
+    render();
+  }
 };
 
+// ── LIMPIAR PEDIDOS DEL DÍA ──
+async function limpiarPedidos() {
+  if (!confirm('¿Limpiar todos los pedidos del día?\nEsta acción no se puede deshacer.')) return;
+  if (usandoServidor) {
+    try { await fetch('/api/cola', { method: 'DELETE' }); }
+    catch { /* ignorar */ }
+  } else {
+    pedidos = [];
+    timers  = {};
+    localStorage.setItem('cb_cola', '[]');
+    localStorage.removeItem('cb_num');
+    channel.postMessage({ tipo: 'limpiar_pedidos' });
+    render();
+  }
+}
+
 window.addEventListener('storage', e => {
+  if (usandoServidor) return;
   if (e.key === 'cb_cola') {
     pedidos = JSON.parse(e.newValue || '[]');
     render();
@@ -530,47 +630,79 @@ function setTab(tab) {
 
 // ── ACCIONES ──
 
+async function _serverPut(num, campos) {
+  try { await fetch(`/api/cola/${num}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(campos) }); }
+  catch { /* ignorar */ }
+}
+
+async function _serverDel(num) {
+  try { await fetch(`/api/cola/${num}`, { method: 'DELETE' }); }
+  catch { /* ignorar */ }
+}
+
 // Cocina inicia la preparación
-function iniciarPreparacion(num) {
+async function iniciarPreparacion(num) {
   const p = pedidos.find(x => x.num === num);
-  if (p) {
-    p.estado = 'en_cocina';
-    p.hora_inicio_cocina = hora();
-    timers[num] = Date.now();
+  if (!p) return;
+  p.estado = 'en_cocina';
+  p.hora_inicio_cocina = hora();
+  timers[num] = Date.now();
+  if (usandoServidor) {
+    await _serverPut(num, { estado: p.estado, hora_inicio_cocina: p.hora_inicio_cocina });
+  } else {
+    guardar(); render();
+    channel.postMessage({ tipo: 'pedido_confirmado', pedido: p });
   }
-  guardar(); render();
-  const pp = pedidos.find(x => x.num === num);
-  if (pp) channel.postMessage({ tipo: 'pedido_confirmado', pedido: pp });
 }
 
 // Cocina marca como listo
-function marcarListo(num) {
+async function marcarListo(num) {
   const p = pedidos.find(x => x.num === num);
-  if (p) { p.estado = 'listo'; p.hora_listo = hora(); }
-  guardar(); render();
-  const pp = pedidos.find(x => x.num === num);
-  if (pp) channel.postMessage({ tipo: 'pedido_confirmado', pedido: pp });
+  if (!p) return;
+  p.estado = 'listo';
+  p.hora_listo = hora();
+  if (usandoServidor) {
+    await _serverPut(num, { estado: p.estado, hora_listo: p.hora_listo });
+  } else {
+    guardar(); render();
+    channel.postMessage({ tipo: 'pedido_confirmado', pedido: p });
+  }
 }
 
 // Entregar (desde cocina)
-function marcarEntregado(num) {
+async function marcarEntregado(num) {
   const p = pedidos.find(x => x.num === num);
-  if (p) { p.estado = 'entregado'; p.hora_entregado = hora(); }
-  guardar(); render();
-  const pp = pedidos.find(x => x.num === num);
-  if (pp) channel.postMessage({ tipo: 'pedido_entregado', pedido: pp });
+  if (!p) return;
+  p.estado = 'entregado';
+  p.hora_entregado = hora();
+  if (usandoServidor) {
+    await _serverPut(num, { estado: p.estado, hora_entregado: p.hora_entregado });
+  } else {
+    guardar(); render();
+    channel.postMessage({ tipo: 'pedido_entregado', pedido: p });
+  }
 }
 
-function reabrir(num) {
+async function reabrir(num) {
   const p = pedidos.find(x => x.num === num);
-  if (p) { p.estado = 'confirmado'; delete p.hora_listo; delete p.hora_inicio_cocina; delete p._inicio; }
-  guardar(); render();
+  if (!p) return;
+  p.estado = 'confirmado';
+  delete p.hora_listo; delete p.hora_inicio_cocina; delete p._inicio;
+  if (usandoServidor) {
+    await _serverPut(num, { estado: p.estado, hora_listo: null, hora_inicio_cocina: null });
+  } else {
+    guardar(); render();
+  }
 }
 
-function quitar(num) {
+async function quitar(num) {
   if (!confirm(`¿Quitar el pedido #${String(num).padStart(3,'0')} de la cocina?`)) return;
-  pedidos = pedidos.filter(x => x.num !== num);
-  guardar(); render();
+  if (usandoServidor) {
+    await _serverDel(num);
+  } else {
+    pedidos = pedidos.filter(x => x.num !== num);
+    guardar(); render();
+  }
 }
 
 function guardar() { localStorage.setItem('cb_cola', JSON.stringify(pedidos)); }
@@ -827,12 +959,7 @@ function tickReloj() {
 setInterval(tickReloj,  1000);
 setInterval(tickTimers, 1000);
 tickReloj();
-
-pedidos.filter(p => p.estado === 'en_cocina' || p.estado === 'pendiente').forEach(p => {
-  timers[p.num] = Date.now();
-});
-
-setTab('confirmados');
+inicializarDesdeServidor();
 </script>
 </body>
 </html>
