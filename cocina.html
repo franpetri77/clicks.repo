@@ -2,6 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
+  <base href="/">
   <title>Clicks Burger — Cocina</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Anton&family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet">
@@ -42,10 +43,36 @@
       flex-shrink: 0;
     }
 
-    .logo { display: flex; align-items: center; gap: 10px; }
-    .logo-icon { font-size: 1.5rem; }
-    .logo-text { font-family: 'Anton', sans-serif; font-size: 1.3rem; letter-spacing: 2px; color: var(--yellow); }
-    .logo-sub  { font-size: 0.68rem; color: #666; letter-spacing: 2.5px; text-transform: uppercase; margin-top: 2px; }
+    /* ── Logo imagen + nav ── */
+    .header-left { display: flex; align-items: center; }
+
+    .logo-img-link {
+      display: flex; align-items: center;
+      text-decoration: none; flex-shrink: 0;
+      padding-right: 2px;
+    }
+    .logo-img {
+      height: 49px; width: auto;
+      border-radius: 4px; object-fit: contain; display: block;
+    }
+
+    .admin-nav {
+      display: flex; align-items: stretch;
+      border-left: 1px solid var(--border);
+      height: 58px;
+    }
+    .nav-link {
+      display: flex; align-items: center; gap: 6px;
+      padding: 0 18px;
+      font-family: 'Anton', sans-serif;
+      font-size: 0.72rem; letter-spacing: 2px; text-transform: uppercase;
+      color: var(--muted); text-decoration: none;
+      border-bottom: 3px solid transparent;
+      border-right: 1px solid var(--border);
+      transition: color 0.15s, background 0.15s;
+    }
+    .nav-link:hover  { color: var(--yellow); background: rgba(245,163,0,0.05); }
+    .nav-link.active { color: var(--yellow); border-bottom-color: var(--yellow); background: rgba(245,163,0,0.04); }
 
     .header-right { display: flex; align-items: center; gap: 20px; }
 
@@ -339,6 +366,26 @@
     .btn-reabrir   { background: transparent; color: var(--muted); border: 1px solid var(--border); }
     .btn-reabrir:hover   { background: var(--surface2) !important; color: var(--text); }
 
+    /* ── Botón imprimir ticket ── */
+    .btn-ticket-head {
+      background: none;
+      border: 1px solid #3a3a3a;
+      border-radius: 6px;
+      color: #888;
+      font-size: 0.78rem;
+      padding: 4px 9px;
+      cursor: pointer;
+      transition: border-color 0.15s, color 0.15s, background 0.15s;
+      flex-shrink: 0;
+      font-family: 'Lato', sans-serif;
+      letter-spacing: 0.5px;
+    }
+    .btn-ticket-head:hover {
+      border-color: #F5A300;
+      color: #F5A300;
+      background: rgba(245,163,0,0.07);
+    }
+
     /* ── EMPTY ── */
     .empty { grid-column: 1/-1; text-align: center; padding: 80px 20px; color: var(--muted); }
     .empty .icon { font-size: 3.5rem; display: block; margin-bottom: 12px; opacity: 0.35; }
@@ -360,12 +407,15 @@
 <body>
 
 <header>
-  <div class="logo">
-    <span class="logo-icon">🍳</span>
-    <div>
-      <div class="logo-text">CLICKS BURGER</div>
-      <div class="logo-sub">Pantalla de Cocina</div>
-    </div>
+  <div class="header-left">
+    <a href="/admin" class="logo-img-link" title="Panel Admin">
+      <img src="img/clickslogo.jpg" alt="Clicks Burger" class="logo-img">
+    </a>
+    <nav class="admin-nav">
+      <a href="/admin/caja"   class="nav-link">🖥️ CAJA</a>
+      <a href="/admin/cocina" class="nav-link active">🍳 COCINA</a>
+      <a href="/pedidos"      class="nav-link" target="_blank">📱 PEDIDOS</a>
+    </nav>
   </div>
   <div class="header-right">
     <div class="stats">
@@ -525,6 +575,11 @@ function quitar(num) {
 
 function guardar() { localStorage.setItem('cb_cola', JSON.stringify(pedidos)); }
 function hora()    { return new Date().toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' }); }
+
+// ── IMPRIMIR TICKET DE COCINA ──
+function imprimirTicket(num) {
+  window.open(`/ticket?num=${num}`, `ticket_${num}`, 'width=430,height=680,scrollbars=yes,resizable=yes');
+}
 
 // ── HELPERS TIMING ──
 function getSegs(p) {
@@ -712,6 +767,7 @@ function render(esNuevo = false, numNuevo = null) {
           <div class="card-head-right">
             ${timerHtml}
             ${demoraLabel}
+            <button class="btn-ticket-head" onclick="imprimirTicket(${p.num})" title="Imprimir ticket de cocina">🖨 TICKET</button>
           </div>
         </div>
         ${demorado && (p.estado === 'en_cocina' || p.estado === 'pendiente') ? `<div class="demorado-strip">⚠ PEDIDO DEMORADO</div>` : ''}

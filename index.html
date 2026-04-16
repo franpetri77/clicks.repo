@@ -77,14 +77,14 @@
     }
 
     .logo-img {
-      width: 96px; height: 96px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 3px solid var(--yellow);
-      box-shadow: 0 0 0 6px #F5A30012, 0 0 40px #F5A30050, 0 0 80px #F5A30020;
+      height: 72px;
+      width: auto;
+      max-width: 220px;
+      object-fit: contain;
       margin-bottom: 16px;
       display: block;
       margin-left: auto; margin-right: auto;
+      filter: drop-shadow(0 0 28px #F5A30055);
     }
 
     .brand-name {
@@ -320,9 +320,8 @@
   </div>
 
   <div class="logo-wrap">
-    <img src="img/cheeseburger.jpg" alt="Clicks Burger" class="logo-img"
+    <img src="img/clickslogo.jpg" alt="Clicks Burger" class="logo-img"
          onerror="this.style.display='none'">
-    <div class="brand-name">CLICKS BURGER</div>
     <div class="brand-tagline">Fray Luis Beltrán 2735 · Córdoba</div>
   </div>
 
@@ -336,7 +335,7 @@
     <div class="role-group">
       <div class="role-label">Cliente</div>
       <div class="group-cards">
-        <a href="/menu" target="_blank" class="card">
+        <a href="/pedidos" target="_blank" class="card">
           <span class="role-badge cliente">CLIENTE</span>
           <span class="card-icon">📱</span>
           <div class="card-title">PEDIDOS</div>
@@ -352,7 +351,7 @@
     <div class="role-group">
       <div class="role-label">Administración</div>
       <div class="group-cards">
-        <a href="/admin" target="_blank" class="card">
+        <a href="/admin/caja" target="_blank" class="card">
           <span class="role-badge admin">ADMIN</span>
           <span class="card-icon">🖥️</span>
           <div class="card-title">CAJA</div>

@@ -144,14 +144,31 @@ const server = http.createServer((req, res) => {
     return;
   }
 
-  // ── ADMIN: PANEL (protegido) ──
+  // ── ADMIN: SELECTOR PRINCIPAL (protegido) ──
   if (urlPath === '/admin' || urlPath === '/admin/') {
     if (!isAuthenticated(req)) {
       res.writeHead(302, { 'Location': '/admin/login' });
       res.end();
       return;
     }
+    serveFile(path.join(REAL_DIR, 'index.html'), res);
+    return;
+  }
+
+  // ── ADMIN: CAJA (protegida) ──
+  if (urlPath === '/admin/caja') {
+    if (!isAuthenticated(req)) {
+      res.writeHead(302, { 'Location': '/admin/login' });
+      res.end();
+      return;
+    }
     serveFile(path.join(REAL_DIR, 'caja.html'), res);
+    return;
+  }
+
+  // ── TICKET DE COCINA (público — lee localStorage del cliente) ──
+  if (urlPath === '/ticket') {
+    serveFile(path.join(REAL_DIR, 'ticket-cocina.html'), res);
     return;
   }
 
@@ -168,7 +185,7 @@ const server = http.createServer((req, res) => {
 
   // ── BLOQUEAR acceso directo a archivos admin por nombre ──
   const safeName = path.basename(urlPath);
-  if (safeName === 'caja.html' || safeName === 'cocina.html') {
+  if (['caja.html', 'cocina.html', 'index.html'].includes(safeName)) {
     res.writeHead(302, { 'Location': '/admin/login' });
     res.end();
     return;
@@ -197,7 +214,9 @@ server.listen(PORT, '127.0.0.1', () => {
   console.log(`   Servidor corriendo en ${url}`);
   console.log('');
   console.log('   Panel Admin:  ' + url + '/admin');
-  console.log('   Pedidos:      ' + url + '/pedidos.html');
+  console.log('   Caja:         ' + url + '/admin/caja');
+  console.log('   Cocina:       ' + url + '/admin/cocina');
+  console.log('   Pedidos:      ' + url + '/pedidos');
   console.log('');
   console.log('   Usuario admin:    admin');
   console.log('   Contraseña admin: demo1234');

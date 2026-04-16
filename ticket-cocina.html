@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <base href="/">
+  <title>Ticket Cocina — Clicks Burger</title>
+  <style>
+    /* ── Pantalla: centrado y preview limpio ── */
+    body {
+      background: #e8e8e8;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px 12px 40px;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 13px;
+      color: #000;
+    }
+
+    .ticket-wrap {
+      background: #fff;
+      width: 80mm;
+      max-width: 100%;
+      padding: 12px 10px;
+      box-shadow: 0 2px 18px rgba(0,0,0,0.18);
+    }
+
+    /* ── Botones de pantalla (no se imprimen) ── */
+    .screen-bar {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 16px;
+      width: 80mm;
+      max-width: 100%;
+    }
+    .btn-print {
+      flex: 1;
+      padding: 11px;
+      background: #111;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      font-family: 'Courier New', monospace;
+      font-size: 13px;
+      letter-spacing: 1px;
+      border-radius: 4px;
+    }
+    .btn-print:hover { background: #333; }
+    .btn-close {
+      padding: 11px 16px;
+      background: none;
+      color: #555;
+      border: 1px solid #bbb;
+      cursor: pointer;
+      font-family: 'Courier New', monospace;
+      font-size: 13px;
+      border-radius: 4px;
+    }
+    .btn-close:hover { background: #f0f0f0; }
+
+    /* ── TICKET ── */
+    .t-center { text-align: center; }
+    .t-right  { text-align: right; }
+
+    .t-logo-img {
+      display: block;
+      margin: 0 auto 3px;
+      height: 48px;
+      width: auto;
+      object-fit: contain;
+    }
+    .t-sub {
+      font-size: 10px;
+      letter-spacing: 4px;
+      text-align: center;
+      margin-bottom: 2px;
+    }
+    .t-dash  { border-top: 1px dashed #000; margin: 7px 0; }
+    .t-dash2 { border-top: 2px solid #000;  margin: 7px 0; }
+
+    .t-num {
+      font-size: 38px;
+      font-weight: bold;
+      text-align: center;
+      letter-spacing: 3px;
+      border: 2px solid #000;
+      padding: 4px 0;
+      margin: 6px 0;
+      line-height: 1;
+    }
+
+    .t-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      margin: 2px 0;
+    }
+    .t-row .label { color: #444; }
+
+    .t-tipo {
+      text-align: center;
+      font-weight: bold;
+      font-size: 13px;
+      border: 1px solid #000;
+      padding: 4px;
+      margin: 7px 0;
+      letter-spacing: 2px;
+    }
+
+    .t-section-title {
+      font-weight: bold;
+      font-size: 10px;
+      letter-spacing: 2px;
+      margin-bottom: 5px;
+    }
+
+    /* ── Ítems ── */
+    .t-item { margin-bottom: 8px; }
+
+    .t-item-main {
+      display: flex;
+      gap: 0;
+    }
+    .t-qty {
+      font-weight: bold;
+      min-width: 28px;
+      font-size: 13px;
+    }
+    .t-nombre {
+      font-weight: bold;
+      font-size: 13px;
+      flex: 1;
+      word-break: break-word;
+    }
+    .t-precio-linea {
+      font-size: 11px;
+      color: #444;
+      white-space: nowrap;
+      margin-left: 6px;
+    }
+
+    .t-variante {
+      margin-left: 28px;
+      font-size: 11px;
+      font-style: italic;
+    }
+    .t-variante::before { content: '▶ '; font-style: normal; }
+
+    .t-obs {
+      margin-left: 28px;
+      font-size: 11px;
+      border-left: 2px solid #000;
+      padding-left: 5px;
+      margin-top: 2px;
+    }
+
+    /* ── Aclaración general ── */
+    .t-aclaracion {
+      border: 1px solid #000;
+      padding: 5px 7px;
+      font-size: 11px;
+      margin: 4px 0;
+      background: #f5f5f5;
+    }
+    .t-aclaracion-title {
+      font-weight: bold;
+      font-size: 10px;
+      letter-spacing: 1px;
+      margin-bottom: 2px;
+    }
+
+    /* ── Total ── */
+    .t-total {
+      display: flex;
+      justify-content: space-between;
+      font-weight: bold;
+      font-size: 15px;
+      border-top: 2px solid #000;
+      padding-top: 6px;
+      margin-top: 6px;
+    }
+
+    /* ── Dirección cliente ── */
+    .t-cliente-dir {
+      margin: 2px 0;
+      font-size: 11px;
+    }
+    .t-cliente-dir .label { display: block; color: #444; margin-bottom: 1px; }
+    .t-dir-value {
+      font-weight: bold;
+      font-size: 12px;
+      padding-left: 4px;
+      border-left: 2px solid #000;
+      margin-left: 2px;
+      word-break: break-word;
+    }
+
+    /* ── Footer ── */
+    .t-footer {
+      text-align: center;
+      font-size: 9px;
+      color: #666;
+      margin-top: 10px;
+      padding-top: 6px;
+      border-top: 1px dashed #000;
+    }
+
+    /* ── Error ── */
+    .t-error {
+      text-align: center;
+      padding: 40px 10px;
+      color: #555;
+      font-size: 12px;
+    }
+
+    /* ── PRINT MEDIA ── */
+    @media print {
+      body {
+        background: #fff;
+        padding: 0;
+        margin: 0;
+        display: block;
+      }
+      .screen-bar { display: none; }
+      .ticket-wrap {
+        box-shadow: none;
+        padding: 4px 6px;
+        width: 100%;
+        max-width: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="screen-bar no-print">
+    <button class="btn-print" onclick="window.print()">🖨 IMPRIMIR TICKET</button>
+    <button class="btn-close" onclick="window.close()">✕ Cerrar</button>
+  </div>
+
+  <div class="ticket-wrap">
+    <div id="ticket"></div>
+  </div>
+
+<script>
+const params = new URLSearchParams(location.search);
+const num    = Number(params.get('num'));
+
+function fmt(n) {
+  return Number(n).toLocaleString('es-AR');
+}
+
+function calcTotal(p) {
+  return (p.items || []).reduce((s, it) => s + (it.precio || 0) * (it.cantidad || 1), 0);
+}
+
+function fechaStr(d) {
+  return d.toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+}
+
+function horaStr(d) {
+  return d.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' });
+}
+
+function render() {
+  const el      = document.getElementById('ticket');
+  const pedidos = JSON.parse(localStorage.getItem('cb_cola') || '[]');
+  const p       = pedidos.find(x => x.num === num);
+
+  if (!p) {
+    el.innerHTML = `<div class="t-error">
+      ⚠ Pedido #${String(num).padStart(3, '0')} no encontrado.<br><br>
+      Cerrá esta ventana y volvé a intentar.
+    </div>`;
+    return;
+  }
+
+  const ahora  = new Date();
+  const tipo   = (p.tipo || 'takeaway') === 'delivery' ? '🏍  DELIVERY' : '🥡  TAKEAWAY';
+  const total  = calcTotal(p);
+
+  // ── Items HTML ──
+  const itemsHtml = (p.items || []).map(it => {
+    const lineTot  = (it.precio || 0) * (it.cantidad || 1);
+    const precioHtml = lineTot > 0
+      ? `<span class="t-precio-linea">$${fmt(lineTot)}</span>`
+      : '';
+    const varHtml  = it.variante
+      ? `<div class="t-variante">${it.variante.toUpperCase()}</div>`
+      : '';
+    const obsHtml  = it.obs
+      ? `<div class="t-obs">✏ ${it.obs}</div>`
+      : '';
+    return `
+      <div class="t-item">
+        <div class="t-item-main">
+          <span class="t-qty">x${it.cantidad}</span>
+          <span class="t-nombre">${it.nombre}</span>
+          ${precioHtml}
+        </div>
+        ${varHtml}
+        ${obsHtml}
+      </div>`;
+  }).join('');
+
+  // ── Datos del cliente (delivery) ──
+  let clienteHtml = '';
+  if (p.tipo === 'delivery' && p.cliente) {
+    const c = p.cliente;
+    const filas = [
+      c.nombre    ? `<div class="t-row"><span class="label">Cliente:</span><span>${c.nombre}</span></div>`    : '',
+      c.telefono  ? `<div class="t-row"><span class="label">Tel:</span><span>${c.telefono}</span></div>`       : '',
+      c.direccion ? `<div class="t-cliente-dir"><span class="label">📍 Dirección:</span><div class="t-dir-value">${c.direccion}</div></div>` : '',
+    ].join('');
+    if (filas.trim()) {
+      clienteHtml = `
+        <div class="t-dash"></div>
+        <div class="t-section-title">DATOS DEL CLIENTE:</div>
+        ${filas}`;
+    }
+  }
+
+  // ── Aclaración general ──
+  const aclarHtml = p.aclaracion
+    ? `<div class="t-dash"></div>
+       <div class="t-aclaracion">
+         <div class="t-aclaracion-title">⚠ ACLARACIÓN GENERAL:</div>
+         ${p.aclaracion}
+       </div>`
+    : '';
+
+  // ── Total ──
+  const totalHtml = total > 0
+    ? `<div class="t-total">
+         <span>TOTAL</span>
+         <span>$${fmt(total)}</span>
+       </div>`
+    : '';
+
+  // ── Línea de tiempos ──
+  let tiempoHtml = `<div class="t-row"><span class="label">Pedido:</span><span>${p.hora || '--'}</span></div>`;
+  if (p.hora_confirmado)    tiempoHtml += `<div class="t-row"><span class="label">Confirmado:</span><span>${p.hora_confirmado}</span></div>`;
+  if (p.hora_inicio_cocina) tiempoHtml += `<div class="t-row"><span class="label">En cocina:</span><span>${p.hora_inicio_cocina}</span></div>`;
+  if (p.demora)             tiempoHtml += `<div class="t-row"><span class="label">Demora est.:</span><span>${p.demora} min</span></div>`;
+
+  el.innerHTML = `
+    <img src="img/clickslogo.jpg" alt="Clicks Burger" class="t-logo-img">
+    <div class="t-sub">&#x2605; TICKET COCINA &#x2605;</div>
+
+    <div class="t-dash2"></div>
+
+    <div class="t-num">#${String(p.num).padStart(3, '0')}</div>
+
+    <div class="t-row">
+      <span class="label">Fecha:</span>
+      <span>${fechaStr(ahora)}</span>
+    </div>
+    ${tiempoHtml}
+    <div class="t-row">
+      <span class="label">Impreso:</span>
+      <span>${horaStr(ahora)}</span>
+    </div>
+
+    <div class="t-tipo">${tipo}</div>
+
+    ${clienteHtml}
+
+    <div class="t-dash"></div>
+    <div class="t-section-title">PRODUCTOS PEDIDOS:</div>
+
+    ${itemsHtml}
+
+    ${aclarHtml}
+
+    ${totalHtml}
+
+    <div class="t-footer">
+      Clicks Burger &mdash; Cocina<br>
+      #${String(p.num).padStart(3, '0')} &bull; ${fechaStr(ahora)} ${horaStr(ahora)}
+    </div>`;
+
+  document.title = `Ticket #${String(p.num).padStart(3, '0')} — Clicks Burger`;
+}
+
+render();
+
+// Auto-imprimir si se pasa ?autoprint=1
+if (params.get('autoprint') === '1') {
+  window.addEventListener('load', () => setTimeout(() => window.print(), 350));
+}
+</script>
+</body>
+</html>

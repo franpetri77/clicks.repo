@@ -58,13 +58,36 @@
       z-index: 10;
     }
 
-    .logo { display: flex; align-items: center; gap: 10px; }
-    .logo-icon { font-size: 1.6rem; }
-    .logo-text {
-      font-family: 'Anton', sans-serif;
-      font-size: 1.35rem; letter-spacing: 2px; color: var(--yellow); line-height: 1;
+    /* ── Logo imagen + nav ── */
+    .header-left { display: flex; align-items: center; }
+
+    .logo-img-link {
+      display: flex; align-items: center;
+      text-decoration: none; flex-shrink: 0;
+      padding-right: 2px;
     }
-    .logo-sub { font-size: 0.68rem; color: #666; letter-spacing: 2.5px; text-transform: uppercase; margin-top: 2px; }
+    .logo-img {
+      height: 49px; width: auto;
+      border-radius: 4px; object-fit: contain; display: block;
+    }
+
+    .admin-nav {
+      display: flex; align-items: stretch;
+      border-left: 1px solid #2a2a2a;
+      height: 58px;
+    }
+    .nav-link {
+      display: flex; align-items: center; gap: 6px;
+      padding: 0 18px;
+      font-family: 'Anton', sans-serif;
+      font-size: 0.72rem; letter-spacing: 2px; text-transform: uppercase;
+      color: #888; text-decoration: none;
+      border-bottom: 3px solid transparent;
+      border-right: 1px solid #2a2a2a;
+      transition: color 0.15s, background 0.15s;
+    }
+    .nav-link:hover  { color: var(--yellow); background: rgba(245,163,0,0.05); }
+    .nav-link.active { color: var(--yellow); border-bottom-color: var(--yellow); background: rgba(245,163,0,0.04); }
 
     .pedido-badge {
       background: var(--yellow); color: #111;
@@ -343,6 +366,33 @@
     .tipo-btn:hover { border-color: #555; color: var(--ticket-text); }
     .tipo-btn.active-delivery { background: #201800; border-color: #c87d00; color: var(--yellow); }
     .tipo-btn.active-takeaway { background: #0e1c0e; border-color: var(--green); color: #4aba6a; }
+
+    /* ── Campos delivery ── */
+    .delivery-fields {
+      display: flex; flex-direction: column; gap: 8px;
+      margin: 10px 0;
+      padding: 10px 12px;
+      background: #1a1200;
+      border: 1px solid #4a3000;
+      border-radius: 8px;
+    }
+    .delivery-fields.hidden { display: none; }
+    .delivery-field-label {
+      font-size: 0.68rem; font-weight: 700;
+      letter-spacing: 1px; text-transform: uppercase;
+      color: var(--yellow); margin-bottom: 3px;
+    }
+    .delivery-input {
+      width: 100%;
+      background: var(--ticket-surf2);
+      border: 1px solid var(--ticket-border);
+      border-radius: 6px; color: var(--ticket-text);
+      padding: 8px 10px; font-size: 0.82rem;
+      font-family: 'Lato', sans-serif;
+      transition: border-color 0.15s;
+    }
+    .delivery-input:focus { outline: none; border-color: #F5A30070; }
+    .delivery-input::placeholder { color: #4a4a4a; }
 
     /* Aclaración general */
     .aclaracion-wrap { margin: 12px 0; }
@@ -650,6 +700,18 @@
       letter-spacing: 1.5px;
       transition: background 0.15s, transform 0.1s, box-shadow 0.15s;
     }
+
+    /* Mostrar botón AGREGAR en la bebida activa */
+    .bslide.active .bslide-add {
+      display: block;
+      animation: fadeInAgregar 0.18s ease both;
+    }
+    @keyframes fadeInAgregar {
+      from { opacity: 0; transform: translateY(5px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .bslide-add:hover  { background: var(--yellow2); box-shadow: 0 4px 20px rgba(245,163,0,0.4); }
+    .bslide-add:active { transform: scale(0.96); box-shadow: none; }
 
     /* ─── BEBIDA HERO LAYOUT ─── */
     .bdrink-hero-wrap {
@@ -1062,13 +1124,7 @@
 <body>
 
 <header>
-  <div class="logo">
-    <span class="logo-icon">🍔</span>
-    <div>
-      <div class="logo-text">CLICKS BURGER</div>
-      <div class="logo-sub">Hacé tu Pedido</div>
-    </div>
-  </div>
+  <img src="img/clickslogo.jpg" alt="Clicks Burger" class="logo-img">
   <div class="pedido-badge" id="num-pedido">PEDIDO #001</div>
 </header>
 
@@ -1092,6 +1148,21 @@
       <div class="tipo-wrap">
         <button class="tipo-btn active-delivery" id="btn-delivery" onclick="setTipo('delivery')">🏍 Delivery</button>
         <button class="tipo-btn" id="btn-takeaway" onclick="setTipo('takeaway')">🥡 Takeaway</button>
+      </div>
+
+      <div class="delivery-fields" id="delivery-fields">
+        <div>
+          <div class="delivery-field-label">📍 Dirección</div>
+          <input class="delivery-input" id="campo-direccion" type="text" placeholder="Calle, número, piso, barrio...">
+        </div>
+        <div>
+          <div class="delivery-field-label">👤 Nombre</div>
+          <input class="delivery-input" id="campo-nombre" type="text" placeholder="Nombre del cliente">
+        </div>
+        <div>
+          <div class="delivery-field-label">📞 Teléfono</div>
+          <input class="delivery-input" id="campo-telefono" type="tel" placeholder="351 000-0000">
+        </div>
       </div>
 
       <div class="aclaracion-wrap">
@@ -1205,6 +1276,7 @@ function setTipo(tipo) {
     'tipo-btn' + (tipo === 'delivery' ? ' active-delivery' : '');
   document.getElementById('btn-takeaway').className =
     'tipo-btn' + (tipo === 'takeaway' ? ' active-takeaway' : '');
+  document.getElementById('delivery-fields').classList.toggle('hidden', tipo !== 'delivery');
 }
 
 // ═══════════════════════════════════════
@@ -1691,6 +1763,12 @@ function enviarPedido() {
   if (!ids.length) return;
 
   const aclaracion = document.getElementById('aclaracion').value.trim();
+  const cliente = tipoPedido === 'delivery' ? {
+    nombre:   document.getElementById('campo-nombre').value.trim(),
+    telefono: document.getElementById('campo-telefono').value.trim(),
+    direccion: document.getElementById('campo-direccion').value.trim(),
+  } : null;
+
   const data = {
     num:    numPedido,
     hora:   new Date().toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' }),
@@ -1702,6 +1780,7 @@ function enviarPedido() {
       obs:      pedido[id].obs || '',
     })),
     aclaracion,
+    cliente,
     estado: 'nuevo',
   };
 
@@ -1718,6 +1797,9 @@ function enviarPedido() {
   document.getElementById('num-pedido').textContent = `PEDIDO #${String(numPedido).padStart(3,'0')}`;
   pedido = {};
   document.getElementById('aclaracion').value = '';
+  document.getElementById('campo-nombre').value    = '';
+  document.getElementById('campo-telefono').value  = '';
+  document.getElementById('campo-direccion').value = '';
   renderTicket();
 }
 

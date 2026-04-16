@@ -2,6 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
+  <base href="/">
   <title>Clicks Burger — Acceso Admin</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Anton&family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet">
@@ -58,21 +59,13 @@
     }
 
     .brand-logo {
-      width: 64px; height: 64px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 2px solid var(--yellow);
-      box-shadow: 0 0 24px #F5A30040;
+      height: 58px;
+      width: auto;
+      max-width: 200px;
+      object-fit: contain;
       margin: 0 auto 14px;
       display: block;
-    }
-
-    .brand-name {
-      font-family: 'Anton', sans-serif;
-      font-size: 1.6rem;
-      letter-spacing: 4px;
-      color: var(--yellow);
-      text-shadow: 0 0 24px #F5A30050;
+      filter: drop-shadow(0 0 18px #F5A30040);
     }
 
     .brand-sub {
@@ -189,9 +182,8 @@
 <div class="login-card">
 
   <div class="brand">
-    <img src="img/cheeseburger.jpg" alt="Clicks Burger" class="brand-logo"
+    <img src="img/clickslogo.jpg" alt="Clicks Burger" class="brand-logo"
          onerror="this.style.display='none'">
-    <div class="brand-name">CLICKS BURGER</div>
     <div class="brand-sub">Panel de Administración</div>
     <div class="divider"></div>
     <span class="lock-icon">🔐</span>

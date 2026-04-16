@@ -2,6 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
+  <base href="/">
   <title>Clicks Burger — Caja</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Anton&family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet">
@@ -42,10 +43,36 @@
       flex-shrink: 0;
     }
 
-    .logo { display: flex; align-items: center; gap: 10px; }
-    .logo-icon { font-size: 1.5rem; }
-    .logo-text { font-family: 'Anton', sans-serif; font-size: 1.3rem; letter-spacing: 2px; color: var(--yellow); }
-    .logo-sub  { font-size: 0.68rem; color: #666; letter-spacing: 2.5px; text-transform: uppercase; margin-top: 2px; }
+    /* ── Logo imagen + nav ── */
+    .header-left { display: flex; align-items: center; }
+
+    .logo-img-link {
+      display: flex; align-items: center;
+      text-decoration: none; flex-shrink: 0;
+      padding-right: 2px;
+    }
+    .logo-img {
+      height: 49px; width: auto;
+      border-radius: 4px; object-fit: contain; display: block;
+    }
+
+    .admin-nav {
+      display: flex; align-items: stretch;
+      border-left: 1px solid var(--border);
+      height: 58px;
+    }
+    .nav-link {
+      display: flex; align-items: center; gap: 6px;
+      padding: 0 18px;
+      font-family: 'Anton', sans-serif;
+      font-size: 0.72rem; letter-spacing: 2px; text-transform: uppercase;
+      color: var(--muted); text-decoration: none;
+      border-bottom: 3px solid transparent;
+      border-right: 1px solid var(--border);
+      transition: color 0.15s, background 0.15s;
+    }
+    .nav-link:hover  { color: var(--yellow); background: rgba(245,163,0,0.05); }
+    .nav-link.active { color: var(--yellow); border-bottom-color: var(--yellow); background: rgba(245,163,0,0.04); }
 
     .header-right { display: flex; align-items: center; gap: 20px; }
 
@@ -327,6 +354,28 @@
     .btn-rechazar:hover { background: #1f0808 !important; border-color: var(--red); }
     .btn-entregar   { background: #1a4a2a; color: #5ecf7a; border: 1px solid #2a6a3a; }
     .btn-entregar:hover { background: #1e6a38 !important; color: #fff; border-color: #3a8a4a; }
+    .btn-imprimir   { background: #0d1a2a; color: var(--blue); border: 1px solid #1a3a5a; }
+    .btn-imprimir:hover { background: #1a3a5a !important; color: #fff; }
+
+    /* ── Botón imprimir ticket ── */
+    .btn-ticket-head {
+      background: none;
+      border: 1px solid #3a3a3a;
+      border-radius: 6px;
+      color: #888;
+      font-size: 0.82rem;
+      padding: 5px 10px;
+      cursor: pointer;
+      transition: border-color 0.15s, color 0.15s, background 0.15s;
+      flex-shrink: 0;
+      letter-spacing: 0.5px;
+      font-family: 'Lato', sans-serif;
+    }
+    .btn-ticket-head:hover {
+      border-color: #F5A300;
+      color: #F5A300;
+      background: rgba(245,163,0,0.07);
+    }
 
     /* ── EMPTY ── */
     .empty { grid-column: 1/-1; text-align: center; padding: 80px 20px; color: var(--muted); }
@@ -472,12 +521,15 @@
 <body>
 
 <header>
-  <div class="logo">
-    <span class="logo-icon">🖥️</span>
-    <div>
-      <div class="logo-text">CLICKS BURGER</div>
-      <div class="logo-sub">Panel Admin</div>
-    </div>
+  <div class="header-left">
+    <a href="/admin" class="logo-img-link" title="Panel Admin">
+      <img src="img/clickslogo.jpg" alt="Clicks Burger" class="logo-img">
+    </a>
+    <nav class="admin-nav">
+      <a href="/admin/caja"   class="nav-link active">🖥️ CAJA</a>
+      <a href="/admin/cocina" class="nav-link">🍳 COCINA</a>
+      <a href="/pedidos"      class="nav-link" target="_blank">📱 PEDIDOS</a>
+    </nav>
   </div>
   <div class="header-right">
     <div class="stats">
@@ -830,6 +882,11 @@ function marcarEntregado(num) {
 function guardar() { localStorage.setItem('cb_cola', JSON.stringify(pedidos)); }
 function hora()    { return new Date().toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' }); }
 
+// ── IMPRIMIR TICKET DE COCINA ──
+function imprimirTicket(num) {
+  window.open(`/ticket?num=${num}`, `ticket_${num}`, 'width=430,height=680,scrollbars=yes,resizable=yes');
+}
+
 // ── RENDER ──
 function render(esNuevo = false, numNuevo = null) {
   const entrantes   = pedidos.filter(p => p.estado === 'nuevo');
@@ -947,10 +1004,16 @@ function render(esNuevo = false, numNuevo = null) {
           <button class="btn-action btn-confirmar" onclick="confirmar(${p.num})">✓ CONFIRMAR</button>
           <button class="btn-action btn-rechazar"  onclick="rechazar(${p.num})">✕ RECHAZAR</button>
         </div>`;
+    } else if (p.estado === 'confirmado') {
+      acciones = `
+        <div class="card-actions">
+          <button class="btn-action btn-imprimir" onclick="imprimirTicket(${p.num})">🖨 IMPRIMIR TICKET</button>
+        </div>`;
     } else if (p.estado === 'listo') {
       acciones = `
         <div class="card-actions">
           <button class="btn-action btn-entregar" onclick="marcarEntregado(${p.num})">📦 MARCAR ENTREGADO</button>
+          <button class="btn-action btn-imprimir" onclick="imprimirTicket(${p.num})">🖨 TICKET</button>
         </div>`;
     }
 
